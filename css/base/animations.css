@@ -1,0 +1,67 @@
+/* ═══════════════════════════════════════════════════════════
+   LULIS — Animaciones
+   Keyframes globales y clases de reveal por scroll.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Keyframes ──────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-30px) scale(1.05); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%      { transform: scale(1.3); opacity: 0.7; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(8px); }
+}
+
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 6px 32px rgba(37, 211, 102, 0.40); }
+  50%      { box-shadow: 0 6px 48px rgba(37, 211, 102, 0.65); }
+}
+
+/* ─── Scroll reveal ──────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal-left.visible,
+.reveal-right.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ─── Delays ─────────────────────────────────────────────── */
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+.delay-5 { transition-delay: 0.5s; }
+
+/* ─── Accesibilidad: reducir movimiento ──────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

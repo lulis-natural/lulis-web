@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impacto Ambiental — LULIS Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#5F0F3F">
+  <link rel="icon" type="image/svg+xml" href="../Imagenes/logos/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css?v=9">
+  <style>
+    /* Tabla de resultados */
+    .calc-result {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--wine);
+      line-height: 1.1;
+      min-height: 1.8rem;
+    }
+    .calc-result-label {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--mid);
+      margin-top: 4px;
+    }
+    .formula-badge {
+      display: inline-block;
+      background: var(--light);
+      border: 1px solid var(--beige);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: .72rem;
+      color: var(--mid);
+      font-family: monospace;
+    }
+    .input-ventas {
+      font-size: 1.5rem !important;
+      font-weight: 700 !important;
+      text-align: center;
+      color: var(--wine);
+      border-color: var(--wine) !important;
+    }
+    .input-ventas:focus {
+      box-shadow: 0 0 0 3px rgba(95,15,63,.12) !important;
+    }
+    .desglose-table td:first-child { font-weight: 600; color: var(--dark); }
+    .desglose-table td { font-size: .85rem; }
+  </style>
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">LULIS</div>
+      <div class="sidebar-logo-sub">Panel Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="dashboard.html" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <div class="sidebar-section">Catálogo</div>
+      <a href="productos.html" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span> Productos</a>
+      <a href="galeria.html" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span> Galería</a>
+      <a href="direcciones.html" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Direcciones</a>
+      <div class="sidebar-section">Comunicación</div>
+      <a href="mensajes.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> Mensajes
+        <span class="sidebar-badge" id="sb-unread" style="display:none">0</span>
+      </a>
+      <div class="sidebar-section">Impacto</div>
+      <a href="impacto.html" class="sidebar-link active">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></span> Impacto Ambiental
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" data-user-avatar>A</div>
+        <div>
+          <div class="sidebar-user-name" data-user-name>Admin</div>
+          <div class="sidebar-user-role">Administrador</div>
+        </div>
+      </div>
+      <button class="btn-logout" id="logoutBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir men�">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title">Impacto Ambiental — Cálculo Automático</div>
+    <div class="topbar-actions">
+      <a href="../index.html#impact-env" class="topbar-link-site" target="_blank">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Ver en sitio
+      </a>
+    </div>
+  </header>
+
+  <main class="admin-content">
+
+    <div class="page-header">
+      <div>
+        <h1>Métricas de impacto</h1>
+        <p>Ingresa las unidades vendidas por tipo. El sistema calcula todo automáticamente.</p>
+      </div>
+      <button class="btn btn-primary" id="btnGuardar">
+        <span id="btnGuardarText">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+          Publicar en el sitio
+        </span>
+        <span id="btnGuardarSpinner" style="display:none">
+          <span class="spinner" style="width:16px;height:16px;border-width:2px"></span>
+        </span>
+      </button>
+    </div>
+
+    <div class="page-loading" id="pageLoading" style="min-height:200px">
+      <div class="spinner"></div>
+      <p>Cargando datos…</p>
+    </div>
+
+    <div id="impactoContent" style="display:none">
+
+      <!-- PASO 1: Ingreso de ventas -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <span class="card-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            Paso 1 — Ingresa las unidades vendidas
+          </span>
+          <span style="font-size:.78rem;color:var(--mid)">Los cálculos se actualizan automáticamente</span>
+        </div>
+        <div class="card-body">
+          <div class="form-row-3">
+
+            <div class="form-group">
+              <label for="vShampoo50" style="text-align:center;display:block">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Shampoo Sólido <strong>50g</strong>
+              </label>
+              <input type="number" id="vShampoo50" class="input-ventas"
+                     min="0" step="1" placeholder="0"
+                     aria-label="Unidades de shampoo 50g vendidas">
+              <div class="field-hint" style="text-align:center">
+                = 1.5 botellas c/u
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="vShampoo100" style="text-align:center;display:block">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Shampoo Sólido <strong>100g</strong>
+              </label>
+              <input type="number" id="vShampoo100" class="input-ventas"
+                     min="0" step="1" placeholder="0"
+                     aria-label="Unidades de shampoo 100g vendidas">
+              <div class="field-hint" style="text-align:center">
+                = 3.0 botellas c/u
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="vAcond50" style="text-align:center;display:block">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                Acondicionador <strong>50g</strong>
+              </label>
+              <input type="number" id="vAcond50" class="input-ventas"
+                     min="0" step="1" placeholder="0"
+                     aria-label="Unidades de acondicionador 50g vendidas">
+              <div class="field-hint" style="text-align:center">
+                = 1.0 botella c/u
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- PASO 2: Resultados calculados automáticamente -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <span class="card-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Paso 2 — Resultados calculados automáticamente
+          </span>
+        </div>
+        <div class="card-body">
+
+          <!-- Totales grandes -->
+          <div class="stats-grid" style="margin-bottom:24px">
+            <div class="stat-card blue">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+              <div class="calc-result" id="res-vendidos">—</div>
+              <div class="calc-result-label">Total productos vendidos</div>
+              <div class="stat-sub" style="margin-top:8px">
+                <span class="formula-badge">50g + 100g + acond.</span>
+              </div>
+            </div>
+            <div class="stat-card coral">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+              <div class="calc-result" id="res-botellas">—</div>
+              <div class="calc-result-label">Botellas plásticas reemplazadas</div>
+              <div class="stat-sub" style="margin-top:8px">
+                <span class="formula-badge">u×1.5 + u×3.0 + u×1.0</span>
+              </div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+              <div class="calc-result" id="res-agua">—</div>
+              <div class="calc-result-label">Litros de agua evitados</div>
+              <div class="stat-sub" style="margin-top:8px">
+                <span class="formula-badge">botellas × 0.350L × 80%</span>
+              </div>
+            </div>
+            <div class="stat-card wine">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 19l-3-3 3-3"/><path d="M4 16h13a3 3 0 0 0 3-3v-1"/><polyline points="14 8 17 5 20 8"/><line x1="17" y1="5" x2="17" y2="13"/></svg></div>
+              <div class="calc-result" id="res-kg">—</div>
+              <div class="calc-result-label">Kg de plástico eliminado</div>
+              <div class="stat-sub" style="margin-top:8px">
+                <span class="formula-badge">botellas × 0.025 kg</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desglose por tipo de producto -->
+          <div class="card-header" style="padding:0 0 12px 0;border:none;margin-bottom:0">
+            <span class="card-title" style="font-size:.88rem">Desglose por producto</span>
+          </div>
+          <div class="table-wrap">
+            <table class="desglose-table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Factor</th>
+                  <th>Unidades</th>
+                  <th>Botellas reemplazadas</th>
+                  <th>Agua evitada</th>
+                  <th>Plástico evitado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Shampoo 50g</td>
+                  <td><span class="formula-badge">×1.5 botellas</span></td>
+                  <td id="des-s50-u">—</td>
+                  <td id="des-s50-b">—</td>
+                  <td id="des-s50-l">—</td>
+                  <td id="des-s50-k">—</td>
+                </tr>
+                <tr>
+                  <td><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Shampoo 100g</td>
+                  <td><span class="formula-badge">×3.0 botellas</span></td>
+                  <td id="des-s100-u">—</td>
+                  <td id="des-s100-b">—</td>
+                  <td id="des-s100-l">—</td>
+                  <td id="des-s100-k">—</td>
+                </tr>
+                <tr>
+                  <td><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>Acondicionador 50g</td>
+                  <td><span class="formula-badge">×1.0 botella</span></td>
+                  <td id="des-a50-u">—</td>
+                  <td id="des-a50-b">—</td>
+                  <td id="des-a50-l">—</td>
+                  <td id="des-a50-k">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Modelo de cálculo -->
+          <details style="margin-top:20px">
+            <summary style="cursor:pointer;font-size:.82rem;color:var(--mid);font-weight:600;padding:8px 0">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              Ver modelo de cálculo completo
+            </summary>
+            <div style="background:var(--light);border-radius:var(--radius);padding:16px;margin-top:10px;font-size:.82rem;line-height:1.8">
+              <strong>Constantes del modelo:</strong><br>
+              • Shampoo 50g reemplaza <strong>1.5 botellas</strong> convencionales<br>
+              • Shampoo 100g reemplaza <strong>3.0 botellas</strong> convencionales<br>
+              • Acondicionador 50g reemplaza <strong>1.0 botella</strong> convencional<br>
+              <br>
+              <strong>Por cada botella convencional no producida:</strong><br>
+              • Volumen: 350 ml · Contenido agua: 80% → <strong>0.280 L de agua evitada</strong><br>
+              • Plástico del envase: <strong>0.025 kg evitado</strong><br>
+              <br>
+              <strong>Fórmulas:</strong><br>
+              • Botellas = (u₅₀×1.5) + (u₁₀₀×3.0) + (uₐ×1.0)<br>
+              • Agua (L) = Botellas × 0.350 × 0.80<br>
+              • Plástico (kg) = Botellas × 0.025
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- PASO 3: Vista previa en el sitio -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <span class="card-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Paso 3 — Vista previa (cómo se verá en el sitio)
+          </span>
+        </div>
+        <div class="card-body">
+          <div class="stats-grid">
+            <div class="stat-card blue">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+              <div class="stat-num" id="prev-vendidos">—</div>
+              <div class="stat-label">Productos vendidos</div>
+            </div>
+            <div class="stat-card coral">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+              <div class="stat-num" id="prev-botellas">—</div>
+              <div class="stat-label">Botellas reemplazadas</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+              <div class="stat-num" id="prev-agua">—</div>
+              <div class="stat-label">Agua evitada</div>
+            </div>
+            <div class="stat-card wine">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 19l-3-3 3-3"/><path d="M4 16h13a3 3 0 0 0 3-3v-1"/><polyline points="14 8 17 5 20 8"/><line x1="17" y1="5" x2="17" y2="13"/></svg></div>
+              <div class="stat-num" id="prev-kg">—</div>
+              <div class="stat-label">Plástico eliminado</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nota interna -->
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-header">
+          <span class="card-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Nota interna (no es pública)
+          </span>
+        </div>
+        <div class="card-body">
+          <div class="form-group" style="margin:0">
+            <textarea id="mNota" rows="2"
+                      placeholder="Ej: Actualizado tras cierre de julio. Incluye 12 unidades de regalería corporativa."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Historial de actualizaciones
+          </span>
+        </div>
+        <div id="historialLoading" class="page-loading" style="min-height:80px">
+          <div class="spinner"></div>
+        </div>
+        <div class="table-wrap" id="historialWrap" style="display:none">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>S.50g</th>
+                <th>S.100g</th>
+                <th>Acond.</th>
+                <th>Total</th>
+                <th>Botellas</th>
+                <th>Agua</th>
+                <th>Plástico</th>
+                <th>Nota</th>
+                <th>Por</th>
+              </tr>
+            </thead>
+            <tbody id="historialBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="historialEmpty" style="display:none">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.4;margin-bottom:12px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <h3>Sin historial todavía</h3>
+          <p>Cada vez que publiques aparecerá aquí como registro.</p>
+        </div>
+      </div>
+
+    </div><!-- /impactoContent -->
+  </main>
+</div>
+
+<!-- Confirmar publicación -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#07BC8A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:8px"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+    <div class="confirm-title">¿Publicar estos datos?</div>
+    <div class="confirm-msg" id="confirmMsg">
+      Los números se actualizarán en el sitio inmediatamente.
+    </div>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" id="confirmCancel">Cancelar</button>
+      <button class="btn btn-emerald" id="confirmSave">Sí, publicar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" defer src="js/auth.js?v=9"></script>
+<script type="module" defer src="js/impacto.js?v=8"></script>
+</body>
+</html>

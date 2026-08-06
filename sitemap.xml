@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Página principal -->
+  <url>
+    <loc>https://lulis.bo/</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="es-BO" href="https://lulis.bo/"/>
+    <image:image>
+      <image:loc>https://lulis.bo/Imagenes/productos/Jamaica.jpg</image:loc>
+      <image:title>Shampoo Sólido Jamaica LULIS</image:title>
+      <image:caption>Shampoo sólido de Jamaica — cosmética consciente, cero plástico</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lulis.bo/Imagenes/productos/Romeros.jpg</image:loc>
+      <image:title>Shampoo Sólido Romero LULIS</image:title>
+      <image:caption>Shampoo sólido de Romero — control de grasa, cabello graso</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://lulis.bo/Imagenes/productos/Coco.jpg</image:loc>
+      <image:title>Shampoo Sólido Coco LULIS</image:title>
+      <image:caption>Shampoo sólido de Coco — hidratación profunda, cabello seco</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Anclas de secciones (para rich snippets) -->
+  <url>
+    <loc>https://lulis.bo/#products</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://lulis.bo/#about</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://lulis.bo/#impact-env</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://lulis.bo/#faq</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://lulis.bo/#contact</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

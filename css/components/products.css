@@ -1,0 +1,158 @@
+/* ═══════════════════════════════════════════════════════════
+   LULIS — Sección Productos
+   ═══════════════════════════════════════════════════════════ */
+
+#products { background: var(--light); }
+
+.products-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 48px;
+}
+.products-header h2 { color: var(--wine); }
+
+/* Grilla de categorías */
+.products-categories-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 16px;
+}
+
+.product-category-label {
+  font-family: var(--ff-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wine);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--emerald);
+}
+
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Tarjeta de producto */
+.product-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+.product-img {
+  aspect-ratio: 4 / 3;
+  position: relative;
+  overflow: hidden;
+}
+.product-img-bg {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  transition: transform 0.4s ease;
+  object-fit: cover;
+}
+/* Cuando el img es directo hijo de .product-img */
+.product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.product-card:hover .product-img img,
+.product-card:hover .product-img-bg { transform: scale(1.08); }
+
+.product-body { padding: 24px; }
+
+.product-category {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--emerald);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.product-name {
+  font-family: var(--ff-display);
+  font-size: 1.2rem;
+  color: var(--dark);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.product-duracion {
+  display: inline-block;
+  background: var(--light);
+  color: var(--mid);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 50px;
+  margin-bottom: 10px;
+  border: 1px solid var(--beige);
+}
+.product-desc {
+  font-size: 0.88rem;
+  color: var(--mid);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.product-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.product-avail {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+}
+.avail-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+.avail-yes .avail-dot { background: var(--emerald); }
+.avail-no  .avail-dot { background: var(--coral); }
+.avail-yes { color: var(--emerald); font-weight: 500; }
+.avail-no  { color: var(--coral);   font-weight: 500; }
+
+/* Botón WhatsApp dentro del card */
+.product-wa {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 20px;
+  background: var(--wa-green);
+  color: #fff;
+  border-radius: 50px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.2s;
+}
+.product-wa:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .products-categories-wrap { grid-template-columns: 1fr; }
+}

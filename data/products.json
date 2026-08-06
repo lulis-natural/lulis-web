@@ -1,0 +1,81 @@
+{
+  "shampoos": [
+    {
+      "id": "shampoo-jamaica",
+      "name": "Jamaica",
+      "category": "Shampoo Sólido",
+      "size": "50g",
+      "washes": { "min": 35, "max": 45 },
+      "hairType": "mixto",
+      "description": "Equilibrio y revitalización. Ideal para cabello mixto. Espuma abundante y aroma natural.",
+      "image": "Imagenes/productos/Jamaica.jpg",
+      "imageAlt": "Shampoo sólido de Jamaica LULIS",
+      "imageBg": "linear-gradient(135deg,#8B1A5A,#5F0F3F)",
+      "badge": "nuevo",
+      "available": true,
+      "slug": "shampoo-jamaica"
+    },
+    {
+      "id": "shampoo-romero",
+      "name": "Romero",
+      "category": "Shampoo Sólido",
+      "size": "50g",
+      "washes": { "min": 35, "max": 45 },
+      "hairType": "graso",
+      "description": "Fortalecimiento y control de grasa. Para cabello graso. Refresca y equilibra el cuero cabelludo.",
+      "image": "Imagenes/productos/Romeros.jpg",
+      "imageAlt": "Shampoo sólido de Romero LULIS",
+      "imageBg": "linear-gradient(135deg,#2D5A1B,#07BC8A)",
+      "badge": "popular",
+      "available": true,
+      "slug": "shampoo-romero"
+    },
+    {
+      "id": "shampoo-coco",
+      "name": "Coco",
+      "category": "Shampoo Sólido",
+      "size": "50g",
+      "washes": { "min": 35, "max": 45 },
+      "hairType": "seco",
+      "description": "Hidratación profunda para cabello seco. Nutre y suaviza desde la primera lavada.",
+      "image": "Imagenes/productos/Coco.jpg",
+      "imageAlt": "Shampoo sólido de Coco LULIS",
+      "imageBg": "linear-gradient(135deg,#F4BF56,#FF9A3C)",
+      "badge": "nuevo",
+      "available": true,
+      "slug": "shampoo-coco"
+    }
+  ],
+  "conditioners": [
+    {
+      "id": "acond-melon",
+      "name": "Melón",
+      "category": "Acondicionador Sólido",
+      "size": "50g",
+      "washes": null,
+      "hairType": "graso",
+      "description": "Ligero e hidratante. Ideal para cabello graso. Acondiciona sin pesar ni dejar residuo.",
+      "image": "Imagenes/productos/Pack_coco_y_melon.jpeg",
+      "imageAlt": "Acondicionador sólido de Melón LULIS",
+      "imageBg": "linear-gradient(135deg,#A8D96E,#07BC8A)",
+      "badge": "eco",
+      "available": true,
+      "slug": "acondicionador-melon"
+    },
+    {
+      "id": "acond-uva-jamaica",
+      "name": "Uva & Jamaica",
+      "category": "Acondicionador Sólido",
+      "size": "50g",
+      "washes": null,
+      "hairType": "seco",
+      "description": "Nutrición e hidratación intensa para cabello seco. Combinación de uva y jamaica para cabello brillante y suave.",
+      "image": "Imagenes/productos/Pack_jamaica_y_jamaica.jpeg",
+      "imageAlt": "Acondicionador sólido de Uva y Jamaica LULIS",
+      "imageBg": "linear-gradient(135deg,#7B3F8C,#8B1A5A)",
+      "badge": "popular",
+      "available": true,
+      "slug": "acondicionador-uva-jamaica"
+    }
+  ]
+}

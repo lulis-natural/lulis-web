@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — LULIS Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#5F0F3F">
+  <link rel="icon" href="../Imagenes/logos/LOGO.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div class="admin-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">LULIS</div>
+      <div class="sidebar-logo-sub">Panel Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="dashboard.html" class="sidebar-link active">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard
+      </a>
+      <div class="sidebar-section">Catálogo</div>
+      <a href="productos.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span> Productos
+      </a>
+      <a href="galeria.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span> Galería
+      </a>
+      <a href="direcciones.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Direcciones
+      </a>
+      <div class="sidebar-section">Comunicación</div>
+      <a href="mensajes.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> Mensajes
+        <span class="sidebar-badge" id="sb-unread" style="display:none">0</span>
+      </a>
+      <div class="sidebar-section">Impacto</div>
+      <a href="impacto.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></span> Impacto Ambiental
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" data-user-avatar>A</div>
+        <div>
+          <div class="sidebar-user-name" data-user-name>Admin</div>
+          <div class="sidebar-user-role">Administrador</div>
+        </div>
+      </div>
+      <button class="btn-logout" id="logoutBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir men�">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title">Dashboard</div>
+    <div class="topbar-actions">
+      <a href="../index.html" class="topbar-link-site" target="_blank">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Ver sitio
+      </a>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="admin-content" id="mainContent">
+    <div class="page-loading" id="pageLoading">
+      <div class="spinner"></div>
+      <p>Cargando métricas...</p>
+    </div>
+
+    <div id="dashContent" style="display:none">
+      <!-- Stats row 1 -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card wine">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+          <div class="stat-num" id="st-productos">—</div>
+          <div class="stat-label">Productos activos</div>
+          <div class="stat-sub" id="st-productos-sub"></div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="stat-num" id="st-ventas">—</div>
+          <div class="stat-label">Ventas registradas</div>
+          <div class="stat-sub" id="st-ventas-sub"></div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div class="stat-num" id="st-mensajes">—</div>
+          <div class="stat-label">Mensajes sin leer</div>
+          <div class="stat-sub" id="st-mensajes-sub"></div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+          <div class="stat-num" id="st-galeria">—</div>
+          <div class="stat-label">Items en galería</div>
+          <div class="stat-sub" id="st-galeria-sub"></div>
+        </div>
+      </div>
+
+      <!-- Impacto ambiental -->
+      <div class="card" style="margin-bottom:24px">
+        <div class="card-header">
+          <span class="card-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>Impacto ambiental acumulado</span>
+          <a href="impacto.html" class="btn btn-outline btn-sm">Editar</a>
+        </div>
+        <div class="card-body">
+          <div class="stats-grid" id="impactoGrid">
+            <div class="stat-card green">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+              <div class="stat-num" id="imp-agua">—</div>
+              <div class="stat-label">Litros de agua ahorrados</div>
+            </div>
+            <div class="stat-card coral">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></div>
+              <div class="stat-num" id="imp-plastico">—</div>
+              <div class="stat-label">Envases plásticos evitados</div>
+            </div>
+            <div class="stat-card wine">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 19l-3-3 3-3"/><path d="M4 16h13a3 3 0 0 0 3-3v-1"/><polyline points="14 8 17 5 20 8"/><line x1="17" y1="5" x2="17" y2="13"/></svg></div>
+              <div class="stat-num" id="imp-kg">—</div>
+              <div class="stat-label">Kg de plástico eliminado</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+              <div class="stat-num" id="imp-vendidos">—</div>
+              <div class="stat-label">Productos vendidos (total)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dos columnas: últimos mensajes + últimas ventas -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Últimos mensajes</span>
+            <a href="mensajes.html" class="btn btn-ghost btn-sm">Ver todos →</a>
+          </div>
+          <div id="lastMsgs">
+            <div class="page-loading" style="min-height:120px">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Últimas ventas</span>
+            <a href="#" class="btn btn-ghost btn-sm">Ver todas →</a>
+          </div>
+          <div id="lastVentas">
+            <div class="page-loading" style="min-height:120px">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" defer src="js/auth.js?v=9"></script>
+<script type="module" defer src="js/dashboard.js?v=8"></script>
+</body>
+</html>

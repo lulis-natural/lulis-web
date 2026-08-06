@@ -1,0 +1,86 @@
+/* ═══════════════════════════════════════════════════════════
+   LULIS — Botones, Badges y Toast
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Botones base ───────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-family: var(--ff-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.btn-primary { background: var(--wine); color: #fff; }
+.btn-primary:hover {
+  background: var(--purple);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(95, 15, 63, 0.30);
+}
+
+.btn-outline { background: transparent; border: 2px solid #fff; color: #fff; }
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.btn-emerald { background: var(--emerald); color: #fff; }
+.btn-emerald:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(7, 188, 138, 0.30);
+}
+
+.btn-coral { background: var(--coral); color: #fff; }
+.btn-coral:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+}
+
+.btn-sm { padding: 10px 22px; font-size: 0.85rem; }
+
+/* ─── Badge de producto ──────────────────────────────────── */
+.product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.badge-new { background: var(--emerald); color: #fff; }
+.badge-hot { background: var(--coral);   color: #fff; }
+.badge-eco { background: var(--olive);   color: #fff; }
+
+/* ─── Toast ──────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  right: 28px;
+  z-index: 9999;
+  background: var(--emerald);
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(7, 188, 138, 0.30);
+}
+.toast.show {
+  transform: none;
+  opacity: 1;
+}

@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "lulis-app",
+    "production": "lulis-app",
+    "staging": "lulis-staging"
+  }
+}

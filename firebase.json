@@ -1,0 +1,78 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      ".env*",
+      ".gitignore",
+      "node_modules/**",
+      "firebase/**",
+      "data/**",
+      "docs/**",
+      "DEPLOY.md",
+      "README.md"
+    ],
+    "rewrites": [
+      {
+        "source": "/admin",
+        "destination": "/admin/index.html"
+      },
+      {
+        "source": "/admin/**",
+        "destination": "/admin/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "source": "**/*.@(jpg|jpeg|png|webp|svg|gif|ico)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=86400" }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          { "key": "X-Content-Type-Options",  "value": "nosniff" },
+          { "key": "X-Frame-Options",          "value": "DENY" },
+          { "key": "X-XSS-Protection",         "value": "1; mode=block" },
+          { "key": "Referrer-Policy",           "value": "strict-origin-when-cross-origin" }
+        ]
+      }
+    ]
+  },
+
+  "firestore": {
+    "rules":   "firebase/firestore.rules",
+    "indexes": "firebase/firestore.indexes.json"
+  },
+
+  "storage": {
+    "rules": "firebase/storage.rules"
+  },
+
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "storage": {
+      "port": 9199
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    }
+  }
+}

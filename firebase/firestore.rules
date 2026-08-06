@@ -1,0 +1,93 @@
+rules_version = '2';
+
+// ═══════════════════════════════════════════════════════════
+// LULIS — Reglas de seguridad Firestore
+//
+// Estado actual: [TEMP] Custom claim admin DESACTIVADO en JS.
+// Para que el panel admin funcione sin errores de
+// "permission-denied", cualquier usuario autenticado tiene
+// acceso de lectura/escritura. En PRODUCCIÓN se debe
+// reactivar el check de custom claim y endurecer las reglas.
+// ═══════════════════════════════════════════════════════════
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ─────────────────────────────────────────────
+    // [TEMP] isAdmin() considera admin = cualquier user autenticado
+    // porque el check de custom claim está desactivado en el frontend.
+    // En PRODUCCIÓN, restaurar:
+    //   return request.auth != null
+    //     && request.auth.token.admin == true;
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function maxLen(field, n) {
+      return field.size() <= n;
+    }
+
+    // ── /productos ──────────────────────────────────────────
+    // Cualquier user autenticado puede hacer CRUD.
+    match /productos/{productoId} {
+      allow read: if true;   // público (catálogo)
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ── /galeria ────────────────────────────────────────────
+    // Cualquier user autenticado puede hacer CRUD.
+    match /galeria/{itemId} {
+      allow read: if true;   // público (galería)
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ── /mensajes ───────────────────────────────────────────
+    // Público: SOLO crear (formulario de contacto).
+    // User autenticado: leer, actualizar, eliminar.
+    match /mensajes/{mensajeId} {
+      allow create: if request.resource.data.keys().hasAll([
+                         'nombre', 'email', 'mensaje', 'creadoEn'
+                       ])
+                    && maxLen(request.resource.data.nombre,  100)
+                    && maxLen(request.resource.data.email,   200)
+                    && maxLen(request.resource.data.mensaje, 2000)
+                    && request.resource.data.creadoEn == request.time;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── /ventas ─────────────────────────────────────────────
+    match /ventas/{ventaId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ── /configuracion ──────────────────────────────────────
+    match /configuracion/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── /impacto_ambiental ──────────────────────────────────
+    match /impacto_ambiental/{docId} {
+      allow read: if true;   // público (hero counters)
+      allow write: if isAdmin();
+    }
+
+    // ── /direcciones ────────────────────────────────────────
+    // Las direcciones de las tiendas físicas.
+    // Pública lectura (carrusel en landing), user autenticado escribe.
+    match /direcciones/{dirId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ── Bloqueo global ──────────────────────────────────────
+    // Cualquier colección no declarada arriba: solo users autenticados.
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

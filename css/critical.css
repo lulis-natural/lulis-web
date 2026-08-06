@@ -1,0 +1,121 @@
+/* ═══════════════════════════════════════════════════════════
+   LULIS — Critical CSS
+   Se incluye INLINE en el <head> del HTML.
+   Contiene SOLO lo necesario para renderizar el hero sin
+   esperar a cargar main.css (elimina render-blocking FCP).
+
+   Regla: si no está visible sin scroll → no va aquí.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Tokens mínimos */
+:root{
+  --wine:#5F0F3F;--purple:#824670;--emerald:#07BC8A;
+  --coral:#FF694C;--yellow:#F4BF56;--dark:#1C1611;
+  --mid:#4A3728;--cream:#FAF8F3;--light:#F5F0E8;
+  --wa-green:#25D366;
+  --ff-display:'League Spartan','Helvetica Neue',sans-serif;
+  --ff-body:'Inter',system-ui,sans-serif;
+  --radius-lg:28px;--shadow:0 4px 32px rgba(28,22,17,.10);
+}
+
+/* Reset mínimo */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--ff-body);background:var(--cream);color:var(--dark);line-height:1.7;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+
+/* Container */
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* Navbar - visible inmediatamente */
+#navbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  transition:all .3s ease;padding:20px 0;
+}
+#navbar.scrolled{
+  background:rgba(250,248,243,.96);backdrop-filter:blur(12px);
+  padding:12px 0;box-shadow:0 2px 20px rgba(28,22,17,.08);
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{
+  font-family:var(--ff-display);font-size:2rem;font-weight:800;
+  color:#fff;transition:color .3s;letter-spacing:.08em;text-transform:uppercase;
+}
+#navbar.scrolled .nav-logo{color:var(--wine)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:.88rem;font-weight:500;color:rgba(255,255,255,.85);transition:color .2s}
+#navbar.scrolled .nav-links a{color:var(--mid)}
+.nav-cta{background:var(--wine)!important;color:#fff!important;padding:8px 20px;border-radius:50px}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.hamburger span{width:24px;height:2px;background:#fff;transition:all .3s;border-radius:2px;display:block}
+#navbar.scrolled .hamburger span{background:var(--dark)}
+.mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--cream);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.mobile-menu.open{display:flex}
+.mobile-close{position:absolute;top:24px;right:24px;font-size:1.8rem;cursor:pointer;color:var(--dark);background:none;border:none}
+
+/* Hero - above the fold */
+#hero{
+  min-height:100vh;position:relative;display:flex;align-items:center;
+  background:linear-gradient(135deg,var(--wine) 0%,#8B1A5A 40%,var(--purple) 70%,#3D2B5C 100%);
+  overflow:hidden;
+}
+.hero-bg-pattern{position:absolute;inset:0;opacity:.06;background-image:radial-gradient(circle,#fff 1px,transparent 1px);background-size:40px 40px}
+.hero-blob{position:absolute;border-radius:50%}
+.hero-blob-1{width:500px;height:500px;background:var(--coral);opacity:.18;top:-150px;right:-100px;animation:float 8s ease-in-out infinite}
+.hero-blob-2{width:300px;height:300px;background:var(--yellow);opacity:.15;bottom:-100px;left:10%;animation:float 8s ease-in-out infinite;animation-delay:-3s}
+.hero-blob-3{width:200px;height:200px;background:var(--emerald);opacity:.12;top:40%;left:60%;animation:float 8s ease-in-out infinite;animation-delay:-5s}
+.hero-content{position:relative;z-index:2;text-align:center;padding:120px 24px 80px;max-width:900px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.20);padding:8px 20px;border-radius:50px;font-size:.8rem;font-weight:500;color:rgba(255,255,255,.9);margin-bottom:32px;backdrop-filter:blur(8px)}
+.hero-badge-dot{width:8px;height:8px;background:var(--emerald);border-radius:50%;animation:pulse 2s infinite}
+.hero-title{font-family:var(--ff-display);font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;letter-spacing:-.02em;line-height:1.2;color:#fff;margin-bottom:16px}
+.hero-title em{font-style:italic;color:var(--yellow)}
+.hero-slogan{font-family:var(--ff-body);font-size:1rem;color:rgba(255,255,255,.65);letter-spacing:.04em;margin-bottom:20px;font-style:italic}
+.hero-desc{font-size:1.15rem;color:rgba(255,255,255,.80);max-width:600px;margin:0 auto 40px}
+.hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.hero-stats{display:flex;gap:40px;justify-content:center;margin-top:64px;padding-top:40px;border-top:1px solid rgba(255,255,255,.15);flex-wrap:wrap}
+.hero-stat-num{font-family:var(--ff-display);font-size:2rem;font-weight:800;color:var(--yellow)}
+.hero-stat-lbl{font-size:.78rem;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+.hero-scroll{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.5);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;animation:bounce 2s ease-in-out infinite}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,.40),transparent)}
+
+/* Botones básicos */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:50px;font-family:var(--ff-body);font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .25s ease;white-space:nowrap}
+.btn-primary{background:var(--wine);color:#fff}
+.btn-outline{background:transparent;border:2px solid #fff;color:#fff}
+.btn-emerald{background:var(--emerald);color:#fff}
+.wa-icon{width:18px;height:18px;fill:#fff;flex-shrink:0}
+
+/* Eyebrow */
+.eyebrow{display:inline-block;font-family:var(--ff-body);font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--emerald);margin-bottom:12px}
+
+/* Reveal base (evita FOUC) */
+.reveal,.reveal-left,.reveal-right{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible,.reveal-left.visible,.reveal-right.visible{opacity:1;transform:none}
+
+/* Keyframes críticos */
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* WA float */
+.wa-float{position:fixed;bottom:28px;right:28px;z-index:900;width:60px;height:60px;background:var(--wa-green);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 32px rgba(37,211,102,.40);transition:transform .2s;text-decoration:none}
+.wa-float svg{width:32px;height:32px;fill:#fff}
+.wa-tooltip{position:absolute;right:72px;top:50%;transform:translateY(-50%);background:var(--dark);color:#fff;font-size:.80rem;font-weight:600;padding:8px 14px;border-radius:50px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s}
+.wa-float:hover .wa-tooltip{opacity:1}
+
+/* Toast */
+.toast{position:fixed;bottom:100px;right:28px;z-index:9999;background:var(--emerald);color:#fff;padding:14px 24px;border-radius:50px;font-size:.9rem;font-weight:600;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;box-shadow:0 4px 20px rgba(7,188,138,.30)}
+.toast.show{transform:none;opacity:1}
+
+/* Reducir movimiento */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Mobile crítico */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .hero-stats{gap:24px}
+  .container{padding:0 16px}
+}

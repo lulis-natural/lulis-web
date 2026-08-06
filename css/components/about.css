@@ -1,0 +1,76 @@
+/* ═══════════════════════════════════════════════════════════
+   LULIS — Sección About
+   ═══════════════════════════════════════════════════════════ */
+
+#about { background: var(--cream); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.about-visual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(135deg, var(--beige) 0%, var(--olive) 100%);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.about-visual-inner {
+  position: absolute;
+  inset: 20px;
+  background: linear-gradient(180deg, var(--wine) 0%, var(--purple) 100%);
+  border-radius: calc(var(--radius-lg) - 8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.about-icon-big { font-size: 5rem; margin-bottom: 16px; }
+.about-visual-text {
+  font-family: var(--ff-display);
+  font-size: 1.4rem;
+  text-align: center;
+  padding: 0 20px;
+  font-weight: 600;
+}
+.about-badge {
+  position: absolute;
+  bottom: 32px; right: -20px;
+  background: var(--yellow);
+  color: var(--dark);
+  padding: 16px 24px;
+  border-radius: var(--radius-md);
+  font-family: var(--ff-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-lg);
+}
+
+.about-text h2    { color: var(--wine); margin-bottom: 20px; }
+.about-text p     { margin-bottom: 20px; }
+
+.values-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 32px;
+}
+.value-card {
+  background: var(--light);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  border-left: 3px solid var(--emerald);
+}
+.value-card h4 { color: var(--wine); margin-bottom: 4px; font-size: 0.95rem; }
+.value-card p  { font-size: 0.85rem; margin: 0; }
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .about-grid   { grid-template-columns: 1fr; }
+  .about-badge  { right: 12px; bottom: 16px; font-size: 0.95rem; padding: 12px 18px; }
+  .values-grid  { grid-template-columns: 1fr; }
+}

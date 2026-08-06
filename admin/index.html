@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LULIS — Acceso Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="../Imagenes/logos/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css?v=5">
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">LULIS</div>
+    <p class="login-sub">Panel Administrativo</p>
+
+    <div class="login-error" id="loginError" role="alert"></div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label class="label-required" for="loginEmail">Correo electrónico</label>
+        <input type="email" id="loginEmail" name="email"
+               placeholder="admin@lulis.bo"
+               autocomplete="email" required>
+      </div>
+      <div class="form-group">
+        <label class="label-required" for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" name="password"
+               placeholder="••••••••"
+               autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn-login" id="loginBtn">
+        <span id="loginBtnText">Ingresar al panel</span>
+        <span id="loginSpinner" style="display:none">
+          <span class="spinner" style="width:18px;height:18px;border-width:2px;border-color:rgba(255,255,255,.3);border-top-color:#fff;"></span>
+        </span>
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:20px;font-size:.78rem;color:var(--mid)">
+      <a href="../index.html" style="color:var(--wine);font-weight:500">← Volver al sitio</a>
+    </p>
+  </div>
+</div>
+
+<script type="module">
+  import { auth } from './js/firebase-init.js';
+  import {
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  /* Si ya hay sesión válida → redirigir al dashboard. [TEMP] Validacion de claim admin desactivada. */
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // [TEMP] Validacion desactivada
+      // const token = await user.getIdTokenResult();
+      // if (token.claims.admin) {
+      window.location.replace('dashboard.html');
+      // }
+    }
+  });
+
+  /* Mostrar error de URL si viene redirigido */
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('error') === 'no_access') {
+    showError('No tienes permisos de administrador.');
+  }
+
+  /* Login */
+  const form     = document.getElementById('loginForm');
+  const errorBox = document.getElementById('loginError');
+  const btn      = document.getElementById('loginBtn');
+  const btnText  = document.getElementById('loginBtnText');
+  const spinner  = document.getElementById('loginSpinner');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+      showError('Completa todos los campos.'); return;
+    }
+
+    setLoading(true);
+    try {
+      const cred  = await signInWithEmailAndPassword(auth, email, password);
+      // [TEMP] Validacion de claim admin desactivada para pruebas locales
+      // const token = await cred.user.getIdTokenResult();
+      // if (!token.claims.admin) {
+      //   await auth.signOut();
+      //   showError('Esta cuenta no tiene permisos de administrador.');
+      //   setLoading(false);
+      //   return;
+      // }
+      window.location.replace('dashboard.html');
+    } catch (err) {
+      setLoading(false);
+      showError(translateAuthError(err.code));
+    }
+  });
+
+  function setLoading(on) {
+    btn.disabled     = on;
+    btnText.style.display  = on ? 'none' : 'block';
+    spinner.style.display  = on ? 'block' : 'none';
+  }
+
+  function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.classList.add('show');
+  }
+
+  function translateAuthError(code) {
+    const map = {
+      'auth/user-not-found':    'No existe una cuenta con ese correo.',
+      'auth/wrong-password':    'Contraseña incorrecta.',
+      'auth/invalid-email':     'El correo no es válido.',
+      'auth/too-many-requests': 'Demasiados intentos. Espera unos minutos.',
+      'auth/network-request-failed': 'Error de conexión. Revisa tu internet.',
+    };
+    return map[code] || 'Error al iniciar sesión. Inténtalo de nuevo.';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+rules_version = '2';
+
+// ═══════════════════════════════════════════════════════════
+// LULIS — Reglas de seguridad Firebase Storage
+//
+// Estructura de carpetas en Storage:
+//   productos/{productoId}/    ← fotos de productos
+//   galeria/{itemId}/          ← fotos de galería
+//   general/                   ← logo, og-image, etc.
+//
+// Público: leer cualquier archivo.
+// Admin: subir, actualizar y eliminar.
+// Restricciones: solo imágenes, máximo 5 MB por archivo.
+// ═══════════════════════════════════════════════════════════
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Helpers ────────────────────────────────────────────
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.admin == true;
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    function isUnder5MB() {
+      return request.resource.size <= 5 * 1024 * 1024;
+    }
+
+    function validUpload() {
+      return isAdmin() && isImage() && isUnder5MB();
+    }
+
+    // ── /productos/** ──────────────────────────────────────
+    match /productos/{productoId}/{fileName} {
+      allow read:   if true;
+      allow create: if validUpload();
+      allow update: if validUpload();
+      allow delete: if isAdmin();
+    }
+
+    // ── /galeria/** ────────────────────────────────────────
+    match /galeria/{itemId}/{fileName} {
+      allow read:   if true;
+      allow create: if validUpload();
+      allow update: if validUpload();
+      allow delete: if isAdmin();
+    }
+
+    // ── /general/** ────────────────────────────────────────
+    // Logo, favicon, og-image, PDF catálogo, etc.
+    match /general/{fileName} {
+      allow read:   if true;
+      allow create: if validUpload();
+      allow update: if validUpload();
+      allow delete: if isAdmin();
+    }
+
+    // ── Bloqueo global ─────────────────────────────────────
+    match /{allPaths=**} {
+      allow read:  if true;
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "indexes": [
+
+    // ── productos ──────────────────────────────────────────
+    // Query: productos disponibles ordenados por orden
+    {
+      "collectionGroup": "productos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "disponible", "order": "ASCENDING" },
+        { "fieldPath": "orden",      "order": "ASCENDING" }
+      ]
+    },
+    // Query: productos por categoría y disponibilidad
+    {
+      "collectionGroup": "productos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "categoria",  "order": "ASCENDING" },
+        { "fieldPath": "disponible", "order": "ASCENDING" },
+        { "fieldPath": "orden",      "order": "ASCENDING" }
+      ]
+    },
+    // Query: productos por categoría y fecha de creación (admin)
+    {
+      "collectionGroup": "productos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "categoria", "order": "ASCENDING" },
+        { "fieldPath": "creadoEn", "order": "DESCENDING" }
+      ]
+    },
+
+    // ── galeria ────────────────────────────────────────────
+    // Query: imágenes activas ordenadas por orden visual
+    {
+      "collectionGroup": "galeria",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "activo", "order": "ASCENDING" },
+        { "fieldPath": "orden",  "order": "ASCENDING" }
+      ]
+    },
+    // Query: imágenes por categoría activas
+    {
+      "collectionGroup": "galeria",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "categoria", "order": "ASCENDING" },
+        { "fieldPath": "activo",    "order": "ASCENDING" },
+        { "fieldPath": "orden",     "order": "ASCENDING" }
+      ]
+    },
+
+    // ── mensajes ───────────────────────────────────────────
+    // Query: mensajes sin leer ordenados por fecha (admin)
+    {
+      "collectionGroup": "mensajes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "leido",     "order": "ASCENDING" },
+        { "fieldPath": "creadoEn", "order": "DESCENDING" }
+      ]
+    },
+    // Query: mensajes por asunto y fecha
+    {
+      "collectionGroup": "mensajes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "asunto",    "order": "ASCENDING" },
+        { "fieldPath": "creadoEn", "order": "DESCENDING" }
+      ]
+    },
+
+    // ── ventas ─────────────────────────────────────────────
+    // Query: ventas por estado y fecha (admin)
+    {
+      "collectionGroup": "ventas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "estado",    "order": "ASCENDING" },
+        { "fieldPath": "creadoEn", "order": "DESCENDING" }
+      ]
+    },
+    // Query: ventas por canal de origen
+    {
+      "collectionGroup": "ventas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "canal",     "order": "ASCENDING" },
+        { "fieldPath": "creadoEn", "order": "DESCENDING" }
+      ]
+    },
+    // Query: ventas en rango de fechas (para reportes)
+    {
+      "collectionGroup": "ventas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "creadoEn", "order": "ASCENDING" },
+        { "fieldPath": "total",    "order": "DESCENDING" }
+      ]
+    },
+
+    // ── impacto_ambiental ──────────────────────────────────
+    // Query: historial mensual ordenado por fecha
+    {
+      "collectionGroup": "impacto_ambiental",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "tipo", "order": "ASCENDING" },
+        { "fieldPath": "mes",  "order": "DESCENDING" }
+      ]
+    }
+
+  ],
+
+  "fieldOverrides": []
+}

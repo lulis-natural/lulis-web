@@ -1,0 +1,40 @@
+/* ═══════════════════════════════════════════════════════════
+   LULIS — Design Tokens
+   Fuente única de verdad para colores, tipografía y espaciado.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* Paleta de color */
+  --coral:   #FF694C;
+  --yellow:  #F4BF56;
+  --beige:   #E5D8BD;
+  --olive:   #B5AE6D;
+  --emerald: #07BC8A;
+  --purple:  #824670;
+  --wine:    #5F0F3F;
+  --rose:    #A2708A;
+  --cream:   #FAF8F3;
+  --dark:    #1C1611;
+  --mid:     #4A3728;
+  --light:   #F5F0E8;
+
+  /* Color WhatsApp */
+  --wa-green: #25D366;
+
+  /* Tipografía */
+  --ff-display: 'League Spartan', 'Playfair Display', Georgia, serif;
+  --ff-body:    'Inter', system-ui, sans-serif;
+
+  /* Radios */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+
+  /* Sombras */
+  --shadow:    0 4px 32px rgba(28, 22, 17, 0.10);
+  --shadow-lg: 0 12px 60px rgba(28, 22, 17, 0.15);
+
+  /* Espaciado de sección */
+  --section-padding: 96px;
+  --section-padding-sm: 64px;
+}

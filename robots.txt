@@ -1,0 +1,22 @@
+# LULIS — robots.txt
+# https://lulis.bo/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+Disallow: /firebase/
+Disallow: /data/
+Disallow: /scripts/
+Disallow: /.env*
+
+# Bloquear archivos de configuración
+Disallow: /vercel.json
+Disallow: /firebase.json
+Disallow: /.firebaserc
+
+# Crawl delay para bots agresivos
+Crawl-delay: 2
+
+# Sitemap
+Sitemap: https://lulis.bo/sitemap.xml

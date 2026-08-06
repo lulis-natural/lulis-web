@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direcciones — LULIS Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#5F0F3F">
+  <link rel="icon" type="image/svg+xml" href="../Imagenes/logos/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css?v=9">
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">LULIS</div>
+      <div class="sidebar-logo-sub">Panel Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="dashboard.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard
+      </a>
+      <div class="sidebar-section">Catálogo</div>
+      <a href="productos.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span> Productos
+      </a>
+      <a href="galeria.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span> Galería
+      </a>
+      <a href="direcciones.html" class="sidebar-link active">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Direcciones
+      </a>
+      <div class="sidebar-section">Comunicación</div>
+      <a href="mensajes.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> Mensajes
+        <span class="sidebar-badge" id="sb-unread" style="display:none">0</span>
+      </a>
+      <div class="sidebar-section">Impacto</div>
+      <a href="impacto.html" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></span> Impacto Ambiental
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" data-user-avatar>A</div>
+        <div>
+          <div class="sidebar-user-name" data-user-name>Admin</div>
+          <div class="sidebar-user-role">Administrador</div>
+        </div>
+      </div>
+      <button class="btn-logout" id="logoutBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir men�">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title">Direcciones / Tiendas</div>
+    <div class="topbar-actions">
+      <a href="../index.html#ubicaciones" class="topbar-link-site" target="_blank">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Ver en sitio
+      </a>
+    </div>
+  </header>
+
+  <main class="admin-content">
+    <div class="page-header">
+      <div>
+        <h1>Direcciones</h1>
+        <p>Cada dirección aparece como un slide en el carrusel con su mapa embebido.</p>
+      </div>
+      <button class="btn btn-primary" id="btnNueva">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:4px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nueva tienda
+      </button>
+    </div>
+
+    <!-- Lista de tiendas -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header">
+        <span class="card-title">Tiendas registradas</span>
+        <span id="countDir" style="font-size:.78rem;color:var(--mid)"></span>
+      </div>
+      <div id="dirLoading" class="page-loading" style="min-height:200px">
+        <div class="spinner"></div><p>Cargando tiendas…</p>
+      </div>
+      <div class="table-wrap" id="dirWrap" style="display:none">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Dirección</th>
+              <th>Horarios</th>
+              <th>Orden</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="dirBody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="dirEmpty" style="display:none">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.4;margin-bottom:12px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <h3>Sin tiendas registradas</h3>
+        <p>Crea la primera tienda con el botón "Nueva tienda".</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ── MODAL CREAR / EDITAR ── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Nueva tienda</span>
+      <button class="modal-close" id="modalClose" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="dirForm" novalidate>
+        <input type="hidden" id="dirId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="label-required" for="dNombre">Nombre de la tienda</label>
+            <input type="text" id="dNombre" placeholder="Salón María" required>
+          </div>
+          <div class="form-group">
+            <label class="label-required" for="dTipo">Tipo</label>
+            <select id="dTipo" required>
+              <option value="">Seleccionar…</option>
+              <option value="showroom">Showroom</option>
+              <option value="punto_venta">Punto de venta</option>
+            </select>
+            <span class="field-hint">Showroom: solo exhibición. Punto de venta: se puede comprar ahí mismo.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label-required" for="dDireccion">Dirección completa</label>
+          <input type="text" id="dDireccion" placeholder="Calle Posnansky #123, Miraflores, La Paz" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="label-required" for="dMapsQuery">Query de Google Maps</label>
+            <input type="text" id="dMapsQuery" placeholder="Calle+Posnansky+Miraflores+La+Paz" required>
+            <span class="field-hint">Texto que se usa para el embed del mapa (separado por +).</span>
+          </div>
+          <div class="form-group">
+            <label for="dMapsUrl">Link maps.app.goo.gl (opcional)</label>
+            <input type="url" id="dMapsUrl" placeholder="https://maps.app.goo.gl/...">
+            <span class="field-hint">Para el botón "Cómo llegar" en WhatsApp.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="label-required" for="dHorarios">Horarios</label>
+            <input type="text" id="dHorarios" placeholder="Lun a sáb · 9:00 a 19:00" required>
+          </div>
+          <div class="form-group">
+            <label for="dWhatsapp">WhatsApp de la tienda (opcional)</label>
+            <input type="tel" id="dWhatsapp" placeholder="59173515698">
+            <span class="field-hint">Con código país, sin + ni espacios.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="dNotas">Notas internas (opcional)</label>
+          <textarea id="dNotas" rows="2" placeholder="Anotaciones sobre la tienda (referencias, accesos, etc.)"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dOrden">Orden en el carrusel</label>
+            <input type="number" id="dOrden" placeholder="1" min="1">
+          </div>
+          <div class="form-group" style="display:flex;flex-direction:column;justify-content:center">
+            <div class="toggle-row" style="border:none;padding:0">
+              <div>
+                <div class="toggle-label">Tienda activa</div>
+                <div class="toggle-sub">Aparece en el carrusel del sitio</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="dActivo" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="btnCancelar">Cancelar</button>
+      <button class="btn btn-primary" id="btnGuardar">
+        <span id="btnGuardarText">Guardar tienda</span>
+        <span id="btnGuardarSpinner" style="display:none"><span class="spinner" style="width:16px;height:16px;border-width:2px;"></span></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONFIRMAR BORRADO ── -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:8px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+    <div class="confirm-title">¿Eliminar tienda?</div>
+    <div class="confirm-msg">Esta acción no se puede deshacer. La tienda desaparecerá del carrusel.</div>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" id="confirmCancel">Cancelar</button>
+      <button class="btn btn-danger" id="confirmDelete">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" defer src="js/auth.js?v=9"></script>
+<script type="module" defer src="js/direcciones.js?v=8"></script>
+</body>
+</html>

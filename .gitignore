@@ -1,0 +1,80 @@
+# ═══════════════════════════════════════════════════════════
+# LULIS — .gitignore
+# Reglas para NO subir archivos al repo
+# ═══════════════════════════════════════════════════════════
+
+# ── Dependencias ───────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# ── Variables de entorno / secrets ───────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+serviceAccountKey.json
+firebase-adminsdk-*.json
+*-adminsdk-*.json
+
+# ── Logs ──────────────────────────────────────────────
+logs/
+*.log
+
+# ── OS / editor ───────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Build outputs ─────────────────────────────────────
+dist/
+build/
+out/
+.cache/
+
+# ── Testing (no es parte del sitio) ───────────────────
+test_*.py
+debug_*.py
+inspect_*.py
+analisis_*.py
+check_*.py
+verify_*.py
+regen_*.py
+gen_*.py
+update_*.py
+playwright_*.py
+validate_*.py
+reproduce_*.py
+rewrite_*.py
+reorder_*.py
+fix_*.py
+debug_*.py
+__pycache__/
+*.pyc
+*.pyo
+
+# ── Análisis / capturas locales ───────────────────────
+analisis/
+previews-*/
+screenshots/
+playwright-report/
+test-results/
+
+# ── Documentos internos de desarrollo ─────────────────
+INFORME-DIAGNOSTICO.md
+INSTRUCCIONES-PARA-EL-CLIENTE.md
+CHECKLIST-DEPLOY-CLIENTE.md
+actualizar-reglas.html
+
+# ── Misceláneos ───────────────────────────────────────
+.DS_Store
+*.tmp
+*.bak
+*.orig

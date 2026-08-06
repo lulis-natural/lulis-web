@@ -1,0 +1,120 @@
+[
+  {
+    "_id": "shampoo-jamaica-50g",
+    "nombre": "Shampoo Sólido Jamaica",
+    "variante": "Jamaica",
+    "categoria": "shampoo",
+    "subcategoria": "solido",
+    "tamanos": [
+      { "gramos": 50,  "lavadas": { "min": 35, "max": 45 }, "precio": 0 },
+      { "gramos": 100, "lavadas": { "min": 80, "max": 90 }, "precio": 0 }
+    ],
+    "tipoCabello": ["mixto"],
+    "descripcion": "Equilibrio y revitalización. Ideal para cabello mixto. Espuma abundante y aroma natural a Jamaica.",
+    "descripcionLarga": "Formulado con extracto de flor de Jamaica, conocido por sus propiedades antioxidantes y su capacidad de equilibrar el pH del cuero cabelludo. Produce espuma abundante, limpia en profundidad sin resecar, y deja un aroma frutal natural que no proviene de fragancias sintéticas.",
+    "ingredientesDestacados": ["Extracto de Jamaica", "SCI (tensioactivo vegetal)", "Aceite de Ricino"],
+    "imagenUrl": "",
+    "imagenAlt": "Shampoo sólido de Jamaica LULIS — cabello mixto",
+    "badge": "popular",
+    "disponible": true,
+    "destacado": true,
+    "orden": 1,
+    "slug": "shampoo-solido-jamaica",
+    "creadoEn": "SERVER_TIMESTAMP",
+    "actualizadoEn": "SERVER_TIMESTAMP"
+  },
+  {
+    "_id": "shampoo-romero-50g",
+    "nombre": "Shampoo Sólido Romero",
+    "variante": "Romero",
+    "categoria": "shampoo",
+    "subcategoria": "solido",
+    "tamanos": [
+      { "gramos": 50,  "lavadas": { "min": 35, "max": 45 }, "precio": 0 },
+      { "gramos": 100, "lavadas": { "min": 80, "max": 90 }, "precio": 0 }
+    ],
+    "tipoCabello": ["graso"],
+    "descripcion": "Fortalecimiento y control de grasa. Para cabello graso. Refresca y equilibra el cuero cabelludo.",
+    "descripcionLarga": "El romero es uno de los ingredientes más estudiados para la salud capilar: estimula la circulación del cuero cabelludo, fortalece el folículo y ayuda a controlar la producción de sebo. Fórmula libre de sulfatos agresivos.",
+    "ingredientesDestacados": ["Aceite esencial de Romero", "SCI (tensioactivo vegetal)", "Pantenol (Pro-vitamina B5)"],
+    "imagenUrl": "",
+    "imagenAlt": "Shampoo sólido de Romero LULIS — cabello graso",
+    "badge": "nuevo",
+    "disponible": true,
+    "destacado": true,
+    "orden": 2,
+    "slug": "shampoo-solido-romero",
+    "creadoEn": "SERVER_TIMESTAMP",
+    "actualizadoEn": "SERVER_TIMESTAMP"
+  },
+  {
+    "_id": "shampoo-coco-50g",
+    "nombre": "Shampoo Sólido Coco",
+    "variante": "Coco",
+    "categoria": "shampoo",
+    "subcategoria": "solido",
+    "tamanos": [
+      { "gramos": 50,  "lavadas": { "min": 35, "max": 45 }, "precio": 0 },
+      { "gramos": 100, "lavadas": { "min": 80, "max": 90 }, "precio": 0 }
+    ],
+    "tipoCabello": ["seco", "dañado"],
+    "descripcion": "Hidratación profunda para cabello seco. Nutre y suaviza desde la primera lavada.",
+    "descripcionLarga": "El aceite de coco penetra la fibra capilar con una profundidad excepcional gracias a su cadena de ácidos grasos de tamaño medio. Aporta brillo, reduce la pérdida de proteínas durante el lavado y deja el cabello notablemente suave sin residuo.",
+    "ingredientesDestacados": ["Aceite de Coco virgen", "SCI (tensioactivo vegetal)", "Manteca de Karité"],
+    "imagenUrl": "",
+    "imagenAlt": "Shampoo sólido de Coco LULIS — cabello seco",
+    "badge": "nuevo",
+    "disponible": true,
+    "destacado": true,
+    "orden": 3,
+    "slug": "shampoo-solido-coco",
+    "creadoEn": "SERVER_TIMESTAMP",
+    "actualizadoEn": "SERVER_TIMESTAMP"
+  },
+  {
+    "_id": "acond-melon-50g",
+    "nombre": "Acondicionador Sólido Melón",
+    "variante": "Melón",
+    "categoria": "acondicionador",
+    "subcategoria": "solido",
+    "tamanos": [
+      { "gramos": 50, "lavadas": null, "precio": 0 }
+    ],
+    "tipoCabello": ["graso", "normal"],
+    "descripcion": "Ligero e hidratante. Ideal para cabello graso. Acondiciona sin pesar ni dejar residuo.",
+    "descripcionLarga": "Formulado específicamente para cabellos que se engrasan con facilidad. Aporta la hidratación justa sin pesar el cabello, facilita el desenredado y deja una sensación ligera y fresca. Sin aceites pesados que puedan saturar el cuero cabelludo.",
+    "ingredientesDestacados": ["Extracto de Melón", "BTMS-50 (acondicionador vegetal)", "Vitamina E"],
+    "imagenUrl": "",
+    "imagenAlt": "Acondicionador sólido de Melón LULIS — cabello graso",
+    "badge": "eco",
+    "disponible": true,
+    "destacado": false,
+    "orden": 4,
+    "slug": "acondicionador-solido-melon",
+    "creadoEn": "SERVER_TIMESTAMP",
+    "actualizadoEn": "SERVER_TIMESTAMP"
+  },
+  {
+    "_id": "acond-uva-jamaica-50g",
+    "nombre": "Acondicionador Sólido Uva & Jamaica",
+    "variante": "Uva & Jamaica",
+    "categoria": "acondicionador",
+    "subcategoria": "solido",
+    "tamanos": [
+      { "gramos": 50, "lavadas": null, "precio": 0 }
+    ],
+    "tipoCabello": ["seco", "dañado", "teñido"],
+    "descripcion": "Nutrición e hidratación intensa para cabello seco. Combinación de uva y jamaica para cabello brillante.",
+    "descripcionLarga": "La uva aporta resveratrol y antioxidantes que protegen la fibra capilar del daño oxidativo. La Jamaica suma su riqueza en vitamina C y antocianinas. Juntos, nutren, reparan y aportan brillo visible desde la primera aplicación.",
+    "ingredientesDestacados": ["Extracto de Uva", "Extracto de Jamaica", "BTMS-50 (acondicionador vegetal)", "Aceite de Argán"],
+    "imagenUrl": "",
+    "imagenAlt": "Acondicionador sólido de Uva y Jamaica LULIS — cabello seco",
+    "badge": "popular",
+    "disponible": true,
+    "destacado": false,
+    "orden": 5,
+    "slug": "acondicionador-solido-uva-jamaica",
+    "creadoEn": "SERVER_TIMESTAMP",
+    "actualizadoEn": "SERVER_TIMESTAMP"
+  }
+]

@@ -1,0 +1,23 @@
+/* ═══════════════════════════════════════════════════════════
+   LULIS — main.css
+   Punto de entrada único. Importa todos los módulos CSS
+   en el orden correcto (tokens → base → componentes).
+   ═══════════════════════════════════════════════════════════ */
+
+/* 1. Tokens de diseño (variables CSS) */
+@import url('base/tokens.css');
+
+/* 2. Reset y tipografía base */
+@import url('base/reset.css');
+
+/* 3. Animaciones y keyframes */
+@import url('base/animations.css');
+
+/* 4. Componentes de UI */
+@import url('components/buttons.css');
+@import url('components/navbar.css');
+@import url('components/hero.css');
+@import url('components/about.css');
+@import url('components/products.css');
+@import url('components/sections.css');
+@import url('components/rest.css');
