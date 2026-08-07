@@ -18,18 +18,18 @@ service cloud.firestore {
     }
 
     // ── /productos ──────────────────────────────────────────
-    // Público: leer productos disponibles. Admin: CRUD completo.
+    // Público: lectura (filtro de disponibles se hace en el cliente).
+    // Admin: CRUD completo.
     match /productos/{productoId} {
-      allow read: if resource.data.disponible == true
-                  || isAdmin();
+      allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
     // ── /galeria ────────────────────────────────────────────
-    // Público: leer imágenes activas. Admin: CRUD completo.
+    // Público: lectura (filtro de activos se hace en el cliente).
+    // Admin: CRUD completo.
     match /galeria/{itemId} {
-      allow read: if resource.data.activo == true
-                  || isAdmin();
+      allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
