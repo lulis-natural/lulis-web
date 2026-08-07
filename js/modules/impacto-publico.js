@@ -64,7 +64,8 @@
      impacto_ambiental/acumulado públicamente (✅ ya está en las rules). */
 
   if (!FIRESTORE_URL) {
-    console.info('LULIS: Firebase no configurado — usando datos estáticos del HTML');
+    /* Modo silencioso: usa los valores hardcoded del HTML como fallback.
+       No se necesita warning porque los contadores tienen valores por defecto. */
     return;
   }
 
