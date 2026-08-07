@@ -61,12 +61,12 @@
   </aside>
 
   <header class="topbar">
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir men�">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-      <div class="topbar-title">Gestión de Productos</div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="topbar-title">Gestión de Productos</div>
     <div class="topbar-actions">
-      <a href="../index.html" class="topbar-link-site" target="_blank">
+      <a href="/" class="topbar-link-site" target="_blank">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         Ver sitio
       </a>
@@ -77,26 +77,30 @@
     <div class="page-header">
       <div>
         <h1>Productos</h1>
-        <p>Gestiona el catálogo de shampoos y acondicionadores.</p>
+        <p>Gestioná el catálogo. Cada producto tiene foto, precio, peso y descripción.</p>
       </div>
-      <button class="btn btn-primary" id="btnNuevo">+ Nuevo producto</button>
+      <button class="btn btn-primary" id="btnNuevo">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:4px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nuevo producto
+      </button>
     </div>
 
     <!-- Toolbar -->
     <div class="toolbar">
       <div class="search-box">
         <span class="search-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre…">
+        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre, tipo o gramaje…">
       </div>
       <select class="filter-select" id="filterCat">
-        <option value="">Todas las categorías</option>
+        <option value="">Todos los tipos</option>
         <option value="shampoo">Shampoo</option>
         <option value="acondicionador">Acondicionador</option>
+        <option value="pack">Pack / Combo</option>
       </select>
       <select class="filter-select" id="filterDisp">
         <option value="">Todos</option>
         <option value="true">Disponibles</option>
-        <option value="false">Sin stock</option>
+        <option value="false">No disponibles</option>
       </select>
     </div>
 
@@ -111,9 +115,9 @@
             <tr>
               <th>Imagen</th>
               <th>Nombre</th>
-              <th>Categoría</th>
-              <th>Tipo de cabello</th>
-              <th>Badge</th>
+              <th>Tipo</th>
+              <th>Peso</th>
+              <th>Precio</th>
               <th>Disponible</th>
               <th>Orden</th>
               <th>Acciones</th>
@@ -125,7 +129,7 @@
       <div class="empty-state" id="emptyState" style="display:none">
         <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.4;margin-bottom:12px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         <h3>Sin productos</h3>
-        <p>Crea el primer producto con el botón "Nuevo producto".</p>
+        <p>Creá el primer producto con el botón "Nuevo producto".</p>
       </div>
     </div>
   </main>
@@ -143,7 +147,7 @@
     <div class="modal-body">
       <form id="productoForm" novalidate>
         <input type="hidden" id="productoId">
-        <input type="hidden" id="imagenUrlActual">
+        <input type="hidden" id="fotoActual">
 
         <div class="form-row">
           <div class="form-group">
@@ -151,36 +155,38 @@
             <input type="text" id="pNombre" placeholder="Shampoo Sólido Jamaica" required>
           </div>
           <div class="form-group">
-            <label class="label-required" for="pVariante">Variante / Ingrediente</label>
-            <input type="text" id="pVariante" placeholder="Jamaica" required>
+            <label class="label-required" for="pPrecio">Precio (texto)</label>
+            <input type="text" id="pPrecio" placeholder="Bs. 50" required>
+            <span class="field-hint">Mostrado como aparece. Ej: "Bs. 50", "Bs. 90 (pack)"</span>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="label-required" for="pCategoria">Categoría</label>
-            <select id="pCategoria" required>
+            <label class="label-required" for="pTipo">Tipo de producto</label>
+            <select id="pTipo" required>
               <option value="">Seleccionar…</option>
-              <option value="shampoo">Shampoo</option>
-              <option value="acondicionador">Acondicionador</option>
+              <option value="shampoo">Shampoo sólido</option>
+              <option value="acondicionador">Acondicionador sólido</option>
+              <option value="pack">Pack / Combo</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="pBadge">Badge</label>
-            <select id="pBadge">
-              <option value="">Sin badge</option>
-              <option value="nuevo">Nuevo</option>
-              <option value="popular">Popular</option>
-              <option value="eco">Eco</option>
-            </select>
+            <label class="label-required" for="pGramos">Peso / presentación</label>
+            <input type="text" id="pGramos" placeholder="50g" required>
+            <span class="field-hint">Peso unitario del producto (ej: 50g, 100g, 2x50g)</span>
           </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label-required" for="pDescripcion">Descripción</label>
+          <textarea id="pDescripcion" rows="3" placeholder="Equilibrio y revitalización. Ideal para cabello mixto…" required></textarea>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="pTipoCabello">Tipo de cabello</label>
-            <input type="text" id="pTipoCabello" placeholder="seco, mixto, graso">
-            <span class="field-hint">Separados por coma</span>
+            <label for="pBadge">Badge (opcional)</label>
+            <input type="text" id="pBadge" placeholder="Favorito / Nuevo / El Dúo Perfecto">
           </div>
           <div class="form-group">
             <label for="pOrden">Orden en catálogo</label>
@@ -188,27 +194,16 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="label-required" for="pDescripcion">Descripción corta</label>
-          <textarea id="pDescripcion" rows="2" placeholder="Equilibrio y revitalización. Ideal para cabello mixto…" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="pDescLarga">Descripción larga (opcional)</label>
-          <textarea id="pDescLarga" rows="3" placeholder="Descripción detallada de ingredientes y beneficios…"></textarea>
-        </div>
-
-        <!-- Imagen -->
+        <!-- Imagen (Base64, sin Storage) -->
         <div class="form-group">
           <label>Imagen del producto</label>
           <div class="upload-area" id="uploadArea">
             <div class="upload-icon"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
             <div class="upload-text">
-              <strong>Haz clic o arrastra</strong> una imagen aquí<br>
-              <small>JPG, PNG, WebP · Máximo 5 MB</small>
+              <strong>Click o arrastra</strong> una imagen<br>
+              <small>JPG, PNG, WebP · Máx 2 MB · Se guarda en Base64 dentro del documento (sin plan Blaze)</small>
             </div>
-            <input type="file" class="upload-input" id="imagenFile"
-                   accept="image/jpeg,image/png,image/webp">
+            <input type="file" class="upload-input" id="imagenFile" accept="image/jpeg,image/png,image/webp">
           </div>
           <div id="uploadPreview" style="display:none" class="upload-preview">
             <img id="previewImg" src="" alt="Vista previa">
@@ -265,7 +260,7 @@
   <div class="confirm-box">
     <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-bottom:8px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
     <div class="confirm-title">¿Eliminar producto?</div>
-    <div class="confirm-msg">Esta acción no se puede deshacer. El producto y su imagen serán eliminados.</div>
+    <div class="confirm-msg">Esta acción no se puede deshacer. El producto se borrará de la base de datos.</div>
     <div class="confirm-actions">
       <button class="btn btn-outline" id="confirmCancel">Cancelar</button>
       <button class="btn btn-danger" id="confirmDelete">Sí, eliminar</button>

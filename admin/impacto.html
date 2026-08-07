@@ -93,7 +93,7 @@
   </aside>
 
   <header class="topbar">
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir men�">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir men�">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <div class="topbar-title">Impacto Ambiental — Cálculo Automático</div>
@@ -151,7 +151,7 @@
                      min="0" step="1" placeholder="0"
                      aria-label="Unidades de shampoo 50g vendidas">
               <div class="field-hint" style="text-align:center">
-                = 1.5 botellas c/u
+                = 1.0 botella c/u
               </div>
             </div>
 
@@ -164,7 +164,7 @@
                      min="0" step="1" placeholder="0"
                      aria-label="Unidades de shampoo 100g vendidas">
               <div class="field-hint" style="text-align:center">
-                = 3.0 botellas c/u
+                = 2.0 botellas c/u
               </div>
             </div>
 
@@ -177,7 +177,7 @@
                      min="0" step="1" placeholder="0"
                      aria-label="Unidades de acondicionador 50g vendidas">
               <div class="field-hint" style="text-align:center">
-                = 1.0 botella c/u
+                = 0.75 botella c/u
               </div>
             </div>
 
@@ -210,7 +210,7 @@
               <div class="calc-result" id="res-botellas">—</div>
               <div class="calc-result-label">Botellas plásticas reemplazadas</div>
               <div class="stat-sub" style="margin-top:8px">
-                <span class="formula-badge">u×1.5 + u×3.0 + u×1.0</span>
+                <span class="formula-badge">u×1.0 + u×2.0 + u×0.75</span>
               </div>
             </div>
             <div class="stat-card green">
@@ -218,7 +218,7 @@
               <div class="calc-result" id="res-agua">—</div>
               <div class="calc-result-label">Litros de agua evitados</div>
               <div class="stat-sub" style="margin-top:8px">
-                <span class="formula-badge">botellas × 0.350L × 80%</span>
+                <span class="formula-badge">botellas × 0.300L × 70%</span>
               </div>
             </div>
             <div class="stat-card wine">
@@ -226,7 +226,7 @@
               <div class="calc-result" id="res-kg">—</div>
               <div class="calc-result-label">Kg de plástico eliminado</div>
               <div class="stat-sub" style="margin-top:8px">
-                <span class="formula-badge">botellas × 0.025 kg</span>
+                <span class="formula-badge">botellas × 0.020 kg</span>
               </div>
             </div>
           </div>
@@ -250,7 +250,7 @@
               <tbody>
                 <tr>
                   <td><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Shampoo 50g</td>
-                  <td><span class="formula-badge">×1.5 botellas</span></td>
+                  <td><span class="formula-badge">×1.0 botella</span></td>
                   <td id="des-s50-u">—</td>
                   <td id="des-s50-b">—</td>
                   <td id="des-s50-l">—</td>
@@ -258,7 +258,7 @@
                 </tr>
                 <tr>
                   <td><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Shampoo 100g</td>
-                  <td><span class="formula-badge">×3.0 botellas</span></td>
+                  <td><span class="formula-badge">×2.0 botellas</span></td>
                   <td id="des-s100-u">—</td>
                   <td id="des-s100-b">—</td>
                   <td id="des-s100-l">—</td>
@@ -266,7 +266,7 @@
                 </tr>
                 <tr>
                   <td><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>Acondicionador 50g</td>
-                  <td><span class="formula-badge">×1.0 botella</span></td>
+                  <td><span class="formula-badge">×0.75 botella</span></td>
                   <td id="des-a50-u">—</td>
                   <td id="des-a50-b">—</td>
                   <td id="des-a50-l">—</td>
@@ -284,18 +284,18 @@
             </summary>
             <div style="background:var(--light);border-radius:var(--radius);padding:16px;margin-top:10px;font-size:.82rem;line-height:1.8">
               <strong>Constantes del modelo:</strong><br>
-              • Shampoo 50g reemplaza <strong>1.5 botellas</strong> convencionales<br>
-              • Shampoo 100g reemplaza <strong>3.0 botellas</strong> convencionales<br>
-              • Acondicionador 50g reemplaza <strong>1.0 botella</strong> convencional<br>
+              • Shampoo 50g reemplaza <strong>1.0 botella</strong> convencional<br>
+              • Shampoo 100g reemplaza <strong>2.0 botellas</strong> convencionales<br>
+              • Acondicionador 50g reemplaza <strong>0.75 botella</strong> convencional<br>
               <br>
               <strong>Por cada botella convencional no producida:</strong><br>
-              • Volumen: 350 ml · Contenido agua: 80% → <strong>0.280 L de agua evitada</strong><br>
-              • Plástico del envase: <strong>0.025 kg evitado</strong><br>
+              • Volumen: 300 ml · Contenido de agua: 70% → <strong>0.210 L de agua incorporada evitada</strong><br>
+              • Plástico del envase: <strong>0.020 kg evitado</strong><br>
               <br>
               <strong>Fórmulas:</strong><br>
-              • Botellas = (u₅₀×1.5) + (u₁₀₀×3.0) + (uₐ×1.0)<br>
-              • Agua (L) = Botellas × 0.350 × 0.80<br>
-              • Plástico (kg) = Botellas × 0.025
+              • Botellas = (u₅₀×1.0) + (u₁₀₀×2.0) + (uₐ×0.75)<br>
+              • Agua (L) = Botellas × 0.300 × 0.70<br>
+              • Plástico (kg) = Botellas × 0.020
             </div>
           </details>
         </div>
