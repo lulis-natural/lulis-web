@@ -5,17 +5,12 @@
    ═══════════════════════════════════════════════════════════ */
 
 (function initWhatsApp() {
-  const config = window.LULIS_CONFIG;
-  if (!config) {
-    console.warn('LULIS: config.js no cargado antes de whatsapp.js');
-    return;
-  }
-
-  /**
-   * Abre WhatsApp con un mensaje pre-cargado para un producto.
-   * @param {string} productName - Nombre del producto consultado.
-   */
   function openWA(productName) {
+    const config = window.LULIS_CONFIG;
+    if (!config || !config.whatsapp) {
+      console.warn('LULIS: config.js no disponible, no se puede abrir WhatsApp');
+      return;
+    }
     const msg = encodeURIComponent(config.whatsapp.messages.product(productName));
     window.open(`${config.whatsapp.baseUrl}?text=${msg}`, '_blank', 'noopener,noreferrer');
   }

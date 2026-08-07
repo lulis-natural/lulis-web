@@ -170,10 +170,11 @@ function subscribeImpacto() {
         return;
       }
       const d = snap.data();
-      $('imp-agua').textContent      = d.litrosAguaAhorrados   ?? '—';
-      $('imp-plastico').textContent  = d.envasesEvitados        ?? '—';
-      $('imp-kg').textContent        = d.kgPlasticoEliminado    ?? '—';
-      $('imp-vendidos').textContent  = d.productosVendidos      ?? '—';
+      // Soportar tanto nombres legacy como nuevos
+      $('imp-agua').textContent      = d.litrosAguaAhorrados ?? d.litrosAguaEvitados ?? '—';
+      $('imp-plastico').textContent  = d.envasesEvitados      ?? d.botellasReemplazadas ?? '—';
+      $('imp-kg').textContent        = d.kgPlasticoEliminado  ?? d.kgPlasticoEvitado  ?? '—';
+      $('imp-vendidos').textContent  = d.productosVendidos    ?? d.totalVendidos       ?? '—';
     }
   );
 }
