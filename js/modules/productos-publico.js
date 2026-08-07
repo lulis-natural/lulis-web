@@ -117,25 +117,18 @@
     setTimeout(() => finish(null), TIMEOUT_MS);
 
     db.collection('productos')
-      .where('disponible', '==', true)
-      .orderBy('orden', 'asc')
       .get()
       .then(snap => {
-        finish(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        // Filtrar y ordenar en JS para evitar requerir índice compuesto
+        const productos = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(p => p.disponible !== false)
+          .sort((a, b) => (a.orden || 99) - (b.orden || 99));
+        finish(productos);
       })
       .catch(err => {
-        // Si falla (rules, sin conexión), intentar sin filtro de disponible
-        console.warn('LULIS productos: primer intento falló, reintentando sin filtro', err && err.message);
-        db.collection('productos')
-          .orderBy('orden', 'asc')
-          .get()
-          .then(snap => {
-            finish(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-          })
-          .catch(err2 => {
-            console.warn('LULIS productos: fallback también falló, usando HTML estático', err2 && err2.message);
-            finish(null);
-          });
+        console.warn('LULIS productos: error al cargar, usando HTML estático', err && err.message);
+        finish(null);
       });
   }
 

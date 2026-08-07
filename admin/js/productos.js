@@ -9,7 +9,7 @@ import {
   db, signOut,
   collection, doc,
   addDoc, updateDoc, deleteDoc,
-  query, orderBy, onSnapshot,
+  onSnapshot,
   serverTimestamp
 } from './firebase-init.js';
 
@@ -48,9 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ─── Suscripción en tiempo real ─────────────────────────── */
 function subscribeProductos() {
-  const q = query(collection(db, COL), orderBy('orden', 'asc'));
-  onSnapshot(q, (snap) => {
-    allProductos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  // Sin orderBy para evitar requerir índice compuesto. Ordenamos en JS.
+  onSnapshot(collection(db, COL), (snap) => {
+    allProductos = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (a.orden || 99) - (b.orden || 99));
     renderTable();
     $('tableLoading').style.display = 'none';
     $('tableWrap').style.display    = 'block';
