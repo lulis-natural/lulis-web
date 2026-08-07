@@ -97,6 +97,12 @@
       .map(productCard)
       .join('');
     target.classList.add('has-data');
+    // Ocultar el grupo de acondicionadores hardcoded (porque ya mostramos
+    // todos los productos en el primer grupo desde Firebase)
+    const hardcodedGroups = document.querySelectorAll('#productos-wrap > div');
+    hardcodedGroups.forEach((g, idx) => {
+      if (idx > 0) g.style.display = 'none';
+    });
     // Re-bind WhatsApp buttons
     if (typeof window.LULIS_REBIND_WA === 'function') window.LULIS_REBIND_WA();
   }
