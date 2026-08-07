@@ -51,7 +51,7 @@
     const nombreCorto = p.nombre.replace(/^Shampoo Sólido\s+/i, '').replace(/^Acondicionador Sólido\s+/i, '');
     const productWA = encodeURIComponent(`Hola LULIS 👋 Me interesa el producto: ${p.nombre} (${p.gramos}). ¿Podría darme más información?`);
     return `
-      <article class="product-card reveal delay-1">
+      <article class="product-card" style="opacity:1;visibility:visible;transform:none">
         <div class="product-img">
           ${foto
             ? `<img src="${escapeAttr(foto)}" alt="${escapeAttr(p.nombre)}" width="400" height="300" loading="lazy" decoding="async">`
