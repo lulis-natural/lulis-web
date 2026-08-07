@@ -10,7 +10,7 @@ const LULIS_CONFIG = {
      Lo encuentras en: Firebase Console → Project Settings → General
      Se usa para leer las métricas de impacto en tiempo real.
      Ejemplo: "lulis-app"                                      */
-  firebaseProjectId: 'TU_PROYECTO_FIREBASE',   /* ← COMPLETAR antes de desplegar  */
+  firebaseProjectId: 'lulis-web',   /* ← COMPLETAR antes de desplegar  */
 
   /* Contacto */
   whatsapp: {

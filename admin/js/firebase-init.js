@@ -34,14 +34,13 @@ import {
    Obtén estas claves en: Firebase Console → Project Settings → Your apps → Web app
 */
 const firebaseConfig = {
-  apiKey:            "TU_API_KEY_AQUI",
-  authDomain:        "TU_PROYECTO.firebaseapp.com",
-  projectId:         "TU_PROYECTO",
-  storageBucket:     "TU_PROYECTO.firebasestorage.app",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID",
-  appId:             "TU_APP_ID",
-  // measurementId es opcional, solo si usas Google Analytics
-  // measurementId: "G-XXXXXXXXXX"
+  apiKey:            "AIzaSyA0yateWGV_ExUiWli56VcB_o1xmWNJGIY",
+  authDomain:        "lulis-web.firebaseapp.com",
+  projectId:         "lulis-web",
+  storageBucket:     "lulis-web.firebasestorage.app",
+  messagingSenderId: "170393764293",
+  appId:             "1:170393764293:web:c09fc4040e4987691a8bac",
+  measurementId:     "G-N8D4L73T1N"
 };
 
 /* ── Inicializar ── */
