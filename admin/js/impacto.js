@@ -16,12 +16,12 @@ import {
   serverTimestamp
 } from './firebase-init.js';
 
-/* Cargar el motor de cálculo (ruta relativa desde admin/) */
+/* Cargar el motor de cálculo (ruta absoluta) */
 const engineScript     = document.createElement('script');
-engineScript.src       = '../js/services/impacto-engine.js';
+engineScript.src       = '/js/services/impacto-engine.js';
 engineScript.onload    = () => init();
 engineScript.onerror   = () => {
-  console.error('No se pudo cargar impacto-engine.js');
+  console.warn('No se pudo cargar impacto-engine.js');
   init(); /* continuar sin el motor — modo manual */
 };
 document.head.appendChild(engineScript);
