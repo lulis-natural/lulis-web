@@ -162,14 +162,14 @@ function subscribeImpacto() {
   safeSubscribe('impacto',
     () => doc(db, 'impacto_ambiental', 'acumulado'),
     (snap) => {
-      if (snap.error || !snap.exists) {
+      if (snap.error || !snap || typeof snap.data !== 'function' || !snap.exists) {
         $('imp-agua').textContent     = '0';
         $('imp-plastico').textContent = '0';
         $('imp-kg').textContent       = '0';
         $('imp-vendidos').textContent = '0';
         return;
       }
-      const d = snap.data();
+      const d = snap.data() || {};
       // Soportar tanto nombres legacy como nuevos
       $('imp-agua').textContent      = d.litrosAguaAhorrados ?? d.litrosAguaEvitados ?? '—';
       $('imp-plastico').textContent  = d.envasesEvitados      ?? d.botellasReemplazadas ?? '—';
