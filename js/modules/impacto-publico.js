@@ -95,9 +95,12 @@
 
     let vals;
     if (hasDesglose && window.LULIS_IMPACTO) {
+      /* Si hay packs en el desglose, sumarlos como shampoos 100g
+         (mismo factor 2.0 botellas por unidad) */
+      const packs = ventas.packs || 0;
       const r = LULIS_IMPACTO.calcular({
         shampoos50g:  ventas.shampoos50g  || 0,
-        shampoos100g: ventas.shampoos100g || 0,
+        shampoos100g: (ventas.shampoos100g || 0) + packs,
         acond50g:     ventas.acond50g     || 0,
       });
       vals = {
