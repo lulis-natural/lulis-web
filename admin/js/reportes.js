@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════
    LULIS Admin — reportes.js
-   Reportes con filtros avanzados y exportación a CSV.
-   Tres tipos de export:
+   Reportes con filtros avanzados y exportación a Excel (.xlsx).
+   Genera un libro con 3 hojas:
    - Resumen de ventas (1 fila por venta)
    - Detalle por línea de producto (1 fila por producto vendido)
    - Resumen por producto (1 fila por producto, agregado)
@@ -11,6 +11,8 @@ import {
   db, signOut,
   collection, onSnapshot
 } from './firebase-init.js';
+
+import { exportarXLSX, toast } from './xlsx-helper.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -25,16 +27,15 @@ const fmtDate = (ts) => {
 };
 
 const todayISO   = () => new Date().toISOString().slice(0, 10);
-const addDays    = (d, n) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
 const startOf    = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 const isoFrom    = (d) => d.toISOString().slice(0, 10);
 
 /* ── Init ──────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   $('logoutBtn')?.addEventListener('click', signOut);
-  $('btnExportar')?.addEventListener('click', () => exportarCSV('resumen'));
-  $('btnExportarDetalle')?.addEventListener('click', () => exportarCSV('detalle'));
-  $('btnExportarProductos')?.addEventListener('click', () => exportarCSV('productos'));
+  $('btnExportar')?.addEventListener('click', () => exportarReporte('resumen'));
+  $('btnExportarDetalle')?.addEventListener('click', () => exportarReporte('detalle'));
+  $('btnExportarProductos')?.addEventListener('click', () => exportarReporte('productos'));
 
   // Filtros
   ['rPeriodo', 'rDesde', 'rHasta', 'rCanal', 'rEstado', 'rProducto'].forEach(id => {
@@ -117,8 +118,6 @@ function applyPeriodo(value) {
   $('rDesde').value = isoFrom(desde);
   $('rHasta').value = isoFrom(hasta);
 }
-
-$('rPeriodo')?.addEventListener && null;
 
 /* ── Filtros ──────────────────────────────────────────── */
 function applyFilters() {
@@ -251,7 +250,7 @@ function switchTab(name) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
 }
 
-/* ── Exportar CSV ─────────────────────────────────────── */
+/* ── Helpers ───────────────────────────────────────────── */
 function getFilteredVentas() {
   const desde  = $('rDesde')?.value;
   const hasta  = $('rHasta')?.value;
@@ -273,73 +272,109 @@ function getFilteredVentas() {
   });
 }
 
-function exportarCSV(tipo) {
+/* ═══════════════════════════════════════════════════════════
+   EXPORTAR REPORTE — Excel .xlsx con formato profesional
+   ═══════════════════════════════════════════════════════════ */
+
+function exportarReporte(tipo) {
   const ventas = getFilteredVentas();
   if (!ventas.length && tipo !== 'productos') {
     toast('No hay datos para exportar', 'error');
     return;
   }
 
-  const desde = $('rDesde')?.value || 'inicio';
-  const hasta = $('rHasta')?.value || 'hoy';
+  const desde  = $('rDesde')?.value || 'inicio';
+  const hasta  = $('rHasta')?.value || 'hoy';
+  const canal  = $('rCanal')?.value || 'todos';
+  const estado = $('rEstado')?.value || 'todos';
   const periodo = `${desde}_a_${hasta}`;
-  const fecha = new Date().toISOString().slice(0, 10);
 
-  let csv = '';
-  let filename = '';
+  let sheets = [];
 
   if (tipo === 'resumen') {
-    const headers = ['Fecha', 'Cliente', 'Canal', 'Estado', 'Subtotal (Bs)', 'Descuento (Bs)', 'Total (Bs)', 'Notas'];
-    const lines = ventas.map(v => {
+    const headers = ['Fecha', 'Cliente', 'Canal', 'Estado', 'Subtotal (Bs)', 'Descuento (Bs)', 'Total (Bs)', 'Unidades', 'Notas'];
+    const sorted = [...ventas].sort((a, b) => {
+      const da = a.fecha?.toDate ? a.fecha.toDate() : new Date(a.fecha || 0);
+      const db = b.fecha?.toDate ? b.fecha.toDate() : new Date(b.fecha || 0);
+      return db - da;
+    });
+    const data = sorted.map(v => {
       const f = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
+      const totalUnd = (v.lineas || []).reduce((s, l) => s + (l.cantidad || 0), 0);
       return [
         f.toISOString().slice(0, 10),
         v.cliente || 'Consumidor final',
         v.canal || '',
         v.estado || '',
-        v.subtotal || 0,
-        v.descuento || 0,
-        v.total || 0,
-        (v.notas || '').replace(/"/g, '""')
-      ].map(c => `"${c}"`).join(',');
+        Number(v.subtotal || 0),
+        Number(v.descuento || 0),
+        Number(v.total || 0),
+        totalUnd,
+        v.notas || ''
+      ];
     });
-    csv = buildCsv('Reporte de Ventas — Resumen', [
-      ['LULIS — Reporte de Ventas'],
-      ['Generado', new Date().toLocaleString('es-BO')],
-      ['Período', `${desde} — ${hasta}`],
-      ['Ventas', ventas.length],
-      ['Ingreso total', `Bs ${ventas.reduce((s, v) => s + (v.total || 0), 0)}`],
-      [],
-      headers.join(','),
-      ...lines
-    ]);
-    filename = `lulis-ventas-${periodo}-${fecha}.csv`;
+    const totalUnidades = ventas.reduce((s, v) => s + (v.lineas || []).reduce((a, l) => a + (l.cantidad || 0), 0), 0);
+    const totalMonto    = ventas.reduce((s, v) => s + (v.total || 0), 0);
+    const totalSubtotal = ventas.reduce((s, v) => s + (v.subtotal || 0), 0);
+    const totalDesc     = ventas.reduce((s, v) => s + (v.descuento || 0), 0);
+    const totals = [
+      'TOTAL',
+      `${ventas.length} ventas`,
+      '', '',
+      Math.round(totalSubtotal * 100) / 100,
+      Math.round(totalDesc * 100) / 100,
+      Math.round(totalMonto * 100) / 100,
+      totalUnidades,
+      ''
+    ];
+    sheets.push({
+      name: 'Resumen',
+      headers,
+      data,
+      totals,
+      meta: {
+        'Total ventas': ventas.length,
+        'Unidades vendidas': totalUnidades,
+        'Ingreso total (Bs)': Math.round(totalMonto * 100) / 100,
+        'Ticket promedio (Bs)': ventas.length > 0 ? Math.round((totalMonto / ventas.length) * 100) / 100 : 0
+      }
+    });
   } else if (tipo === 'detalle') {
     const headers = ['Fecha', 'Cliente', 'Canal', 'Estado', 'Producto', 'Tipo', 'Tamaño (g)', 'Precio unitario (Bs)', 'Cantidad', 'Subtotal línea (Bs)'];
-    const lines = [];
+    const data = [];
     ventas.forEach(v => {
       const f = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
       const fechaStr = f.toISOString().slice(0, 10);
       const cliente = v.cliente || 'Consumidor final';
       (v.lineas || []).forEach(l => {
-        lines.push([
-          fechaStr, cliente, v.canal || '', v.estado || '',
-          l.nombre || '', l.tipo || '', l.tamano || '',
-          l.precio || 0, l.cantidad || 0,
-          (l.precio || 0) * (l.cantidad || 0)
-        ].map(c => `"${c}"`).join(','));
+        data.push([
+          fechaStr,
+          cliente,
+          v.canal || '',
+          v.estado || '',
+          l.nombre || '',
+          l.tipo || '',
+          l.tamano || '',
+          Number(l.precio || 0),
+          Number(l.cantidad || 0),
+          Math.round((Number(l.precio || 0) * Number(l.cantidad || 0)) * 100) / 100
+        ]);
       });
     });
-    csv = buildCsv('Reporte de Ventas — Detalle por línea', [
-      ['LULIS — Reporte de Ventas (Detalle por línea)'],
-      ['Generado', new Date().toLocaleString('es-BO')],
-      ['Período', `${desde} — ${hasta}`],
-      ['Líneas', lines.length],
-      [],
-      headers.join(','),
-      ...lines
-    ]);
-    filename = `lulis-ventas-detalle-${periodo}-${fecha}.csv`;
+    const totalCant = data.reduce((s, r) => s + r[8], 0);
+    const totalSub  = data.reduce((s, r) => s + r[9], 0);
+    const totals = [
+      'TOTAL', '', '', '', `${data.length} líneas`, '', '', '',
+      totalCant,
+      Math.round(totalSub * 100) / 100
+    ];
+    sheets.push({
+      name: 'Detalle por línea',
+      headers,
+      data,
+      totals,
+      meta: { 'Total líneas': data.length, 'Ingreso total (Bs)': Math.round(totalSub * 100) / 100 }
+    });
   } else if (tipo === 'productos') {
     const counts = {};
     ventas.forEach(v => {
@@ -348,8 +383,8 @@ function exportarCSV(tipo) {
         if (!counts[l.productoId]) {
           counts[l.productoId] = { nombre: l.nombre, tipo: l.tipo, tamano: l.tamano, cantidad: 0, ingresos: 0, ventas: 0 };
         }
-        counts[l.productoId].cantidad += l.cantidad;
-        counts[l.productoId].ingresos  += l.precio * l.cantidad;
+        counts[l.productoId].cantidad += Number(l.cantidad || 0);
+        counts[l.productoId].ingresos  += Number(l.precio || 0) * Number(l.cantidad || 0);
         counts[l.productoId].ventas    += 1;
       });
     });
@@ -358,50 +393,56 @@ function exportarCSV(tipo) {
       toast('No hay datos para exportar', 'error');
       return;
     }
-    const headers = ['Producto', 'Tipo', 'Tamaño (g)', 'Unidades vendidas', 'Ingreso (Bs)', 'Veces vendido', 'Precio promedio (Bs)'];
-    const lines = list.map(t => [
-      t.nombre, t.tipo, t.tamano || '',
-      t.cantidad, t.ingresos, t.ventas,
-      t.cantidad > 0 ? (t.ingresos / t.cantidad).toFixed(2) : 0
-    ].map(c => `"${c}"`).join(','));
-    csv = buildCsv('Reporte de Ventas — Resumen por producto', [
-      ['LULIS — Resumen por producto'],
-      ['Generado', new Date().toLocaleString('es-BO')],
-      ['Período', `${desde} — ${hasta}`],
-      ['Productos', list.length],
-      ['Total unidades', list.reduce((s, t) => s + t.cantidad, 0)],
-      ['Total ingreso', `Bs ${list.reduce((s, t) => s + t.ingresos, 0)}`],
-      [],
-      headers.join(','),
-      ...lines
+    const headers = ['Producto', 'Tipo', 'Tamaño (g)', 'Unidades vendidas', 'Ingreso (Bs)', 'N° ventas', 'Precio promedio (Bs)'];
+    const data = list.map(t => [
+      t.nombre,
+      t.tipo,
+      t.tamano || '',
+      t.cantidad,
+      Math.round(t.ingresos * 100) / 100,
+      t.ventas,
+      t.cantidad > 0 ? Math.round((t.ingresos / t.cantidad) * 100) / 100 : 0
     ]);
-    filename = `lulis-productos-${periodo}-${fecha}.csv`;
+    const totals = [
+      'TOTAL',
+      `${list.length} productos`,
+      '',
+      list.reduce((s, t) => s + t.cantidad, 0),
+      Math.round(list.reduce((s, t) => s + t.ingresos, 0) * 100) / 100,
+      list.reduce((s, t) => s + t.ventas, 0),
+      ''
+    ];
+    sheets.push({
+      name: 'Por producto',
+      headers,
+      data,
+      totals,
+      meta: {
+        'Productos distintos': list.length,
+        'Total unidades': list.reduce((s, t) => s + t.cantidad, 0),
+        'Ingreso total (Bs)': Math.round(list.reduce((s, t) => s + t.ingresos, 0) * 100) / 100
+      }
+    });
   }
 
-  // BOM para Excel reconozca UTF-8
-  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  toast(`${filename} exportado ✅`, 'success');
-}
+  if (!sheets.length) {
+    toast('No hay datos para exportar', 'error');
+    return;
+  }
 
-function buildCsv(titulo, rows) {
-  return rows.map(r => Array.isArray(r) ? r.join(',') : r).join('\n');
-}
-
-/* ── Toast ────────────────────────────────────────────── */
-function toast(msg, type = '') {
-  const t = $('toast');
-  if (!t) return;
-  t.textContent = msg;
-  t.className   = `toast show ${type}`;
-  setTimeout(() => t.className = 'toast', 3500);
+  const filename = `lulis-reporte-${tipo}-${periodo}`.replace(/[^\w\-_.]/g, '_') + '.xlsx';
+  try {
+    const name = exportarXLSX({
+      title: `Reporte de Ventas — ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`,
+      subtitle: `Período: ${desde} a ${hasta} · Canal: ${canal} · Estado: ${estado}`,
+      filename: filename.replace('.xlsx', ''),
+      sheets
+    });
+    toast(`${name} exportado ✅`, 'success');
+  } catch (err) {
+    console.error(err);
+    toast('Error al exportar: ' + err.message, 'error');
+  }
 }
 
 function escapeHtml(str) {

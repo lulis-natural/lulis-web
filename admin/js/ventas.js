@@ -1,22 +1,24 @@
 /* ═══════════════════════════════════════════════════════════
    LULIS Admin — ventas.js
    Registro profesional de ventas.
-   - CRUD de ventas
-   - Suscripción a productos para listar
-   - Filtros por fecha/canal/estado
+   - CRUD de ventas con líneas de productos
+   - Filtros por fecha / canal / estado
    - Resumen de período (conteo, unidades, total, ticket promedio)
-   - Exportar a CSV
+   - Exportar a Excel (.xlsx) con formato profesional (multi-hoja)
+   - Importar ventas en masa desde .xlsx o .csv
    - Recalcular impacto_ambiental/acumulado en cada cambio
    ═══════════════════════════════════════════════════════════ */
 
 import {
   db, signOut,
-  collection, doc, setDoc,
+  collection, doc, setDoc, writeBatch,
   getDocs, getDoc, addDoc, updateDoc, deleteDoc,
   onSnapshot,
   query, where, orderBy, limit,
   serverTimestamp, Timestamp
 } from './firebase-init.js';
+
+import { exportarXLSX, importarXLSX, descargarPlantillaVentas, toast } from './xlsx-helper.js';
 
 const COL_VENTAS = 'ventas';
 const COL_PROD   = 'productos';
@@ -41,21 +43,26 @@ const fmtDateISO = (ts) => {
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   return d.toISOString().slice(0, 10);
 };
-
-/* ── Toast ──────────────────────────────────────────────── */
-function toast(msg, type = '') {
-  const t = $('toast');
-  if (!t) return;
-  t.textContent = msg;
-  t.className   = `toast show ${type}`;
-  setTimeout(() => t.className = 'toast', 3500);
-}
+const parseFecha = (str) => {
+  if (!str) return null;
+  if (str instanceof Date) return str;
+  const s = String(str).trim();
+  // Acepta YYYY-MM-DD o DD/MM/YYYY
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return new Date(s + 'T12:00:00');
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)) {
+    const [d, m, y] = s.split('/');
+    return new Date(`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}T12:00:00`);
+  }
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+};
 
 /* ── Init ───────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   $('logoutBtn')?.addEventListener('click', signOut);
   $('btnNueva')?.addEventListener('click', openModalNew);
-  $('btnExportar')?.addEventListener('click', exportarCSV);
+  $('btnExportar')?.addEventListener('click', exportarExcel);
+  $('btnImportar')?.addEventListener('click', openImportModal);
   $('modalClose')?.addEventListener('click', closeModal);
   $('btnCancelar')?.addEventListener('click', closeModal);
   $('btnGuardar')?.addEventListener('click', guardarVenta);
@@ -64,6 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
   $('confirmCancel')?.addEventListener('click', () => $('confirmOverlay')?.classList.remove('open'));
   $('confirmDelete')?.addEventListener('click', ejecutarBorrado);
   $('vDescuento')?.addEventListener('input', updateTotalPreview);
+
+  // Import modal handlers
+  initImportModal();
 
   // Filtros
   ['fDesde', 'fHasta', 'fCanal', 'fEstado'].forEach(id => {
@@ -306,7 +316,7 @@ function renderLineas() {
              onchange="window.updateLineaCantidad(${i}, parseInt(this.value))">
       <span class="linea-precio"><strong>${fmtBs(l.precio * l.cantidad)}</strong></span>
       <button type="button" class="linea-del" onclick="window.removeLinea(${i})" title="Quitar">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y1="18"/><line x1="6" y1="6" x2="18" y1="18"/></svg>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </li>
   `).join('');
@@ -461,81 +471,9 @@ function botellasDeLinea(l) {
   return 0;
 }
 
-/* ── Exportar CSV ──────────────────────────────────────── */
-function exportarCSV() {
-  if (!allVentas.length) {
-    toast('No hay ventas para exportar', 'error');
-    return;
-  }
-  const filtered = getFilteredVentas();
-  if (!filtered.length) {
-    toast('No hay ventas en el período seleccionado', 'error');
-    return;
-  }
-  // Construir CSV
-  const headers = ['Fecha', 'Cliente', 'Canal', 'Estado', 'Total (Bs)', 'Descuento (Bs)', 'Subtotal (Bs)', 'Notas'];
-  const lines = filtered.map(v => {
-    const fecha = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
-    return [
-      fecha.toLocaleDateString('es-BO'),
-      v.cliente || 'Consumidor final',
-      v.canal,
-      v.estado,
-      v.total || 0,
-      v.descuento || 0,
-      v.subtotal || 0,
-      (v.notas || '').replace(/"/g, '""')
-    ].map(c => `"${c}"`).join(',');
-  });
-
-  // CSV detalle de líneas
-  const detalleHeaders = ['Fecha', 'Cliente', 'Canal', 'Estado', 'Producto', 'Tamaño (g)', 'Precio (Bs)', 'Cantidad', 'Subtotal línea (Bs)'];
-  const detalleLines = [];
-  filtered.forEach(v => {
-    const fecha = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
-    const fechaStr = fecha.toLocaleDateString('es-BO');
-    const cliente = v.cliente || 'Consumidor final';
-    (v.lineas || []).forEach(l => {
-      detalleLines.push([
-        fechaStr, cliente, v.canal, v.estado,
-        l.nombre, l.tamano || '', l.precio || 0, l.cantidad || 0,
-        (l.precio || 0) * (l.cantidad || 0)
-      ].map(c => `"${c}"`).join(','));
-    });
-  });
-
-  // Resumen al inicio
-  const totalUnidades = filtered.reduce((s, v) => s + (v.lineas || []).reduce((a, l) => a + (l.cantidad || 0), 0), 0);
-  const totalMonto = filtered.reduce((s, v) => s + (v.total || 0), 0);
-  const resumen = [
-    ['LULIS — Reporte de Ventas'],
-    ['Generado', new Date().toLocaleString('es-BO')],
-    ['Período', `${$('fDesde').value || 'inicio'} — ${$('fHasta').value || 'hoy'}`],
-    ['Total ventas', filtered.length],
-    ['Unidades vendidas', totalUnidades],
-    ['Ingreso total', `Bs ${totalMonto}`],
-    [],
-    ['─── VENTAS ───'],
-    headers.join(','),
-    ...lines,
-    [],
-    ['─── DETALLE POR PRODUCTO ───'],
-    detalleHeaders.join(','),
-    ...detalleLines
-  ];
-
-  const csv = '﻿' + resumen.map(l => Array.isArray(l) ? l.join(',') : l).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `lulis-ventas-${new Date().toISOString().slice(0, 10)}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  toast('CSV exportado ✅', 'success');
-}
+/* ═══════════════════════════════════════════════════════════
+   EXPORTAR A EXCEL — Multi-hoja con formato profesional
+   ═══════════════════════════════════════════════════════════ */
 
 function getFilteredVentas() {
   const desde  = $('fDesde')?.value;
@@ -550,6 +488,425 @@ function getFilteredVentas() {
     if (estado && v.estado !== estado) return false;
     return true;
   });
+}
+
+function exportarExcel() {
+  const filtered = getFilteredVentas();
+  if (!filtered.length) {
+    toast('No hay ventas en el período seleccionado', 'error');
+    return;
+  }
+
+  const desde  = $('fDesde')?.value || 'inicio';
+  const hasta  = $('fHasta')?.value || 'hoy';
+  const canal  = $('fCanal')?.value || 'todos';
+  const estado = $('fEstado')?.value || 'todos';
+
+  /* ── Hoja 1: Resumen de ventas ── */
+  const headersResumen = ['Fecha', 'Cliente', 'Canal', 'Estado', 'Subtotal (Bs)', 'Descuento (Bs)', 'Total (Bs)', 'Unidades', 'Notas'];
+  const dataResumen = [...filtered]
+    .sort((a, b) => {
+      const da = a.fecha?.toDate ? a.fecha.toDate() : new Date(a.fecha || 0);
+      const db2 = b.fecha?.toDate ? b.fecha.toDate() : new Date(b.fecha || 0);
+      return db2 - da;
+    })
+    .map(v => {
+      const f = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
+      const totalUnd = (v.lineas || []).reduce((s, l) => s + (l.cantidad || 0), 0);
+      return [
+        f.toISOString().slice(0, 10),
+        v.cliente || 'Consumidor final',
+        v.canal || '',
+        v.estado || '',
+        Number(v.subtotal || 0),
+        Number(v.descuento || 0),
+        Number(v.total || 0),
+        totalUnd,
+        v.notas || ''
+      ];
+    });
+
+  const totalUnidades = filtered.reduce((s, v) => s + (v.lineas || []).reduce((a, l) => a + (l.cantidad || 0), 0), 0);
+  const totalMonto    = filtered.reduce((s, v) => s + (v.total || 0), 0);
+  const totalSubtotal = filtered.reduce((s, v) => s + (v.subtotal || 0), 0);
+  const totalDesc     = filtered.reduce((s, v) => s + (v.descuento || 0), 0);
+  const totalsResumen = [
+    'TOTAL',
+    `${filtered.length} ventas`,
+    '',
+    '',
+    Math.round(totalSubtotal * 100) / 100,
+    Math.round(totalDesc * 100) / 100,
+    Math.round(totalMonto * 100) / 100,
+    totalUnidades,
+    ''
+  ];
+
+  /* ── Hoja 2: Detalle por línea ── */
+  const headersDetalle = ['Fecha', 'Cliente', 'Canal', 'Estado', 'Producto', 'Tipo', 'Tamaño (g)', 'Precio unitario (Bs)', 'Cantidad', 'Subtotal línea (Bs)'];
+  const dataDetalle = [];
+  filtered.forEach(v => {
+    const f = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
+    const fechaStr = f.toISOString().slice(0, 10);
+    const cliente = v.cliente || 'Consumidor final';
+    (v.lineas || []).forEach(l => {
+      dataDetalle.push([
+        fechaStr,
+        cliente,
+        v.canal || '',
+        v.estado || '',
+        l.nombre || '',
+        l.tipo || '',
+        l.tamano || '',
+        Number(l.precio || 0),
+        Number(l.cantidad || 0),
+        Math.round((Number(l.precio || 0) * Number(l.cantidad || 0)) * 100) / 100
+      ]);
+    });
+  });
+  const totalLineasCant = dataDetalle.reduce((s, r) => s + r[8], 0);
+  const totalLineasSub  = dataDetalle.reduce((s, r) => s + r[9], 0);
+  const totalsDetalle = [
+    'TOTAL', '', '', '', `${dataDetalle.length} líneas`, '', '',
+    '',
+    totalLineasCant,
+    Math.round(totalLineasSub * 100) / 100
+  ];
+
+  /* ── Hoja 3: Resumen por producto ── */
+  const counts = {};
+  filtered.forEach(v => {
+    (v.lineas || []).forEach(l => {
+      if (!l.productoId) return;
+      if (!counts[l.productoId]) {
+        counts[l.productoId] = { nombre: l.nombre, tipo: l.tipo, tamano: l.tamano, cantidad: 0, ingresos: 0, ventas: 0 };
+      }
+      counts[l.productoId].cantidad += Number(l.cantidad || 0);
+      counts[l.productoId].ingresos  += Number(l.precio || 0) * Number(l.cantidad || 0);
+      counts[l.productoId].ventas    += 1;
+    });
+  });
+  const listProd = Object.values(counts).sort((a, b) => b.cantidad - a.cantidad);
+  const headersProd = ['Producto', 'Tipo', 'Tamaño (g)', 'Unidades vendidas', 'Ingreso (Bs)', 'N° ventas', 'Precio promedio (Bs)'];
+  const dataProd = listProd.map(t => [
+    t.nombre,
+    t.tipo,
+    t.tamano || '',
+    t.cantidad,
+    Math.round(t.ingresos * 100) / 100,
+    t.ventas,
+    t.cantidad > 0 ? Math.round((t.ingresos / t.cantidad) * 100) / 100 : 0
+  ]);
+  const totalsProd = [
+    'TOTAL',
+    `${listProd.length} productos`,
+    '',
+    listProd.reduce((s, t) => s + t.cantidad, 0),
+    Math.round(listProd.reduce((s, t) => s + t.ingresos, 0) * 100) / 100,
+    listProd.reduce((s, t) => s + t.ventas, 0),
+    ''
+  ];
+
+  const filename = `lulis-ventas-${desde}_a_${hasta}.xlsx`.replace(/[^\w\-_.]/g, '_');
+  try {
+    const name = exportarXLSX({
+      title: 'Reporte de Ventas — LULIS',
+      subtitle: `Período: ${desde} a ${hasta} · Canal: ${canal} · Estado: ${estado}`,
+      filename,
+      sheets: [
+        {
+          name: 'Resumen',
+          headers: headersResumen,
+          data: dataResumen,
+          totals: totalsResumen,
+          meta: {
+            'Total ventas': filtered.length,
+            'Unidades vendidas': totalUnidades,
+            'Ingreso total (Bs)': Math.round(totalMonto * 100) / 100,
+            'Ticket promedio (Bs)': filtered.length > 0 ? Math.round((totalMonto / filtered.length) * 100) / 100 : 0
+          }
+        },
+        {
+          name: 'Detalle por línea',
+          headers: headersDetalle,
+          data: dataDetalle,
+          totals: totalsDetalle,
+          meta: { 'Total líneas': dataDetalle.length }
+        },
+        {
+          name: 'Por producto',
+          headers: headersProd,
+          data: dataProd,
+          totals: totalsProd,
+          meta: { 'Productos distintos': listProd.length }
+        }
+      ]
+    });
+    toast(`${name} exportado ✅`, 'success');
+  } catch (err) {
+    console.error(err);
+    toast('Error al exportar: ' + err.message, 'error');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   IMPORTAR MASIVAMENTE — XLSX / CSV
+   ═══════════════════════════════════════════════════════════ */
+
+let importData = null;  // {headers, rows, data, sheetName}
+
+function openImportModal() {
+  importData = null;
+  $('importPreviewWrap').style.display = 'none';
+  $('importMode').style.display = 'none';
+  $('importConfirm').disabled = true;
+  $('importFile').value = '';
+  $('importErrors').style.display = 'none';
+  $('importCount').textContent = '0';
+  $('importSummary').textContent = '';
+  $('importPreview').innerHTML = '';
+  $('importOverlay').classList.add('open');
+}
+
+function initImportModal() {
+  $('importClose')?.addEventListener('click', () => $('importOverlay').classList.remove('open'));
+  $('importCancel')?.addEventListener('click', () => $('importOverlay').classList.remove('open'));
+  $('linkPlantilla')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    try {
+      descargarPlantillaVentas();
+      toast('Plantilla descargada ✅', 'success');
+    } catch (err) {
+      toast('Error: ' + err.message, 'error');
+    }
+  });
+  $('importConfirm')?.addEventListener('click', ejecutarImportacion);
+
+  // File input
+  $('importFile')?.addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if (f) handleImportFile(f);
+  });
+
+  // Drag & drop
+  const area = $('importArea');
+  if (area) {
+    area.addEventListener('dragover', (e) => { e.preventDefault(); area.classList.add('dragover'); });
+    area.addEventListener('dragleave', () => area.classList.remove('dragover'));
+    area.addEventListener('drop', (e) => {
+      e.preventDefault();
+      area.classList.remove('dragover');
+      const f = e.dataTransfer.files[0];
+      if (f) {
+        $('importFile').files = e.dataTransfer.files;
+        handleImportFile(f);
+      }
+    });
+  }
+
+  // Mode radios
+  document.querySelectorAll('input[name="importMode"]').forEach(r => {
+    r.addEventListener('change', (e) => {
+      document.querySelectorAll('.import-mode label').forEach(l => l.classList.remove('checked'));
+      e.target.closest('label').classList.add('checked');
+    });
+  });
+  // Marcar el default
+  const firstRadio = document.querySelector('input[name="importMode"]');
+  if (firstRadio) firstRadio.closest('label').classList.add('checked');
+}
+
+async function handleImportFile(file) {
+  if (file.size > 5 * 1024 * 1024) {
+    toast('El archivo es muy grande (máx 5MB)', 'error');
+    return;
+  }
+  try {
+    const result = await importarXLSX(file);
+    importData = result;
+    renderImportPreview(result);
+    $('importMode').style.display = 'flex';
+    $('importConfirm').disabled = false;
+  } catch (err) {
+    console.error(err);
+    toast('Error al leer el archivo: ' + err.message, 'error');
+    importData = null;
+    $('importPreviewWrap').style.display = 'none';
+    $('importConfirm').disabled = true;
+  }
+}
+
+function renderImportPreview(result) {
+  const { headers, data } = result;
+  $('importPreviewWrap').style.display = 'block';
+  $('importCount').textContent = data.length;
+
+  /* Validar y agrupar por (fecha + cliente + canal) → cada grupo = una venta */
+  const errores = [];
+  const grupos = {};  // key: `${fecha}|${cliente}|${canal}` → array de lineas
+  let totalIngresos = 0;
+  let totalUnidades = 0;
+
+  data.forEach((row, idx) => {
+    const fecha = parseFecha(row.fecha || row.Fecha || '');
+    const cliente = (row.cliente || row.Cliente || '').trim() || 'Consumidor final';
+    const canal = (row.canal || row.Canal || 'whatsapp').toLowerCase().trim();
+    const estado = (row.estado || row.Estado || 'entregado').toLowerCase().trim();
+    const prodNombre = (row.producto_nombre || row['producto nombre'] || row.Producto || '').trim();
+    const prodTipo = (row.producto_tipo || row['producto tipo'] || '').toLowerCase().trim();
+    const prodGramos = parseInt(row.producto_gramos || row['producto gramos'] || row.Gramos || '0') || 0;
+    const cant = parseInt(row.cantidad || row.Cantidad || '0') || 0;
+    const precio = parseFloat(String(row.precio_unitario || row['precio unitario'] || row.Precio || '0').replace(',', '.')) || 0;
+    const descuento = parseFloat(String(row.descuento || row.Descuento || '0').replace(',', '.')) || 0;
+    const notas = (row.notas || row.Notas || '').trim();
+
+    const filaValida = fecha && prodNombre && cant > 0 && precio >= 0;
+    if (!filaValida) {
+      errores.push(`Fila ${idx + 2}: falta fecha, producto, cantidad o precio`);
+      return;
+    }
+    if (!['whatsapp', 'instagram', 'tienda', 'feria', 'otro'].includes(canal)) {
+      errores.push(`Fila ${idx + 2}: canal "${canal}" no es válido`);
+      return;
+    }
+    if (!['entregado', 'confirmado', 'pendiente', 'cancelado'].includes(estado)) {
+      errores.push(`Fila ${idx + 2}: estado "${estado}" no es válido`);
+      return;
+    }
+
+    const key = `${fecha.toISOString().slice(0,10)}|${cliente}|${canal}|${estado}|${notas}|${descuento}`;
+    if (!grupos[key]) {
+      grupos[key] = { fecha, cliente, canal, estado, notas, descuento, lineas: [] };
+    }
+    grupos[key].lineas.push({
+      nombre: prodNombre,
+      tipo: prodTipo || 'shampoo',
+      tamano: prodGramos,
+      precio,
+      cantidad: cant
+    });
+    totalIngresos += precio * cant;
+    totalUnidades += cant;
+  });
+
+  const ventas = Object.values(grupos);
+
+  $('importSummary').textContent = `${ventas.length} venta(s) · ${totalUnidades} unidades · ${fmtBs(totalIngresos)}`;
+
+  /* Errores */
+  const errBox = $('importErrors');
+  if (errores.length) {
+    errBox.style.display = 'block';
+    errBox.innerHTML = `<strong>⚠️ ${errores.length} fila(s) con errores:</strong><ul style="margin:6px 0 0 18px;padding:0">${errores.slice(0, 10).map(e => `<li>${escapeHtml(e)}</li>`).join('')}${errores.length > 10 ? `<li>... y ${errores.length - 10} más</li>` : ''}</ul>`;
+  } else {
+    errBox.style.display = 'none';
+  }
+
+  /* Tabla preview (primeras 20 filas) */
+  const preview = data.slice(0, 20);
+  $('importPreview').innerHTML = `
+    <table>
+      <thead>
+        <tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>
+      </thead>
+      <tbody>
+        ${preview.map(row => `
+          <tr>
+            ${headers.map(h => `<td>${escapeHtml(row[h] || '')}</td>`).join('')}
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    ${data.length > 20 ? `<p style="text-align:center;padding:8px;color:var(--mid);font-size:.78rem;margin:0">Mostrando 20 de ${data.length} filas</p>` : ''}
+  `;
+
+  /* Guardar ventas procesadas para la confirmación */
+  importData.ventas = ventas;
+  importData.errores = errores;
+}
+
+async function ejecutarImportacion() {
+  if (!importData || !importData.ventas) {
+    toast('No hay datos para importar', 'error');
+    return;
+  }
+  const mode = document.querySelector('input[name="importMode"]:checked')?.value || 'append';
+
+  setImportLoading(true);
+  try {
+    /* Modo replace: borrar todas las ventas existentes */
+    if (mode === 'replace') {
+      const snap = await getDocs(collection(db, COL_VENTAS));
+      const batchSize = 400;
+      let batch = writeBatch(db);
+      let count = 0;
+      const commits = [];
+      for (const d of snap.docs) {
+        batch.delete(d.ref);
+        count++;
+        if (count >= batchSize) {
+          commits.push(batch.commit());
+          batch = writeBatch(db);
+          count = 0;
+        }
+      }
+      if (count > 0) commits.push(batch.commit());
+      await Promise.all(commits);
+    }
+
+    /* Insertar las nuevas ventas */
+    let insertados = 0;
+    const batchSize = 400;
+    let batch = writeBatch(db);
+    let count = 0;
+    const commits = [];
+
+    for (const v of importData.ventas) {
+      const subtotal = v.lineas.reduce((s, l) => s + (l.precio * l.cantidad), 0);
+      const descuento = v.descuento || 0;
+      const total = Math.max(0, subtotal - descuento);
+      const newRef = doc(collection(db, COL_VENTAS));
+      batch.set(newRef, {
+        fecha:        Timestamp.fromDate(v.fecha),
+        cliente:      v.cliente || null,
+        canal:        v.canal,
+        estado:       v.estado,
+        lineas:       v.lineas,
+        subtotal:     subtotal,
+        descuento:    descuento,
+        total:        total,
+        notas:        v.notas || null,
+        creadoEn:     serverTimestamp(),
+        actualizadoEn: serverTimestamp()
+      });
+      insertados++;
+      count++;
+      if (count >= batchSize) {
+        commits.push(batch.commit());
+        batch = writeBatch(db);
+        count = 0;
+      }
+    }
+    if (count > 0) commits.push(batch.commit());
+    await Promise.all(commits);
+
+    /* Recalcular impacto */
+    await recalcularImpacto();
+
+    toast(`✅ ${insertados} venta(s) importadas correctamente`, 'success');
+    $('importOverlay').classList.remove('open');
+  } catch (err) {
+    console.error(err);
+    toast('Error al importar: ' + err.message, 'error');
+  } finally {
+    setImportLoading(false);
+  }
+}
+
+function setImportLoading(on) {
+  $('importConfirm').disabled             = on;
+  $('importConfirmText').textContent      = on ? 'Importando…' : 'Importar';
+  $('importConfirmSpinner').style.display = on ? 'inline-block' : 'none';
 }
 
 /* ── Helpers ───────────────────────────────────────────── */

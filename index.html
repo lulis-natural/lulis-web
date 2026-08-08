@@ -34,14 +34,19 @@
   <meta name="twitter:image:alt"    content="Shampoo sólido LULIS — cosmética consciente Bolivia">
 
   <!-- ═══ FAVICON ═════════════════════════════════════════ -->
-  <link rel="icon" type="image/svg+xml" href="Imagenes/logos/favicon.svg?v=7">
-  <link rel="icon" type="image/png" sizes="32x32" href="Imagenes/logos/favicon.png?v=7">
-  <link rel="icon" type="image/png" sizes="192x192" href="Imagenes/logos/favicon.png?v=7">
-  <link rel="icon" type="image/x-icon" href="Imagenes/logos/favicon.ico?v=7">
-  <link rel="apple-touch-icon" sizes="180x180" href="Imagenes/logos/apple-touch-icon.png?v=7">
+  <link rel="icon" type="image/svg+xml" href="Imagenes/logos/favicon.svg?v=8">
+  <link rel="icon" type="image/png" sizes="32x32" href="Imagenes/logos/favicon.png?v=8">
+  <link rel="icon" type="image/png" sizes="192x192" href="Imagenes/logos/favicon.png?v=8">
+  <link rel="icon" type="image/x-icon" href="Imagenes/logos/favicon.ico?v=8">
+  <link rel="apple-touch-icon" sizes="180x180" href="Imagenes/logos/apple-touch-icon.png?v=8">
   <link rel="shortcut icon" type="image/x-icon" href="Imagenes/logos/favicon.ico">
   <link rel="apple-touch-icon" type="image/jpeg" href="Imagenes/logos/LOGO.jpg">
   <meta name="theme-color" content="#5F0F3F">
+
+  <!-- ═══ NO CACHE (browsers legacy, además de los headers de Vercel) ═══ -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma"        content="no-cache">
+  <meta http-equiv="Expires"       content="0">
 
   <!-- ═══ PRECONNECT / DNS-PREFETCH ═══════════════════════
        Establece conexiones anticipadas con orígenes externos.
@@ -76,7 +81,7 @@
     #navbar.scrolled{background:rgba(250,248,243,.96);backdrop-filter:blur(12px);padding:12px 0;box-shadow:0 2px 20px rgba(28,22,17,.08)}
     .nav-inner{display:flex;align-items:center;justify-content:space-between}
     .nav-logo{display:flex;align-items:center;line-height:0;transition:opacity .2s}
-    .nav-logo img{height:64px;width:auto;display:block;filter:brightness(0) invert(1);transition:filter .3s}
+    .nav-logo img{height:80px;width:auto;display:block;filter:brightness(0) invert(1);transition:filter .3s}
     #navbar.scrolled .nav-logo img{filter:none}
     .nav-logo:hover{opacity:.85}
     .nav-links{display:flex;align-items:center;gap:32px}
@@ -131,11 +136,23 @@
     @keyframes wa-pulse{0%,100%{box-shadow:0 6px 32px rgba(37,211,102,.40)}50%{box-shadow:0 6px 48px rgba(37,211,102,.65)}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
     @media(max-width:768px){.nav-links{display:none}.hamburger{display:flex}.hero-stats{gap:24px}.container{padding:0 16px}}
+    @media(max-width:480px){
+      .nav-logo img{height:72px}
+      .hero-content{padding:100px 18px 64px}
+      .hero-title{font-size:clamp(1.9rem,8vw,2.4rem)}
+      .hero-desc{font-size:1rem;margin-bottom:28px}
+      .hero-stats{gap:14px;margin-top:40px;padding-top:28px;display:grid;grid-template-columns:1fr 1fr;justify-items:center}
+      .hero-stat-num{font-size:1.55rem}
+      .hero-stat-lbl{font-size:.7rem;letter-spacing:.06em}
+      .hero-actions{flex-direction:column;width:100%}
+      .hero-actions .btn{width:100%;justify-content:center}
+      .btn{padding:13px 22px;font-size:.92rem}
+    }
   </style>
 
   <!-- main.css cargado de forma NO bloqueante (print trick) -->
-  <link rel="stylesheet" href="css/main.css?v=7" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="css/main.css?v=7"></noscript>
+  <link rel="stylesheet" href="css/main.css?v=8" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="css/main.css?v=8"></noscript>
 
   <!-- ═══ SCHEMA.ORG — LocalBusiness + ItemList de productos -->
   <script type="application/ld+json">
@@ -460,7 +477,7 @@
                   <span class="avail-dot" aria-hidden="true"></span> Disponible
                 </div>
               </div>
-              <a href="#" class="product-wa" data-product="Shampoo Sólido Jamaica (50g)" aria-label="Consultar por WhatsApp el Shampoo Jamaica">
+              <a href="https://wa.me/59173515698?text=Hola%20LULIS%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20productos" class="product-wa" data-product="Shampoo Sólido Jamaica (50g)" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp el Shampoo Jamaica">
                 <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
                 Consultar por WhatsApp
               </a>
@@ -487,7 +504,7 @@
                   <span class="avail-dot" aria-hidden="true"></span> Disponible
                 </div>
               </div>
-              <a href="#" class="product-wa" data-product="Shampoo Sólido Romero (50g)" aria-label="Consultar por WhatsApp el Shampoo Romero">
+              <a href="https://wa.me/59173515698?text=Hola%20LULIS%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20productos" class="product-wa" data-product="Shampoo Sólido Romero (50g)" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp el Shampoo Romero">
                 <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
                 Consultar por WhatsApp
               </a>
@@ -514,7 +531,7 @@
                   <span class="avail-dot" aria-hidden="true"></span> Disponible
                 </div>
               </div>
-              <a href="#" class="product-wa" data-product="Shampoo Sólido Coco (50g)" aria-label="Consultar por WhatsApp el Shampoo Coco">
+              <a href="https://wa.me/59173515698?text=Hola%20LULIS%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20productos" class="product-wa" data-product="Shampoo Sólido Coco (50g)" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp el Shampoo Coco">
                 <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
                 Consultar por WhatsApp
               </a>
@@ -549,7 +566,7 @@
                   <span class="avail-dot" aria-hidden="true"></span> Disponible
                 </div>
               </div>
-              <a href="#" class="product-wa" data-product="Acondicionador Sólido Melón (50g)" aria-label="Consultar por WhatsApp el Acondicionador Melón">
+              <a href="https://wa.me/59173515698?text=Hola%20LULIS%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20productos" class="product-wa" data-product="Acondicionador Sólido Melón (50g)" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp el Acondicionador Melón">
                 <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
                 Consultar por WhatsApp
               </a>
@@ -576,7 +593,7 @@
                   <span class="avail-dot" aria-hidden="true"></span> Disponible
                 </div>
               </div>
-              <a href="#" class="product-wa" data-product="Acondicionador Sólido Uva & Jamaica (50g)" aria-label="Consultar por WhatsApp el Acondicionador Uva y Jamaica">
+              <a href="https://wa.me/59173515698?text=Hola%20LULIS%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20productos" class="product-wa" data-product="Acondicionador Sólido Uva & Jamaica (50g)" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp el Acondicionador Uva y Jamaica">
                 <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
                 Consultar por WhatsApp
               </a>

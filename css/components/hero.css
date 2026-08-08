@@ -163,3 +163,20 @@
 @media (max-width: 768px) {
   .hero-stats { gap: 24px; }
 }
+@media (max-width: 480px) {
+  /* Samsung S23 FE y similares (360x800) */
+  .hero-content { padding: 100px 18px 64px; }
+  .hero-title   { font-size: clamp(1.9rem, 8vw, 2.4rem); line-height: 1.1; }
+  .hero-desc    { font-size: 1rem; margin-bottom: 28px; }
+  .hero-actions { flex-direction: column; width: 100%; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .hero-stats   { gap: 14px; margin-top: 40px; padding-top: 28px; display: grid; grid-template-columns: 1fr 1fr; justify-items: center; }
+  .hero-stat-num{ font-size: 1.55rem; }
+  .hero-stat-lbl{ font-size: 0.7rem; letter-spacing: 0.06em; }
+  .btn          { padding: 13px 22px; font-size: 0.92rem; }
+  .hero-badge   { font-size: 0.72rem; padding: 6px 16px; }
+  .hero-scroll  { display: none; }
+  .hero-blob-1  { width: 320px; height: 320px; }
+  .hero-blob-2  { width: 220px; height: 220px; }
+  .hero-blob-3  { width: 140px; height: 140px; }
+}

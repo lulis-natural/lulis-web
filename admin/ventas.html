@@ -11,6 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/css/admin.css?v=10">
+  <!-- SheetJS (XLSX) para exportar/importar ventas -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>
     /* Filtros */
     .filters-bar {
@@ -216,6 +218,104 @@
     }
     .btn-export:hover { background: #059669; }
 
+    /* Botón importar */
+    .btn-import {
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: .88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-import:hover { background: #6B3B5C; }
+
+    /* Modal importar */
+    .import-area {
+      border: 2px dashed var(--beige);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      background: var(--light);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .import-area:hover, .import-area.dragover {
+      border-color: var(--wine);
+      background: #FFF7F5;
+    }
+    .import-area .icon { color: var(--mid); margin-bottom: 8px; }
+    .import-area p { margin: 4px 0; color: var(--mid); }
+    .import-area input[type=file] { display: none; }
+
+    .import-mode {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .import-mode label {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 12px 14px;
+      border: 1px solid var(--beige);
+      border-radius: 8px;
+      cursor: pointer;
+      background: #fff;
+      transition: all 0.15s;
+    }
+    .import-mode label.checked {
+      border-color: var(--wine);
+      background: #FFF7F5;
+      box-shadow: 0 0 0 2px rgba(95,15,63,0.10);
+    }
+    .import-mode input[type=radio] { margin-right: 4px; }
+    .import-mode strong { font-size: 0.92rem; }
+    .import-mode span { font-size: 0.78rem; color: var(--mid); }
+
+    .import-preview {
+      max-height: 280px;
+      overflow: auto;
+      border: 1px solid var(--beige);
+      border-radius: 8px;
+      margin-top: 12px;
+      background: #fff;
+    }
+    .import-preview table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+    .import-preview th, .import-preview td {
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--light);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .import-preview th {
+      background: var(--light);
+      position: sticky; top: 0;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+    .import-preview tr.invalid { background: #FEE2E2; }
+    .import-preview tr.valid   { background: #F0FDF4; }
+    .import-errors {
+      background: #FEF2F2;
+      color: #991B1B;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+
     @media (max-width: 1024px) {
       .ventas-row, .ventas-header {
         grid-template-columns: 90px 1fr 1fr 100px 100px 80px;
@@ -292,10 +392,14 @@
         <h1>Registro de Ventas</h1>
         <p>Gestiona cada venta. Las métricas de impacto se calculan automáticamente desde aquí.</p>
       </div>
-      <div style="display:flex;gap:8px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-import" id="btnImportar">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Importar XLSX
+        </button>
         <button class="btn-export" id="btnExportar">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Exportar CSV
+          Exportar Excel
         </button>
         <button class="btn btn-primary" id="btnNueva">
           <span style="font-size:18px;line-height:1;margin-right:4px">+</span> Nueva venta
@@ -492,6 +596,65 @@
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+
+<!-- MODAL IMPORTAR VENTAS MASIVAS -->
+<div class="modal-overlay" id="importOverlay">
+  <div class="modal" style="max-width:840px">
+    <div class="modal-header">
+      <span class="modal-title">Importar ventas en masa</span>
+      <button class="modal-close" id="importClose" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--mid);font-size:.9rem;margin:0 0 14px 0">
+        Subí un archivo <strong>.xlsx</strong> o <strong>.csv</strong> con las ventas que querés registrar.
+        Si no tenés la plantilla, descargala primero:&nbsp;
+        <a href="#" id="linkPlantilla" style="color:var(--wine);font-weight:600">📄 Descargar plantilla</a>
+      </p>
+
+      <label for="importFile" class="import-area" id="importArea">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <p><strong>Click para seleccionar</strong> o arrastrá el archivo aquí</p>
+        <p style="font-size:.78rem">Formatos: .xlsx, .csv — máx 5MB</p>
+        <input type="file" id="importFile" accept=".xlsx,.xls,.csv">
+      </label>
+
+      <div class="import-mode" id="importMode" style="display:none">
+        <label>
+          <span><input type="radio" name="importMode" value="append" checked> <strong>Agregar a las existentes</strong></span>
+          <span>Las filas del archivo se SUMAN a las ventas que ya tenés registradas.</span>
+        </label>
+        <label>
+          <span><input type="radio" name="importMode" value="replace"> <strong>Reemplazar todo</strong></span>
+          <span>⚠️ Borra todas las ventas existentes y deja SOLO las del archivo.</span>
+        </label>
+      </div>
+
+      <div id="importPreviewWrap" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <strong>Vista previa (<span id="importCount">0</span> filas detectadas)</strong>
+          <span id="importSummary" style="font-size:.82rem;color:var(--mid)"></span>
+        </div>
+        <div class="import-preview" id="importPreview"></div>
+        <div id="importErrors" class="import-errors" style="display:none"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="importCancel">Cancelar</button>
+      <button class="btn btn-primary" id="importConfirm" disabled>
+        <span id="importConfirmText">Importar</span>
+        <span id="importConfirmSpinner" style="display:none">
+          <span class="spinner" style="width:16px;height:16px;border-width:2px"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
 
 <script type="module" defer src="/admin/js/auth.js?v=10"></script>
 <script type="module" defer src="/admin/js/ventas.js?v=10"></script>

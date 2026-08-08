@@ -25,6 +25,8 @@
 
 /* Logo */
 .nav-logo {
+  display: flex;
+  align-items: center;
   font-family: var(--ff-display);
   font-size: 2rem;
   font-weight: 800;
@@ -32,7 +34,16 @@
   transition: color 0.3s;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  line-height: 0;
 }
+.nav-logo img {
+  height: 80px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+  transition: filter 0.3s, height 0.2s ease;
+}
+#navbar.scrolled .nav-logo img { filter: none; }
 #navbar.scrolled .nav-logo { color: var(--wine); }
 
 /* Links de navegación */
@@ -134,4 +145,12 @@
 @media (max-width: 768px) {
   .nav-links  { display: none; }
   .hamburger  { display: flex; }
+}
+@media (max-width: 480px) {
+  /* Samsung S23 FE y similares */
+  .nav-logo img { height: 72px; }
+  #navbar.scrolled .nav-logo img { height: 60px; }
+  .mobile-menu { padding-top: 70px; gap: 26px; }
+  .mobile-menu a { font-size: 1.25rem; }
+  .mobile-close { top: 18px; right: 18px; }
 }
