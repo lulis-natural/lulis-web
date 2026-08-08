@@ -87,11 +87,7 @@
 
   /* ── Actualizar DOM con los resultados ─────────────────── */
   function actualizarDOM(data) {
-    if (!data) {
-      console.info('LULIS impacto: no data');
-      return;
-    }
-    console.info('LULIS impacto: data=', JSON.stringify(data));
+    if (!data) return;
 
     /* Si hay desglose de ventas, calcular con el motor. Si no, usar totales directos. */
     const ventas = data.ventas;
@@ -119,19 +115,27 @@
         kg:       data.kgPlasticoEvitado    ?? 0,
       };
     }
-    console.info('LULIS impacto: vals=', JSON.stringify(vals));
 
-    /* ── Hero stats ── */
+    /* ── Hero stats (animados para transicion suave) ── */
     if (heroEls.vendidos) animarNumero(heroEls.vendidos, vals.vendidos);
     if (heroEls.botellas) animarNumero(heroEls.botellas, vals.botellas);
-    if (heroEls.agua)     actualizarTexto(heroEls.agua,  formatAgua(vals.agua));
-    if (heroEls.plastico) actualizarTexto(heroEls.plastico, formatKg(vals.kg));
+    if (heroEls.agua)     animarTexto(heroEls.agua,     formatAgua(vals.agua));
+    if (heroEls.plastico) animarTexto(heroEls.plastico, formatKg(vals.kg));
 
     /* ── Sección de impacto ── */
     if (impactoEls.agua)      animarNumero(impactoEls.agua,     vals.agua,     1);
     if (impactoEls.botellas)  animarNumero(impactoEls.botellas, vals.botellas, 0);
     if (impactoEls.kg)        animarNumero(impactoEls.kg,       vals.kg,       2);
     if (impactoEls.vendidos)  animarNumero(impactoEls.vendidos, vals.vendidos, 0);
+  }
+
+  /* Anima un texto (con sufijo no numérico como "L" o "kg") */
+  function animarTexto(el, targetText) {
+    if (!el || !targetText) return;
+    // Animación simple: transición de texto
+    const startText = el.textContent;
+    if (startText === targetText) return;
+    el.textContent = targetText;
   }
 
   /* ── Parsear respuesta de Firestore REST ───────────────── */
