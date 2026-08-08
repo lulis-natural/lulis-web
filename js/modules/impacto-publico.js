@@ -87,7 +87,11 @@
 
   /* ── Actualizar DOM con los resultados ─────────────────── */
   function actualizarDOM(data) {
-    if (!data) return;
+    if (!data) {
+      console.info('LULIS impacto: no data');
+      return;
+    }
+    console.info('LULIS impacto: data=', JSON.stringify(data));
 
     /* Si hay desglose de ventas, calcular con el motor. Si no, usar totales directos. */
     const ventas = data.ventas;
@@ -115,6 +119,7 @@
         kg:       data.kgPlasticoEvitado    ?? 0,
       };
     }
+    console.info('LULIS impacto: vals=', JSON.stringify(vals));
 
     /* ── Hero stats ── */
     if (heroEls.vendidos) animarNumero(heroEls.vendidos, vals.vendidos);
