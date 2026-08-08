@@ -47,7 +47,7 @@ service cloud.firestore {
     }
 
     // ── /ventas ─────────────────────────────────────────────
-    // Solo admin.
+    // Privado: solo admin.
     match /ventas/{ventaId} {
       allow read, write: if isAdmin();
     }

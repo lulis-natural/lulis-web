@@ -87,26 +87,34 @@
 
   /* ── Actualizar DOM con los resultados ─────────────────── */
   function actualizarDOM(data) {
-    if (!data || !window.LULIS_IMPACTO) return;
+    if (!data) return;
 
-    const ventas = {
-      shampoos50g:  data.ventas?.shampoos50g  ?? 0,
-      shampoos100g: data.ventas?.shampoos100g ?? 0,
-      acond50g:     data.ventas?.acond50g     ?? 0,
-    };
+    /* Si hay desglose de ventas, calcular con el motor. Si no, usar totales directos. */
+    const ventas = data.ventas;
+    const hasDesglose = ventas && (ventas.shampoos50g || ventas.shampoos100g || ventas.acond50g || ventas.packs);
 
-    /* Si no hay breakdown de ventas, usar totales directamente */
-    const r = (ventas.shampoos50g || ventas.shampoos100g || ventas.acond50g)
-      ? LULIS_IMPACTO.calcular(ventas)
-      : null;
-
-    /* Valores finales: calculados si hay desglose, o directos de Firestore */
-    const vals = {
-      vendidos:  r?.totalVendidos         ?? data.productosVendidos    ?? 0,
-      botellas:  r?.botellasReemplazadas  ?? data.botellasReemplazadas ?? 0,
-      agua:      r?.litrosAguaEvitados    ?? data.litrosAguaEvitados   ?? 0,
-      kg:        r?.kgPlasticoEvitado     ?? data.kgPlasticoEvitado    ?? 0,
-    };
+    let vals;
+    if (hasDesglose && window.LULIS_IMPACTO) {
+      const r = LULIS_IMPACTO.calcular({
+        shampoos50g:  ventas.shampoos50g  || 0,
+        shampoos100g: ventas.shampoos100g || 0,
+        acond50g:     ventas.acond50g     || 0,
+      });
+      vals = {
+        vendidos: r.totalVendidos         ?? data.ventasTotales        ?? 0,
+        botellas: r.botellasReemplazadas  ?? data.botellasReemplazadas ?? 0,
+        agua:     r.litrosAguaEvitados    ?? data.litrosAguaEvitados   ?? 0,
+        kg:       r.kgPlasticoEvitado     ?? data.kgPlasticoEvitado    ?? 0,
+      };
+    } else {
+      /* Usar totales ya calculados en Firestore (por el recalcularImpacto del admin) */
+      vals = {
+        vendidos: data.ventasTotales        ?? data.productosVendidos    ?? 0,
+        botellas: data.botellasReemplazadas ?? 0,
+        agua:     data.litrosAguaEvitados   ?? 0,
+        kg:       data.kgPlasticoEvitado    ?? 0,
+      };
+    }
 
     /* ── Hero stats ── */
     if (heroEls.vendidos) animarNumero(heroEls.vendidos, vals.vendidos);

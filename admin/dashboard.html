@@ -10,12 +10,226 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/admin/css/admin.css?v=9">
+  <link rel="stylesheet" href="/admin/css/admin.css?v=10">
+  <style>
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .dash-grid-2 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .dash-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 1024px) {
+      .dash-grid { grid-template-columns: repeat(2, 1fr); }
+      .dash-grid-2 { grid-template-columns: 1fr; }
+      .dash-grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .dash-grid { grid-template-columns: 1fr; }
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 22px;
+      box-shadow: 0 2px 12px rgba(28,22,17,.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--bar-color, var(--wine));
+    }
+    .stat-card.wine   { --bar-color: #5F0F3F; }
+    .stat-card.green  { --bar-color: #10B981; }
+    .stat-card.orange { --bar-color: #F59E0B; }
+    .stat-card.blue   { --bar-color: #3B82F6; }
+    .stat-card.coral  { --bar-color: #FF694C; }
+    .stat-card.violet { --bar-color: #8B5CF6; }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--bar-color) 12%, transparent);
+      color: var(--bar-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .stat-num {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--dark);
+      line-height: 1.1;
+    }
+    .stat-label {
+      font-size: .78rem;
+      color: var(--mid);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      font-weight: 500;
+    }
+    .stat-sub {
+      font-size: .78rem;
+      color: var(--mid);
+      margin-top: 4px;
+    }
+    .stat-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: .72rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 6px;
+    }
+    .stat-trend.up   { background: #DCFCE7; color: #166534; }
+    .stat-trend.down { background: #FEE2E2; color: #991B1B; }
+    .stat-trend.neutral { background: #F3F4F6; color: #6B7280; }
+
+    /* Gráfico de barras horizontal */
+    .bar-list { list-style: none; padding: 0; margin: 0; }
+    .bar-list li {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--light);
+    }
+    .bar-list li:last-child { border-bottom: none; }
+    .bar-info { display: flex; flex-direction: column; }
+    .bar-label { font-size: .9rem; font-weight: 500; }
+    .bar-track {
+      height: 8px;
+      background: var(--light);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--wine), var(--purple));
+      border-radius: 4px;
+      transition: width .6s ease;
+    }
+    .bar-value { font-weight: 700; color: var(--dark); font-size: .9rem; }
+
+    /* Gráfico de tendencia (línea simple) */
+    .trend-chart {
+      height: 180px;
+      position: relative;
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      padding: 0 4px;
+    }
+    .trend-bar {
+      flex: 1;
+      background: linear-gradient(180deg, var(--wine), var(--purple));
+      border-radius: 4px 4px 0 0;
+      min-height: 4px;
+      position: relative;
+      transition: height .6s ease;
+    }
+    .trend-bar:hover { opacity: .85; }
+    .trend-label {
+      position: absolute;
+      bottom: -22px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: .7rem;
+      color: var(--mid);
+    }
+    .trend-value {
+      position: absolute;
+      top: -20px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    /* Lista de items */
+    .item-list { list-style: none; padding: 0; margin: 0; }
+    .item-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--light);
+    }
+    .item-list li:last-child { border-bottom: none; }
+    .item-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--wine), var(--purple));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .88rem;
+      flex-shrink: 0;
+    }
+    .item-content { flex: 1; min-width: 0; }
+    .item-title {
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .item-sub {
+      font-size: .76rem;
+      color: var(--mid);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .item-amount {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: .92rem;
+    }
+    .item-date {
+      font-size: .76rem;
+      color: var(--mid);
+    }
+
+    .empty-list {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--mid);
+      font-size: .88rem;
+    }
+    .empty-list svg { opacity: .3; margin-bottom: 8px; }
+  </style>
 </head>
 <body>
 
 <div class="admin-layout">
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-text">LULIS</div>
@@ -35,6 +249,13 @@
       </a>
       <a href="/admin/direcciones" class="sidebar-link">
         <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Direcciones
+      </a>
+      <div class="sidebar-section">Operación</div>
+      <a href="/admin/ventas" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span> Ventas
+      </a>
+      <a href="/admin/reportes" class="sidebar-link">
+        <span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Reportes
       </a>
       <div class="sidebar-section">Comunicación</div>
       <a href="/admin/mensajes" class="sidebar-link">
@@ -61,123 +282,134 @@
     </div>
   </aside>
 
-  <!-- TOPBAR -->
   <header class="topbar">
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir men�">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <div class="topbar-title">Dashboard</div>
     <div class="topbar-actions">
       <a href="../index.html" class="topbar-link-site" target="_blank">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y1="3"/></svg>
         Ver sitio
       </a>
     </div>
   </header>
 
-  <!-- CONTENT -->
   <main class="admin-content" id="mainContent">
+    <div class="page-header">
+      <div>
+        <h1>Dashboard</h1>
+        <p id="dashSubtitle">Cargando métricas…</p>
+      </div>
+      <div style="display:flex;gap:8px">
+        <a href="/admin/ventas" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Ver ventas
+        </a>
+        <a href="/admin/reportes" class="btn btn-outline">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Reportes
+        </a>
+      </div>
+    </div>
+
     <div class="page-loading" id="pageLoading">
       <div class="spinner"></div>
-      <p>Cargando métricas...</p>
+      <p>Cargando métricas…</p>
     </div>
 
     <div id="dashContent" style="display:none">
-      <!-- Stats row 1 -->
-      <div class="stats-grid" id="statsGrid">
+
+      <!-- KPIs principales -->
+      <div class="dash-grid">
         <div class="stat-card wine">
-          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
-          <div class="stat-num" id="st-productos">—</div>
-          <div class="stat-label">Productos activos</div>
-          <div class="stat-sub" id="st-productos-sub"></div>
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <div class="stat-num" id="kpi-ingresos">Bs 0</div>
+          <div class="stat-label">Ingresos totales</div>
+          <div class="stat-sub" id="kpi-ingresos-sub">—</div>
         </div>
         <div class="stat-card green">
-          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-          <div class="stat-num" id="st-ventas">—</div>
-          <div class="stat-label">Ventas registradas</div>
-          <div class="stat-sub" id="st-ventas-sub"></div>
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+          <div class="stat-num" id="kpi-unidades">0</div>
+          <div class="stat-label">Unidades vendidas</div>
+          <div class="stat-sub" id="kpi-unidades-sub">acumulado total</div>
         </div>
         <div class="stat-card orange">
-          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-          <div class="stat-num" id="st-mensajes">—</div>
-          <div class="stat-label">Mensajes sin leer</div>
-          <div class="stat-sub" id="st-mensajes-sub"></div>
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="stat-num" id="kpi-ventas">0</div>
+          <div class="stat-label">Ventas registradas</div>
+          <div class="stat-sub" id="kpi-ventas-sub">—</div>
         </div>
         <div class="stat-card blue">
-          <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
-          <div class="stat-num" id="st-galeria">—</div>
-          <div class="stat-label">Items en galería</div>
-          <div class="stat-sub" id="st-galeria-sub"></div>
+          <div class="stat-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
+          <div class="stat-num" id="kpi-agua">0 L</div>
+          <div class="stat-label">Agua evitada</div>
+          <div class="stat-sub" id="kpi-agua-sub">+ plástico: 0 kg</div>
         </div>
       </div>
 
-      <!-- Impacto ambiental -->
+      <!-- Tendencia de ventas (últimos 6 meses) -->
       <div class="card" style="margin-bottom:24px">
         <div class="card-header">
-          <span class="card-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>Impacto ambiental acumulado</span>
-          <a href="/admin/impacto" class="btn btn-outline btn-sm">Editar</a>
+          <span class="card-title">Tendencia de ventas (últimos 6 meses)</span>
+          <a href="/admin/reportes" class="btn btn-ghost btn-sm">Ver detalle →</a>
         </div>
         <div class="card-body">
-          <div class="stats-grid" id="impactoGrid">
-            <div class="stat-card green">
-              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></div>
-              <div class="stat-num" id="imp-agua">—</div>
-              <div class="stat-label">Litros de agua ahorrados</div>
-            </div>
-            <div class="stat-card coral">
-              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></div>
-              <div class="stat-num" id="imp-plastico">—</div>
-              <div class="stat-label">Envases plásticos evitados</div>
-            </div>
-            <div class="stat-card wine">
-              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 19l-3-3 3-3"/><path d="M4 16h13a3 3 0 0 0 3-3v-1"/><polyline points="14 8 17 5 20 8"/><line x1="17" y1="5" x2="17" y2="13"/></svg></div>
-              <div class="stat-num" id="imp-kg">—</div>
-              <div class="stat-label">Kg de plástico eliminado</div>
-            </div>
-            <div class="stat-card blue">
-              <div class="stat-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
-              <div class="stat-num" id="imp-vendidos">—</div>
-              <div class="stat-label">Productos vendidos (total)</div>
-            </div>
+          <div class="trend-chart" id="trendChart"></div>
+        </div>
+      </div>
+
+      <div class="dash-grid-2">
+        <!-- Top productos vendidos -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Top productos más vendidos</span>
+          </div>
+          <div class="card-body">
+            <ul class="bar-list" id="topProductosList"></ul>
+          </div>
+        </div>
+
+        <!-- Distribución por canal -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Ventas por canal</span>
+          </div>
+          <div class="card-body">
+            <ul class="bar-list" id="canalesList"></ul>
           </div>
         </div>
       </div>
 
-      <!-- Dos columnas: últimos mensajes + últimas ventas -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-
+      <!-- Listas inferiores -->
+      <div class="dash-grid-3">
         <div class="card">
           <div class="card-header">
-            <span class="card-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Últimos mensajes</span>
+            <span class="card-title">Últimas ventas</span>
+            <a href="/admin/ventas" class="btn btn-ghost btn-sm">Ver todas →</a>
+          </div>
+          <div class="card-body">
+            <ul class="item-list" id="lastVentas"></ul>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Últimos mensajes</span>
             <a href="/admin/mensajes" class="btn btn-ghost btn-sm">Ver todos →</a>
           </div>
-          <div id="lastMsgs">
-            <div class="page-loading" style="min-height:120px">
-              <div class="spinner"></div>
-            </div>
+          <div class="card-body">
+            <ul class="item-list" id="lastMsgs"></ul>
           </div>
         </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Últimas ventas</span>
-            <a href="#" class="btn btn-ghost btn-sm">Ver todas →</a>
-          </div>
-          <div id="lastVentas">
-            <div class="page-loading" style="min-height:120px">
-              <div class="spinner"></div>
-            </div>
-          </div>
-        </div>
-
       </div>
+
     </div>
   </main>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script type="module" defer src="/admin/js/auth.js?v=9"></script>
-<script type="module" defer src="/admin/js/dashboard.js?v=9"></script>
+<script type="module" defer src="/admin/js/auth.js?v=10"></script>
+<script type="module" defer src="/admin/js/dashboard.js?v=10"></script>
 </body>
 </html>

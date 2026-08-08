@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reportes — LULIS Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#5F0F3F">
+  <link rel="icon" type="image/svg+xml" href="/admin/../Imagenes/logos/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/admin.css?v=10">
+  <style>
+    .reportes-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 1024px) {
+      .reportes-grid { grid-template-columns: 1fr; }
+    }
+    .filtros-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 80px;
+      align-self: start;
+    }
+    .filtros-card h3 {
+      margin-bottom: 16px;
+      font-size: 1rem;
+    }
+    .filtro-grupo {
+      margin-bottom: 14px;
+    }
+    .filtro-grupo label {
+      display: block;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--mid);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .filtro-grupo input, .filtro-grupo select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--beige);
+      border-radius: 8px;
+      font-size: .88rem;
+      background: #fff;
+      color: var(--dark);
+      font-family: inherit;
+    }
+    .filtro-grupo input:focus, .filtro-grupo select:focus {
+      outline: none;
+      border-color: var(--wine);
+      box-shadow: 0 0 0 3px rgba(95,15,63,.12);
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .preview-card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .preview-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .preview-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 20px;
+      background: var(--light);
+    }
+    .preview-stat {
+      text-align: center;
+    }
+    .preview-stat-num {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--dark);
+    }
+    .preview-stat-label {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--mid);
+      margin-top: 2px;
+    }
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .preview-table th, .preview-table td {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: .84rem;
+      border-bottom: 1px solid var(--light);
+    }
+    .preview-table th {
+      background: var(--light);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--mid);
+      font-weight: 600;
+    }
+    .preview-table tr:last-child td { border-bottom: none; }
+    .preview-table .td-num { text-align: right; font-variant-numeric: tabular-nums; }
+    .preview-table .td-strong { font-weight: 700; }
+    .preview-empty {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--mid);
+    }
+
+    .top-list { list-style: none; padding: 0; margin: 0; }
+    .top-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--light);
+    }
+    .top-list li:last-child { border-bottom: none; }
+    .top-list .rank {
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--wine);
+      width: 28px;
+    }
+    .top-list .producto-info { flex: 1; }
+    .top-list .producto-nombre { font-weight: 500; font-size: .9rem; }
+    .top-list .producto-stats { font-size: .78rem; color: var(--mid); margin-top: 2px; }
+    .top-list .producto-total { font-weight: 700; color: var(--dark); }
+
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid var(--light);
+      margin-bottom: 16px;
+    }
+    .tab {
+      padding: 10px 20px;
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--mid);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all .15s;
+    }
+    .tab.active {
+      color: var(--wine);
+      border-bottom-color: var(--wine);
+    }
+    .tab:hover { color: var(--dark); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">LULIS</div>
+      <div class="sidebar-logo-sub">Panel Admin</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="/admin/dashboard" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <div class="sidebar-section">Catálogo</div>
+      <a href="/admin/productos" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span> Productos</a>
+      <a href="/admin/galeria" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span> Galería</a>
+      <a href="/admin/direcciones" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Direcciones</a>
+      <div class="sidebar-section">Operación</div>
+      <a href="/admin/ventas" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span> Ventas</a>
+      <a href="/admin/reportes" class="sidebar-link active"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Reportes</a>
+      <div class="sidebar-section">Comunicación</div>
+      <a href="/admin/mensajes" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> Mensajes
+        <span class="sidebar-badge" id="sb-unread" style="display:none">0</span>
+      </a>
+      <div class="sidebar-section">Impacto</div>
+      <a href="/admin/impacto" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></span> Impacto Ambiental</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" data-user-avatar>A</div>
+        <div>
+          <div class="sidebar-user-name" data-user-name>Admin</div>
+          <div class="sidebar-user-role">Administrador</div>
+        </div>
+      </div>
+      <button class="btn-logout" id="logoutBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title">Reportes</div>
+    <div class="topbar-actions">
+      <a href="../index.html" class="topbar-link-site" target="_blank">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y1="3"/></svg>
+        Ver sitio
+      </a>
+    </div>
+  </header>
+
+  <main class="admin-content">
+    <div class="page-header">
+      <div>
+        <h1>Reportes</h1>
+        <p>Analiza tus ventas y exporta reportes a CSV para Excel, contadores o análisis externo.</p>
+      </div>
+    </div>
+
+    <div class="reportes-grid">
+      <!-- Filtros -->
+      <div class="filtros-card">
+        <h3>Filtros</h3>
+
+        <div class="filtro-grupo">
+          <label>Período predefinido</label>
+          <select id="rPeriodo">
+            <option value="mes_actual">Este mes</option>
+            <option value="mes_pasado">Mes pasado</option>
+            <option value="ultimos_3">Últimos 3 meses</option>
+            <option value="ultimos_6" selected>Últimos 6 meses</option>
+            <option value="anio_actual">Este año</option>
+            <option value="todo">Todo el historial</option>
+            <option value="personalizado">Personalizado</option>
+          </select>
+        </div>
+
+        <div class="filtro-grupo">
+          <label>Desde</label>
+          <input type="date" id="rDesde">
+        </div>
+        <div class="filtro-grupo">
+          <label>Hasta</label>
+          <input type="date" id="rHasta">
+        </div>
+        <div class="filtro-grupo">
+          <label>Canal</label>
+          <select id="rCanal">
+            <option value="">Todos</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="instagram">Instagram</option>
+            <option value="tienda">Tienda</option>
+            <option value="feria">Feria</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div class="filtro-grupo">
+          <label>Estado</label>
+          <select id="rEstado">
+            <option value="">Todos</option>
+            <option value="entregado">Entregado</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+        <div class="filtro-grupo">
+          <label>Producto</label>
+          <select id="rProducto">
+            <option value="">Todos</option>
+          </select>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btnExportar">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar CSV
+          </button>
+          <button class="btn btn-outline" id="btnExportarDetalle">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Detalle por línea
+          </button>
+          <button class="btn btn-outline" id="btnExportarProductos">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Resumen por producto
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="preview-card">
+        <div class="tabs">
+          <div class="tab active" data-tab="ventas">Ventas</div>
+          <div class="tab" data-tab="productos">Top productos</div>
+          <div class="tab" data-tab="canales">Por canal</div>
+        </div>
+
+        <div id="tab-ventas" class="tab-panel active">
+          <div class="preview-header">
+            <h3 style="margin:0">Ventas en el período</h3>
+            <div id="ventasCount">—</div>
+          </div>
+          <div class="preview-stats">
+            <div class="preview-stat">
+              <div class="preview-stat-num" id="prev-ventas">0</div>
+              <div class="preview-stat-label">Ventas</div>
+            </div>
+            <div class="preview-stat">
+              <div class="preview-stat-num" id="prev-unidades">0</div>
+              <div class="preview-stat-label">Unidades</div>
+            </div>
+            <div class="preview-stat">
+              <div class="preview-stat-num" id="prev-ingreso">Bs 0</div>
+              <div class="preview-stat-label">Ingreso</div>
+            </div>
+            <div class="preview-stat">
+              <div class="preview-stat-num" id="prev-ticket">Bs 0</div>
+              <div class="preview-stat-label">Ticket prom.</div>
+            </div>
+          </div>
+          <div style="max-height:500px;overflow:auto">
+            <table class="preview-table" id="ventasPreview">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Productos</th>
+                  <th>Canal</th>
+                  <th>Estado</th>
+                  <th class="td-num">Total</th>
+                </tr>
+              </thead>
+              <tbody id="ventasPreviewBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="tab-productos" class="tab-panel">
+          <div class="preview-header">
+            <h3 style="margin:0">Top productos vendidos</h3>
+          </div>
+          <ul class="top-list" id="topProductosList"></ul>
+        </div>
+
+        <div id="tab-canales" class="tab-panel">
+          <div class="preview-header">
+            <h3 style="margin:0">Distribución por canal</h3>
+          </div>
+          <div style="padding:20px">
+            <table class="preview-table" id="canalesTable">
+              <thead>
+                <tr>
+                  <th>Canal</th>
+                  <th class="td-num">Ventas</th>
+                  <th class="td-num">Unidades</th>
+                  <th class="td-num">Ingreso</th>
+                  <th class="td-num">% del total</th>
+                </tr>
+              </thead>
+              <tbody id="canalesBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" defer src="/admin/js/auth.js?v=10"></script>
+<script type="module" defer src="/admin/js/reportes.js?v=10"></script>
+</body>
+</html>
