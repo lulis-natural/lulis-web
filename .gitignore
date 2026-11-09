@@ -78,3 +78,9 @@ actualizar-reglas.html
 *.tmp
 *.bak
 *.orig
+
+
+# Credentials and tokens
+Token*.txt
+*Token*
+*token*

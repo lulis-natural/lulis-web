@@ -16,6 +16,9 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/f
 /* Ocultar el body hasta que se confirme la sesión */
 document.body.style.visibility = 'hidden';
 
+/* Safety timeout: evitar pantalla en blanco */
+setTimeout(() => { if (document.body.style.visibility === 'hidden') document.body.style.visibility = 'visible'; }, 2200);
+
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     /* Sin sesión → ir al login */

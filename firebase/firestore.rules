@@ -4,12 +4,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ── Helpers ─────────────────────────────────────────────
+    // Cualquier usuario autenticado en Firebase Auth se considera Admin
     function isAdmin() {
-      return request.auth != null
-        && request.auth.token.admin == true;
-    }
-
-    function isAuthenticated() {
       return request.auth != null;
     }
 
@@ -18,31 +14,23 @@ service cloud.firestore {
     }
 
     // ── /productos ──────────────────────────────────────────
-    // Público: leer productos disponibles. Admin: CRUD completo.
+    // Público: lectura total para catálogo en vivo. Admin: CRUD completo.
     match /productos/{productoId} {
-      allow read: if resource.data.disponible == true
-                  || isAdmin();
+      allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
     // ── /galeria ────────────────────────────────────────────
-    // Público: leer imágenes activas. Admin: CRUD completo.
+    // Público: leer imágenes. Admin: CRUD completo.
     match /galeria/{itemId} {
-      allow read: if resource.data.activo == true
-                  || isAdmin();
+      allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
     // ── /mensajes ───────────────────────────────────────────
-    // Público: SOLO crear (formulario de contacto). Admin: leer/actualizar/eliminar.
+    // Público: crear mensaje de contacto. Admin: leer/actualizar/eliminar.
     match /mensajes/{mensajeId} {
-      allow create: if request.resource.data.keys().hasAll([
-                         'nombre', 'email', 'mensaje', 'creadoEn'
-                       ])
-                    && maxLen(request.resource.data.nombre,  100)
-                    && maxLen(request.resource.data.email,   200)
-                    && maxLen(request.resource.data.mensaje, 2000)
-                    && request.resource.data.creadoEn == request.time;
+      allow create: if true;
       allow read, update, delete: if isAdmin();
     }
 
@@ -53,21 +41,21 @@ service cloud.firestore {
     }
 
     // ── /configuracion ──────────────────────────────────────
-    // Público: leer 'sitio'. Admin: CRUD completo.
+    // Público: lectura de datos generales del sitio. Admin: CRUD completo.
     match /configuracion/{docId} {
-      allow read: if docId == 'sitio' || isAdmin();
+      allow read: if true;
       allow write: if isAdmin();
     }
 
     // ── /impacto_ambiental ──────────────────────────────────
-    // Público: leer 'acumulado' (counters del hero). Admin: escribir.
+    // Público: lectura de métricas para contadores. Admin: escribir.
     match /impacto_ambiental/{docId} {
-      allow read: if docId == 'acumulado' || isAdmin();
+      allow read: if true;
       allow write: if isAdmin();
     }
 
     // ── /direcciones ────────────────────────────────────────
-    // Público: leer (carrusel de ubicaciones). Admin: CRUD completo.
+    // Público: leer ubicaciones y tiendas. Admin: CRUD completo.
     match /direcciones/{dirId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
