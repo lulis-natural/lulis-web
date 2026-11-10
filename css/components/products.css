@@ -449,3 +449,37 @@
   .lulis-modal-img { max-height: 260px; }
   .product-actions-grid { grid-template-columns: 1fr; }
 }
+
+/* ─── Filtros de Categoria en Landing ─── */
+.catalog-filters {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 28px 0 36px;
+}
+.filter-btn {
+  background: #fff;
+  border: 1.5px solid #E2D9CD;
+  color: var(--dark);
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-family: var(--ff-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.filter-btn:hover {
+  border-color: var(--wine);
+  color: var(--wine);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(95,15,63,0.12);
+}
+.filter-btn.active {
+  background: var(--wine);
+  border-color: var(--wine);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(95,15,63,0.25);
+}
