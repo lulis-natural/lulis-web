@@ -243,12 +243,14 @@ footer {
   color: #FFFFFF;
   padding: 68px 0 36px;
 }
-.footer-logo img {
-  height: 85px;
-  width: auto;
+.footer-logo img, .footer-logo-img {
+  height: 115px !important;
+  max-height: 115px !important;
+  width: auto !important;
   display: block;
-  filter: brightness(0) invert(1);
-  margin-bottom: 14px;
+  filter: brightness(0) invert(1) !important;
+  opacity: 1 !important;
+  margin-bottom: 16px;
 }
 .footer-brand p {
   font-size: 0.94rem;
@@ -310,26 +312,68 @@ footer {
   margin-top: 32px;
   padding: 16px 0;
 }
+.gallery-pager-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 36px;
+  padding: 16px 0;
+}
 .gallery-pager-btn {
-  width: 44px; height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--cream);
-  color: var(--wine);
-  border: 1.5px solid var(--wine);
-  display: flex; align-items: center; justify-content: center;
+  background: #FFFFFF !important;
+  color: var(--wine) !important;
+  border: 2px solid #FFFFFF !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, transform 0.2s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28) !important;
+  font-size: 1.1rem;
+  font-weight: 800;
+  transition: all 0.25s ease;
 }
-.gallery-pager-btn:hover:not(:disabled) { background: var(--wine); color: #fff; transform: scale(1.05); }
-.gallery-pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.gallery-pager-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--wine) !important;
+  stroke-width: 2.5;
+}
+.gallery-pager-btn:hover:not(:disabled) {
+  background: #F4BF56 !important;
+  color: #1C1611 !important;
+  border-color: #F4BF56 !important;
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(244, 191, 86, 0.45) !important;
+}
+.gallery-pager-btn:hover:not(:disabled) svg {
+  stroke: #1C1611 !important;
+}
+.gallery-pager-btn:disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed;
+  transform: none;
+}
 .gallery-pager-info {
-  font-size: 0.92rem;
-  color: var(--mid);
-  font-weight: 500;
-  min-width: 130px;
+  font-size: 1.02rem !important;
+  color: #FFFFFF !important;
+  font-weight: 600;
+  min-width: 140px;
   text-align: center;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 8px 18px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
-.gallery-pager-info strong { color: var(--wine); font-weight: 700; }
+.gallery-pager-info strong {
+  color: #F4BF56 !important;
+  font-weight: 800;
+  font-size: 1.15rem;
+}
 
 /* ═══════════════════════════════════════════════════════════
    INSTAGRAM FEED
