@@ -34,6 +34,8 @@
   text-transform: uppercase;
 }
 #navbar.scrolled .nav-logo { color: var(--wine); }
+.nav-logo img { height: 96px; max-height: 96px; width: auto; display: block; filter: brightness(0) invert(1); transition: all 0.3s ease; }
+#navbar.scrolled .nav-logo img { height: 76px; max-height: 76px; filter: none; }
 
 /* Links de navegación */
 .nav-links {

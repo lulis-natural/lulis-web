@@ -1,20 +1,20 @@
 /* ═══════════════════════════════════════════════════════════
-   LULIS — Sección Productos: Tarjetas Horizontales Estéticas (3 por fila)
+   LULIS — Catálogo Estilo Boutique (Basado en referencia Natural Farma)
    ═══════════════════════════════════════════════════════════ */
 
 #products {
   background: var(--light);
-  padding: 70px 0 90px;
+  padding: 80px 0 100px;
 }
 
 .products-header {
   text-align: center;
   max-width: 680px;
-  margin: 0 auto 24px;
+  margin: 0 auto 28px;
 }
 .products-header h2 {
   color: var(--wine);
-  font-size: clamp(2rem, 3.8vw, 2.7rem);
+  font-size: clamp(2rem, 3.8vw, 2.8rem);
   font-weight: 800;
   margin-bottom: 12px;
 }
@@ -56,12 +56,10 @@
   gap: 6px;
   white-space: nowrap;
 }
-
 .filter-btn:hover {
   color: var(--wine);
   background: rgba(95, 15, 63, 0.06);
 }
-
 .filter-btn.active {
   background: var(--wine) !important;
   color: #ffffff !important;
@@ -73,7 +71,7 @@
 .products-categories-wrap {
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 52px;
 }
 
 .category-block {
@@ -83,7 +81,7 @@
   transition: opacity 0.3s ease;
 }
 
-/* Cabecera de cada bloque */
+/* Cabecera del bloque */
 .category-block-header {
   display: flex;
   align-items: center;
@@ -92,7 +90,7 @@
   background: #ffffff;
   border-radius: 14px;
   border-left: 5px solid var(--emerald);
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 .category-block-header-left {
@@ -106,14 +104,14 @@
 }
 .category-block-title {
   font-family: var(--ff-display);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--wine);
   margin: 0;
   line-height: 1.2;
 }
 .category-block-sub {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: #7A6960;
   font-weight: 500;
   display: block;
@@ -128,218 +126,326 @@
   border-radius: 50px;
 }
 
-/* ─── GRILLA DE TARJETAS (3 POR FILA EN DESKTOP) ─── */
+/* ─── GRILLA DE PRODUCTOS (4 EN PANTALLA GRANDE / 3 EN DESKTOP) ─── */
 .product-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  gap: 24px;
   width: 100%;
 }
 
-@media (max-width: 1180px) {
+@media (min-width: 1200px) {
+  .product-list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px;
+  }
+}
+
+@media (max-width: 900px) {
   .product-list {
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 580px) {
   .product-list {
     grid-template-columns: 1fr;
     gap: 16px;
   }
 }
 
-/* ─── TARJETA HORIZONTAL COMPACTA (DISEÑO BOUTIQUE) ─── */
+/* ─── TARJETA DE PRODUCTO ESTILO NATURAL FARMA ─── */
 .product-card {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 20px;
+  border: 1px solid #ECE4D8;
+  box-shadow: 0 4px 18px rgba(28, 22, 17, 0.04);
   overflow: hidden;
-  border: 1px solid rgba(229, 216, 189, 0.6);
-  box-shadow: 0 3px 14px rgba(28, 22, 17, 0.05);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  height: 100%;
+  position: relative;
 }
 .product-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(28, 22, 17, 0.10);
-  border-color: rgba(95, 15, 63, 0.25);
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(28, 22, 17, 0.10);
+  border-color: rgba(95, 15, 63, 0.3);
 }
 
-/* Imagen en el lateral izquierdo */
-.product-img {
-  width: 140px;
-  min-width: 140px;
-  max-width: 140px;
+/* 1. Contenedor Superior: Caja de Foto Centrada (Como en referencia) */
+.product-img-box {
+  background: #F7F3EB;
+  height: 195px;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
   overflow: hidden;
-  background: #FAF6EF;
+  border-radius: 18px 18px 0 0;
 }
-.product-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  transition: transform 0.4s ease;
+.product-img-box img {
+  max-height: 155px;
+  max-width: 85%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.35s ease;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.08));
 }
-.product-card:hover .product-img img {
-  transform: scale(1.06);
+.product-card:hover .product-img-box img {
+  transform: scale(1.08);
 }
 
-/* Badges sobre la foto lateral */
+/* Badges sobre la foto */
 .product-badge {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  padding: 3px 8px;
-  font-size: 0.65rem;
+  top: 14px;
+  left: 14px;
+  background: #1B4D3E; /* Verde botella como referencia */
+  color: #ffffff;
+  padding: 4px 11px;
+  border-radius: 50px;
+  font-size: 0.70rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  border-radius: 50px;
   z-index: 2;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.14);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
-.badge-hot  { background: var(--wine); color: #fff; }
-.badge-new  { background: var(--emerald); color: #fff; }
 .badge-eco  { background: #15803d; color: #fff; }
+.badge-hot  { background: var(--wine); color: #fff; }
+.badge-new  { background: #1B4D3E; color: #fff; }
 
-/* Cuerpo de la tarjeta a la derecha */
-.product-body {
-  padding: 14px 16px;
+/* 2. Contenedor Inferior: Información y Botón Corto */
+.product-info-box {
+  padding: 18px 20px 16px;
   display: flex;
   flex-direction: column;
   flex: 1;
   justify-content: space-between;
+  background: #ffffff;
 }
 
-.product-meta-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 3px;
-}
-.product-category {
-  font-size: 0.68rem;
+.product-title {
+  font-family: var(--ff-body);
+  font-size: 1.08rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.10em;
-  color: var(--emerald);
-}
-.product-price {
-  font-family: var(--ff-display);
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--wine);
-  background: rgba(95, 15, 63, 0.07);
-  padding: 2px 7px;
-  border-radius: 10px;
-  white-space: nowrap;
-}
-
-.product-name {
-  font-family: var(--ff-display);
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--dark);
-  margin-bottom: 2px;
-  line-height: 1.22;
-}
-.product-variante-sub {
-  font-size: 0.74rem;
-  color: var(--purple);
-  font-weight: 600;
+  color: #1C1611;
   margin-bottom: 6px;
+  line-height: 1.3;
 }
 
 .product-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 8px;
+  gap: 6px;
+  margin-bottom: 12px;
 }
-.product-duracion, .hair-tag {
-  font-size: 0.68rem;
+.tag-pill {
+  background: #FAF5ED;
+  color: #7A5B3D;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 20px;
-}
-.product-duracion {
-  background: #F4EFE6;
-  color: #4A3728;
-}
-.hair-tag {
-  background: #FEF3C7;
-  color: #92400E;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(229, 216, 189, 0.7);
 }
 
-.product-desc {
-  font-size: 0.80rem;
-  color: #4A3E38;
-  line-height: 1.45;
-  margin-bottom: 10px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.product-footer {
+/* Fila Inferior: Precio + Botón Corto */
+.product-bottom-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 6px;
-  border-top: 1px solid #F2ECE0;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #F5EFE6;
 }
-.product-avail {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.72rem;
-}
-.avail-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-.avail-yes .avail-dot { background: var(--emerald); }
-.avail-no .avail-dot { background: var(--coral); }
-.avail-yes { color: var(--emerald); font-weight: 600; }
-.avail-no { color: var(--coral); font-weight: 600; }
 
-.product-wa {
+.product-price-val {
+  font-family: var(--ff-body);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1C1611;
+  letter-spacing: -0.01em;
+}
+
+/* BOTÓN DE WHATSAPP CORTO Y COMPACTO */
+.btn-wa-compact {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 7px 12px;
+  gap: 6px;
   background: var(--wa-green);
-  color: #fff;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 16px;
   border-radius: 50px;
-  font-size: 0.78rem;
-  font-weight: 600;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.20);
-  transition: all 0.2s ease;
+  transition: transform 0.2s, filter 0.2s;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.25);
   white-space: nowrap;
 }
-.product-wa:hover {
+.btn-wa-compact:hover {
   filter: brightness(1.08);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
 }
 
-@media (max-width: 480px) {
-  .product-card {
-    flex-direction: column;
+/* ─── MODAL DE DETALLE DE PRODUCTO (AMPLIAR INFORMACIÓN) ─── */
+.product-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 14, 10, 0.65);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.product-modal-backdrop.open {
+  display: flex;
+  opacity: 1;
+}
+
+.product-modal {
+  background: #ffffff;
+  border-radius: 24px;
+  max-width: 840px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  animation: modalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .product-modal {
+    grid-template-columns: 1fr;
+    max-height: 85vh;
   }
-  .product-img {
-    width: 100%;
-    min-width: 100%;
-    max-width: 100%;
-    height: 180px;
-  }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #1C1611;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s, transform 0.2s;
+}
+.modal-close-btn:hover {
+  background: rgba(95, 15, 63, 0.15);
+  transform: scale(1.08);
+}
+
+.modal-img-col {
+  background: #F7F3EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  border-radius: 24px 0 0 24px;
+}
+.modal-img-col img {
+  max-height: 280px;
+  max-width: 90%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.12));
+}
+
+.modal-info-col {
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.modal-info-col .product-category {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--emerald);
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+}
+.modal-info-col h2 {
+  font-family: var(--ff-display);
+  font-size: 1.6rem;
+  color: var(--wine);
+  font-weight: 800;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+.modal-price {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1C1611;
+  margin: 12px 0 16px;
+}
+.modal-desc {
+  font-size: 0.94rem;
+  color: #4A3E38;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+.modal-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 0.88rem;
+  color: #3B2E26;
+}
+.modal-detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.modal-detail-item strong {
+  color: var(--wine);
+}
+.btn-wa-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--wa-green);
+  color: #ffffff;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+  transition: all 0.25s ease;
+}
+.btn-wa-modal:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
 }

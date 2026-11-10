@@ -39,11 +39,11 @@ ul{list-style:none}
   padding:12px 0;box-shadow:0 2px 20px rgba(28,22,17,.08);
 }
 .nav-inner{display:flex;align-items:center;justify-content:space-between}
-.nav-logo{
+.nav-logo{display:flex;align-items:center;
   font-family:var(--ff-display);font-size:2rem;font-weight:800;
   color:#fff;transition:color .3s;letter-spacing:.08em;text-transform:uppercase;
 }
-#navbar.scrolled .nav-logo{color:var(--wine)}
+#navbar.scrolled .nav-logo{color:var(--wine)}.nav-logo img{height:96px;max-height:96px;width:auto;display:block;filter:brightness(0) invert(1);transition:all .3s ease}#navbar.scrolled .nav-logo img{height:76px;max-height:76px;filter:none}
 .nav-links{display:flex;align-items:center;gap:32px}
 .nav-links a{font-size:.88rem;font-weight:500;color:rgba(255,255,255,.85);transition:color .2s}
 #navbar.scrolled .nav-links a{color:var(--mid)}

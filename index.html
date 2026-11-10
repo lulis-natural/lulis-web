@@ -81,8 +81,8 @@
     #navbar.scrolled{background:rgba(250,248,243,.96);backdrop-filter:blur(12px);padding:12px 0;box-shadow:0 2px 20px rgba(28,22,17,.08)}
     .nav-inner{display:flex;align-items:center;justify-content:space-between}
     .nav-logo{display:flex;align-items:center;line-height:0;transition:opacity .2s}
-    .nav-logo img{height:110px;width:auto;display:block;filter:brightness(0) invert(1);transition:all .3s ease}
-    #navbar.scrolled .nav-logo img{height:90px;filter:none}
+    .nav-logo img{height:96px;width:auto;max-height:96px;display:block;filter:brightness(0) invert(1);transition:all .3s ease}
+    #navbar.scrolled .nav-logo img{height:76px;max-height:76px;filter:none}
     .nav-logo:hover{opacity:.85}
     .nav-links{display:flex;align-items:center;gap:32px}
     .nav-links a{font-size:.88rem;font-weight:500;color:rgba(255,255,255,.85);transition:color .2s}
@@ -137,7 +137,7 @@
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
     @media(max-width:768px){.nav-links{display:none}.hamburger{display:flex}.hero-stats{gap:24px}.container{padding:0 16px}}
     @media(max-width:480px){
-      .nav-logo img{height:85px}
+      .nav-logo img{height:70px;max-height:70px}
       .hero-content{padding:100px 18px 64px}
       .hero-title{font-size:clamp(1.9rem,8vw,2.4rem)}
       .hero-desc{font-size:1rem;margin-bottom:28px}
@@ -299,7 +299,7 @@
 <nav id="navbar" role="navigation" aria-label="Navegación principal">
   <div class="container nav-inner">
     <a href="#hero" class="nav-logo" aria-label="LULIS - Inicio">
-      <img src="Imagenes/logos/LOGO.png" alt="LULIS" width="120" height="42" />
+      <img src="Imagenes/logos/LOGO.png" alt="LULIS" />
     </a>
     <ul class="nav-links" role="list">
       <li><a href="#about">Nosotros</a></li>
@@ -459,7 +459,7 @@
     <div class="products-header reveal">
       <span class="eyebrow">Cosmética Sólida Natural</span>
       <h2 id="products-heading">Catálogo de Productos</h2>
-      <p>Formato sólido, sin envases plásticos, con packaging de papel orgánico con semillas plantables. Hecho a mano en La Paz, Bolivia.</p>
+      <p>Formato sólido, sin envases plásticos, con packaging de papel orgánico con semillas plantables. Haz clic en cualquier producto para ampliar detalles.</p>
     </div>
 
     <!-- Filtros de categoría para alternar bloques -->
@@ -471,7 +471,7 @@
       <button type="button" class="filter-btn" data-filter="manteca">🧈 Mantecas Corporales (Nuevo)</button>
     </div>
 
-    <!-- Contenedor ordenado en bloques con tarjetas horizontales de 3 por fila -->
+    <!-- Contenedor ordenado en bloques con tarjetas estilo Natural Farma -->
     <div class="products-categories-wrap" id="productos-wrap">
 
       <!-- BLOQUE 1: SHAMPOOS SÓLIDOS -->
@@ -488,35 +488,31 @@
         </div>
         <div class="product-list" id="list-shampoo">
           
-            <article class="product-card reveal" data-category="shampoo" data-id="shampoo-jamaica" data-name="shampoo sólido jamaica">
-              <div class="product-img">
+            <article class="product-card reveal"
+                     data-id="shampoo-jamaica"
+                     data-category="shampoo"
+                     data-name="shampoo sólido jamaica"
+                     onclick="openProductModal('shampoo-jamaica')">
+              <div class="product-img-box">
+                <span class="product-badge badge-hot">Nuevo</span>
                 <img src="Imagenes/productos/Jamaica.jpg"
                      alt="Shampoo Sólido Jamaica — cosmética consciente LULIS"
-                     width="140" height="180" loading="lazy" decoding="async">
-                <span class="product-badge badge-hot">Nuevo</span>
+                     loading="lazy" decoding="async">
               </div>
-              <div class="product-body">
+              <div class="product-info-box">
                 <div>
-                  <div class="product-meta-top">
-                    <p class="product-category">Shampoo Sólido</p>
-                    <div class="product-price"><strong>35 Bs.</strong></div>
-                  </div>
-                  <h3 class="product-name">Shampoo Sólido Jamaica</h3>
-                  <p class="product-variante-sub">Jamaica & Hibisco</p>
+                  <h3 class="product-title">Shampoo Sólido Jamaica</h3>
                   <div class="product-tags">
-                    <span class="product-duracion">35–45 lavadas</span>
-                    <span class="hair-tag">mixto</span> <span class="hair-tag">normal</span>
+                    <span class="tag-pill">50g</span>
+                    <span class="tag-pill">mixto</span> <span class="tag-pill">normal</span>
                   </div>
-                  <p class="product-desc">Equilibrio y revitalización para cabello mixto. Limpieza suave, espuma abundante y aroma natural a flor de hibisco.</p>
                 </div>
-                <div class="product-footer">
-                  <div class="product-avail avail-yes" aria-label="Disponible">
-                    <span class="avail-dot" aria-hidden="true"></span> Disponible
-                  </div>
+                <div class="product-bottom-row" onclick="event.stopPropagation()">
+                  <div class="product-price-val">Bs 35,00</div>
                   <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Shampoo%20S%C3%B3lido%20Jamaica%20(50g)%20por%2035%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-                     class="product-wa"
+                     class="btn-wa-compact"
                      data-product="Shampoo Sólido Jamaica (50g)"
-                     aria-label="Consultar por WhatsApp el Shampoo Sólido Jamaica"
+                     aria-label="Pedir por WhatsApp el Shampoo Sólido Jamaica"
                      target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Pedir
@@ -525,35 +521,31 @@
               </div>
             </article>
 
-            <article class="product-card reveal" data-category="shampoo" data-id="shampoo-romero" data-name="shampoo sólido romero">
-              <div class="product-img">
+            <article class="product-card reveal"
+                     data-id="shampoo-romero"
+                     data-category="shampoo"
+                     data-name="shampoo sólido romero"
+                     onclick="openProductModal('shampoo-romero')">
+              <div class="product-img-box">
+                <span class="product-badge badge-hot">Popular</span>
                 <img src="Imagenes/productos/Romeros.jpg"
                      alt="Shampoo Sólido Romero — cosmética consciente LULIS"
-                     width="140" height="180" loading="lazy" decoding="async">
-                <span class="product-badge badge-hot">Popular</span>
+                     loading="lazy" decoding="async">
               </div>
-              <div class="product-body">
+              <div class="product-info-box">
                 <div>
-                  <div class="product-meta-top">
-                    <p class="product-category">Shampoo Sólido</p>
-                    <div class="product-price"><strong>35 Bs.</strong></div>
-                  </div>
-                  <h3 class="product-name">Shampoo Sólido Romero</h3>
-                  <p class="product-variante-sub">Romero & Menta Silvestre</p>
+                  <h3 class="product-title">Shampoo Sólido Romero</h3>
                   <div class="product-tags">
-                    <span class="product-duracion">35–45 lavadas</span>
-                    <span class="hair-tag">graso</span> <span class="hair-tag">mixto</span>
+                    <span class="tag-pill">50g</span>
+                    <span class="tag-pill">graso</span> <span class="tag-pill">mixto</span>
                   </div>
-                  <p class="product-desc">Fortalecimiento y control de grasa. Purifica el cuero cabelludo, previene la caída y estimula el crecimiento saludable.</p>
                 </div>
-                <div class="product-footer">
-                  <div class="product-avail avail-yes" aria-label="Disponible">
-                    <span class="avail-dot" aria-hidden="true"></span> Disponible
-                  </div>
+                <div class="product-bottom-row" onclick="event.stopPropagation()">
+                  <div class="product-price-val">Bs 35,00</div>
                   <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Shampoo%20S%C3%B3lido%20Romero%20(50g)%20por%2035%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-                     class="product-wa"
+                     class="btn-wa-compact"
                      data-product="Shampoo Sólido Romero (50g)"
-                     aria-label="Consultar por WhatsApp el Shampoo Sólido Romero"
+                     aria-label="Pedir por WhatsApp el Shampoo Sólido Romero"
                      target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Pedir
@@ -562,35 +554,31 @@
               </div>
             </article>
 
-            <article class="product-card reveal" data-category="shampoo" data-id="shampoo-coco" data-name="shampoo sólido coco">
-              <div class="product-img">
+            <article class="product-card reveal"
+                     data-id="shampoo-coco"
+                     data-category="shampoo"
+                     data-name="shampoo sólido coco"
+                     onclick="openProductModal('shampoo-coco')">
+              <div class="product-img-box">
+                <span class="product-badge badge-new">Nuevo</span>
                 <img src="Imagenes/productos/Coco.jpg"
                      alt="Shampoo Sólido Coco — cosmética consciente LULIS"
-                     width="140" height="180" loading="lazy" decoding="async">
-                <span class="product-badge badge-new">Nuevo</span>
+                     loading="lazy" decoding="async">
               </div>
-              <div class="product-body">
+              <div class="product-info-box">
                 <div>
-                  <div class="product-meta-top">
-                    <p class="product-category">Shampoo Sólido</p>
-                    <div class="product-price"><strong>35 Bs.</strong></div>
-                  </div>
-                  <h3 class="product-name">Shampoo Sólido Coco</h3>
-                  <p class="product-variante-sub">Coco & Almendras Dulces</p>
+                  <h3 class="product-title">Shampoo Sólido Coco</h3>
                   <div class="product-tags">
-                    <span class="product-duracion">35–45 lavadas</span>
-                    <span class="hair-tag">seco</span> <span class="hair-tag">rizado</span> <span class="hair-tag">dañado</span>
+                    <span class="tag-pill">50g</span>
+                    <span class="tag-pill">seco</span> <span class="tag-pill">rizado</span>
                   </div>
-                  <p class="product-desc">Hidratación profunda para cabello seco o maltratado. Nutrición intensa desde la primera lavada sin apelmazar.</p>
                 </div>
-                <div class="product-footer">
-                  <div class="product-avail avail-yes" aria-label="Disponible">
-                    <span class="avail-dot" aria-hidden="true"></span> Disponible
-                  </div>
+                <div class="product-bottom-row" onclick="event.stopPropagation()">
+                  <div class="product-price-val">Bs 35,00</div>
                   <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Shampoo%20S%C3%B3lido%20Coco%20(50g)%20por%2035%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-                     class="product-wa"
+                     class="btn-wa-compact"
                      data-product="Shampoo Sólido Coco (50g)"
-                     aria-label="Consultar por WhatsApp el Shampoo Sólido Coco"
+                     aria-label="Pedir por WhatsApp el Shampoo Sólido Coco"
                      target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Pedir
@@ -615,35 +603,31 @@
         </div>
         <div class="product-list" id="list-acondicionador">
           
-            <article class="product-card reveal" data-category="acondicionador" data-id="acond-melon" data-name="acondicionador sólido melón">
-              <div class="product-img">
+            <article class="product-card reveal"
+                     data-id="acond-melon"
+                     data-category="acondicionador"
+                     data-name="acondicionador sólido melón"
+                     onclick="openProductModal('acond-melon')">
+              <div class="product-img-box">
+                <span class="product-badge badge-eco">Eco</span>
                 <img src="Imagenes/productos/Pack_coco_y_melon.jpeg"
                      alt="Acondicionador Sólido Melón — cosmética consciente LULIS"
-                     width="140" height="180" loading="lazy" decoding="async">
-                <span class="product-badge badge-eco">Eco</span>
+                     loading="lazy" decoding="async">
               </div>
-              <div class="product-body">
+              <div class="product-info-box">
                 <div>
-                  <div class="product-meta-top">
-                    <p class="product-category">Acondicionador Sólido</p>
-                    <div class="product-price"><strong>38 Bs.</strong></div>
-                  </div>
-                  <h3 class="product-name">Acondicionador Sólido Melón</h3>
-                  <p class="product-variante-sub">Melón & Semillas de Chía</p>
+                  <h3 class="product-title">Acondicionador Sólido Melón</h3>
                   <div class="product-tags">
-                    <span class="product-duracion">40–50 lavadas</span>
-                    <span class="hair-tag">graso</span> <span class="hair-tag">mixto</span> <span class="hair-tag">fino</span>
+                    <span class="tag-pill">50g</span>
+                    <span class="tag-pill">graso</span> <span class="tag-pill">mixto</span>
                   </div>
-                  <p class="product-desc">Ligero, sedoso y desenredante. Ideal para cabello graso o fino. Acondiciona y aporta brillo sin dejar residuo pesado.</p>
                 </div>
-                <div class="product-footer">
-                  <div class="product-avail avail-yes" aria-label="Disponible">
-                    <span class="avail-dot" aria-hidden="true"></span> Disponible
-                  </div>
+                <div class="product-bottom-row" onclick="event.stopPropagation()">
+                  <div class="product-price-val">Bs 38,00</div>
                   <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Acondicionador%20S%C3%B3lido%20Mel%C3%B3n%20(50g)%20por%2038%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-                     class="product-wa"
+                     class="btn-wa-compact"
                      data-product="Acondicionador Sólido Melón (50g)"
-                     aria-label="Consultar por WhatsApp el Acondicionador Sólido Melón"
+                     aria-label="Pedir por WhatsApp el Acondicionador Sólido Melón"
                      target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Pedir
@@ -652,35 +636,31 @@
               </div>
             </article>
 
-            <article class="product-card reveal" data-category="acondicionador" data-id="acond-uva-jamaica" data-name="acondicionador uva & jamaica">
-              <div class="product-img">
+            <article class="product-card reveal"
+                     data-id="acond-uva-jamaica"
+                     data-category="acondicionador"
+                     data-name="acondicionador uva & jamaica"
+                     onclick="openProductModal('acond-uva-jamaica')">
+              <div class="product-img-box">
+                <span class="product-badge badge-hot">Popular</span>
                 <img src="Imagenes/productos/Pack_jamaica_y_jamaica.jpeg"
                      alt="Acondicionador Uva & Jamaica — cosmética consciente LULIS"
-                     width="140" height="180" loading="lazy" decoding="async">
-                <span class="product-badge badge-hot">Popular</span>
+                     loading="lazy" decoding="async">
               </div>
-              <div class="product-body">
+              <div class="product-info-box">
                 <div>
-                  <div class="product-meta-top">
-                    <p class="product-category">Acondicionador Sólido</p>
-                    <div class="product-price"><strong>38 Bs.</strong></div>
-                  </div>
-                  <h3 class="product-name">Acondicionador Uva & Jamaica</h3>
-                  <p class="product-variante-sub">Uva Negra & Flor de Jamaica</p>
+                  <h3 class="product-title">Acondicionador Uva & Jamaica</h3>
                   <div class="product-tags">
-                    <span class="product-duracion">40–50 lavadas</span>
-                    <span class="hair-tag">seco</span> <span class="hair-tag">dañado</span> <span class="hair-tag">teñido</span>
+                    <span class="tag-pill">50g</span>
+                    <span class="tag-pill">seco</span> <span class="tag-pill">dañado</span>
                   </div>
-                  <p class="product-desc">Nutrición e hidratación intensa para cabello seco o con color. Efecto sellador de puntas y brillo espejo.</p>
                 </div>
-                <div class="product-footer">
-                  <div class="product-avail avail-yes" aria-label="Disponible">
-                    <span class="avail-dot" aria-hidden="true"></span> Disponible
-                  </div>
+                <div class="product-bottom-row" onclick="event.stopPropagation()">
+                  <div class="product-price-val">Bs 38,00</div>
                   <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Acondicionador%20Uva%20%26%20Jamaica%20(50g)%20por%2038%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-                     class="product-wa"
+                     class="btn-wa-compact"
                      data-product="Acondicionador Uva & Jamaica (50g)"
-                     aria-label="Consultar por WhatsApp el Acondicionador Uva & Jamaica"
+                     aria-label="Pedir por WhatsApp el Acondicionador Uva & Jamaica"
                      target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Pedir
@@ -705,35 +685,31 @@
         </div>
         <div class="product-list" id="list-pack">
           
-            <article class="product-card reveal" data-category="pack" data-id="pack-duo-romero-melon" data-name="pack dúo pureza (romero + melón)">
-              <div class="product-img">
+            <article class="product-card reveal"
+                     data-id="pack-duo-romero-melon"
+                     data-category="pack"
+                     data-name="pack dúo pureza (romero + melón)"
+                     onclick="openProductModal('pack-duo-romero-melon')">
+              <div class="product-img-box">
+                <span class="product-badge badge-hot">Oferta</span>
                 <img src="Imagenes/productos/Pack_romero_y_melon.jpeg"
                      alt="Pack Dúo Pureza (Romero + Melón) — cosmética consciente LULIS"
-                     width="140" height="180" loading="lazy" decoding="async">
-                <span class="product-badge badge-hot">Oferta</span>
+                     loading="lazy" decoding="async">
               </div>
-              <div class="product-body">
+              <div class="product-info-box">
                 <div>
-                  <div class="product-meta-top">
-                    <p class="product-category">Pack Dúo</p>
-                    <div class="product-price"><strong>68 Bs.</strong></div>
-                  </div>
-                  <h3 class="product-name">Pack Dúo Pureza (Romero + Melón)</h3>
-                  <p class="product-variante-sub">Shampoo Romero + Acondicionador Melón</p>
+                  <h3 class="product-title">Pack Dúo Pureza (Romero + Melón)</h3>
                   <div class="product-tags">
-                    <span class="product-duracion">Hasta 90 lavadas</span>
-                    <span class="hair-tag">graso</span> <span class="hair-tag">mixto</span>
+                    <span class="tag-pill">50g + 50g</span>
+                    <span class="tag-pill">graso</span> <span class="tag-pill">mixto</span>
                   </div>
-                  <p class="product-desc">El dúo perfecto para control de grasa y frescura completa. Incluye caja ecológica con semillas plantables.</p>
                 </div>
-                <div class="product-footer">
-                  <div class="product-avail avail-yes" aria-label="Disponible">
-                    <span class="avail-dot" aria-hidden="true"></span> Disponible
-                  </div>
+                <div class="product-bottom-row" onclick="event.stopPropagation()">
+                  <div class="product-price-val">Bs 68,00</div>
                   <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Pack%20D%C3%BAo%20Pureza%20(Romero%20%2B%20Mel%C3%B3n)%20(50g%20%2B%2050g)%20por%2068%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-                     class="product-wa"
+                     class="btn-wa-compact"
                      data-product="Pack Dúo Pureza (Romero + Melón) (50g + 50g)"
-                     aria-label="Consultar por WhatsApp el Pack Dúo Pureza (Romero + Melón)"
+                     aria-label="Pedir por WhatsApp el Pack Dúo Pureza (Romero + Melón)"
                      target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Pedir
@@ -742,35 +718,31 @@
               </div>
             </article>
 
-            <article class="product-card reveal" data-category="pack" data-id="pack-duo-coco-melon" data-name="pack dúo hidratación (coco + melón)">
-              <div class="product-img">
+            <article class="product-card reveal"
+                     data-id="pack-duo-coco-melon"
+                     data-category="pack"
+                     data-name="pack dúo hidratación (coco + melón)"
+                     onclick="openProductModal('pack-duo-coco-melon')">
+              <div class="product-img-box">
+                <span class="product-badge badge-hot">Popular</span>
                 <img src="Imagenes/productos/Pack_coco_y_melon.jpeg"
                      alt="Pack Dúo Hidratación (Coco + Melón) — cosmética consciente LULIS"
-                     width="140" height="180" loading="lazy" decoding="async">
-                <span class="product-badge badge-hot">Popular</span>
+                     loading="lazy" decoding="async">
               </div>
-              <div class="product-body">
+              <div class="product-info-box">
                 <div>
-                  <div class="product-meta-top">
-                    <p class="product-category">Pack Dúo</p>
-                    <div class="product-price"><strong>68 Bs.</strong></div>
-                  </div>
-                  <h3 class="product-name">Pack Dúo Hidratación (Coco + Melón)</h3>
-                  <p class="product-variante-sub">Shampoo Coco + Acondicionador Melón</p>
+                  <h3 class="product-title">Pack Dúo Hidratación (Coco + Melón)</h3>
                   <div class="product-tags">
-                    <span class="product-duracion">Hasta 90 lavadas</span>
-                    <span class="hair-tag">seco</span> <span class="hair-tag">mixto</span>
+                    <span class="tag-pill">50g + 50g</span>
+                    <span class="tag-pill">seco</span> <span class="tag-pill">mixto</span>
                   </div>
-                  <p class="product-desc">Nutrición equilibrada para raíces limpias y puntas ultra hidratadas. Ideal para uso diario familiar.</p>
                 </div>
-                <div class="product-footer">
-                  <div class="product-avail avail-yes" aria-label="Disponible">
-                    <span class="avail-dot" aria-hidden="true"></span> Disponible
-                  </div>
+                <div class="product-bottom-row" onclick="event.stopPropagation()">
+                  <div class="product-price-val">Bs 68,00</div>
                   <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Pack%20D%C3%BAo%20Hidrataci%C3%B3n%20(Coco%20%2B%20Mel%C3%B3n)%20(50g%20%2B%2050g)%20por%2068%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-                     class="product-wa"
+                     class="btn-wa-compact"
                      data-product="Pack Dúo Hidratación (Coco + Melón) (50g + 50g)"
-                     aria-label="Consultar por WhatsApp el Pack Dúo Hidratación (Coco + Melón)"
+                     aria-label="Pedir por WhatsApp el Pack Dúo Hidratación (Coco + Melón)"
                      target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Pedir
@@ -779,35 +751,31 @@
               </div>
             </article>
 
-            <article class="product-card reveal" data-category="pack" data-id="pack-duo-jamaica-romero" data-name="pack dúo botánico (jamaica + romero)">
-              <div class="product-img">
+            <article class="product-card reveal"
+                     data-id="pack-duo-jamaica-romero"
+                     data-category="pack"
+                     data-name="pack dúo botánico (jamaica + romero)"
+                     onclick="openProductModal('pack-duo-jamaica-romero')">
+              <div class="product-img-box">
+                <span class="product-badge badge-new">Nuevo</span>
                 <img src="Imagenes/productos/Jamaica y romero.jpg"
                      alt="Pack Dúo Botánico (Jamaica + Romero) — cosmética consciente LULIS"
-                     width="140" height="180" loading="lazy" decoding="async">
-                <span class="product-badge badge-new">Nuevo</span>
+                     loading="lazy" decoding="async">
               </div>
-              <div class="product-body">
+              <div class="product-info-box">
                 <div>
-                  <div class="product-meta-top">
-                    <p class="product-category">Pack Dúo</p>
-                    <div class="product-price"><strong>65 Bs.</strong></div>
-                  </div>
-                  <h3 class="product-name">Pack Dúo Botánico (Jamaica + Romero)</h3>
-                  <p class="product-variante-sub">2 Shampoos Sólidos 50g</p>
+                  <h3 class="product-title">Pack Dúo Botánico (Jamaica + Romero)</h3>
                   <div class="product-tags">
-                    <span class="product-duracion">Hasta 90 lavadas</span>
-                    <span class="hair-tag">todos</span> <span class="hair-tag">mixto</span> <span class="hair-tag">graso</span>
+                    <span class="tag-pill">50g + 50g</span>
+                    <span class="tag-pill">todos</span> <span class="tag-pill">mixto</span>
                   </div>
-                  <p class="product-desc">Doble poder herbal: equilibrio con Jamaica y estimulación tónica con Romero. Excelente para regalar.</p>
                 </div>
-                <div class="product-footer">
-                  <div class="product-avail avail-yes" aria-label="Disponible">
-                    <span class="avail-dot" aria-hidden="true"></span> Disponible
-                  </div>
+                <div class="product-bottom-row" onclick="event.stopPropagation()">
+                  <div class="product-price-val">Bs 65,00</div>
                   <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Pack%20D%C3%BAo%20Bot%C3%A1nico%20(Jamaica%20%2B%20Romero)%20(50g%20%2B%2050g)%20por%2065%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-                     class="product-wa"
+                     class="btn-wa-compact"
                      data-product="Pack Dúo Botánico (Jamaica + Romero) (50g + 50g)"
-                     aria-label="Consultar por WhatsApp el Pack Dúo Botánico (Jamaica + Romero)"
+                     aria-label="Pedir por WhatsApp el Pack Dúo Botánico (Jamaica + Romero)"
                      target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Pedir
@@ -832,35 +800,31 @@
         </div>
         <div class="product-list" id="list-manteca">
           
-            <article class="product-card reveal" data-category="manteca" data-id="manteca-corporal-karite-cacao" data-name="manteca corporal karité & cacao">
-              <div class="product-img">
+            <article class="product-card reveal"
+                     data-id="manteca-corporal-karite-cacao"
+                     data-category="manteca"
+                     data-name="manteca corporal karité & cacao"
+                     onclick="openProductModal('manteca-corporal-karite-cacao')">
+              <div class="product-img-box">
+                <span class="product-badge badge-hot">Próximamente</span>
                 <img src="Imagenes/galeria/packagin.jpeg"
                      alt="Manteca Corporal Karité & Cacao — cosmética consciente LULIS"
-                     width="140" height="180" loading="lazy" decoding="async">
-                <span class="product-badge badge-hot">Próximamente</span>
+                     loading="lazy" decoding="async">
               </div>
-              <div class="product-body">
+              <div class="product-info-box">
                 <div>
-                  <div class="product-meta-top">
-                    <p class="product-category">Manteca Corporal</p>
-                    <div class="product-price"><strong>42 Bs.</strong></div>
-                  </div>
-                  <h3 class="product-name">Manteca Corporal Karité & Cacao</h3>
-                  <p class="product-variante-sub">Karité Puro & Cacao Boliviano</p>
+                  <h3 class="product-title">Manteca Corporal Karité & Cacao</h3>
                   <div class="product-tags">
-                    <span class="product-duracion">Formato sólido barra</span>
-                    <span class="hair-tag">piel seca</span> <span class="hair-tag">todo tipo</span>
+                    <span class="tag-pill">80g</span>
+                    <span class="tag-pill">piel seca</span> <span class="tag-pill">todo tipo</span>
                   </div>
-                  <p class="product-desc">Nutrición profunda sin plástico para piel seca o expuesta al clima andino. Se derrite al contacto con la piel.</p>
                 </div>
-                <div class="product-footer">
-                  <div class="product-avail avail-no" aria-label="Próximamente">
-                    <span class="avail-dot" aria-hidden="true"></span> Próximamente
-                  </div>
+                <div class="product-bottom-row" onclick="event.stopPropagation()">
+                  <div class="product-price-val">Bs 42,00</div>
                   <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Manteca%20Corporal%20Karit%C3%A9%20%26%20Cacao%20(80g)%20por%2042%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-                     class="product-wa"
+                     class="btn-wa-compact"
                      data-product="Manteca Corporal Karité & Cacao (80g)"
-                     aria-label="Consultar por WhatsApp el Manteca Corporal Karité & Cacao"
+                     aria-label="Pedir por WhatsApp el Manteca Corporal Karité & Cacao"
                      target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     Pedir
@@ -874,6 +838,33 @@
     </div>
   </div>
 </section>
+
+<!-- MODAL QUICK VIEW DE DETALLE DE PRODUCTO -->
+<div class="product-modal-backdrop" id="productDetailModal" onclick="closeProductModal(event)">
+  <div class="product-modal" onclick="event.stopPropagation()">
+    <button class="modal-close-btn" onclick="closeProductModal()" aria-label="Cerrar ventana">✕</button>
+    <div class="modal-img-col">
+      <img id="modalProductImg" src="" alt="Producto LULIS">
+    </div>
+    <div class="modal-info-col">
+      <div>
+        <p class="product-category" id="modalProductCategory">Shampoo Sólido</p>
+        <h2 id="modalProductTitle">Nombre del producto</h2>
+        <div class="modal-price" id="modalProductPrice">Bs 35,00</div>
+        <p class="modal-desc" id="modalProductDesc">Descripción del producto.</p>
+        <div class="modal-detail-list">
+          <div class="modal-detail-item"><span>🌿</span> <div><strong>Ingredientes clave:</strong> <span id="modalProductIngredients">Tensioactivo vegetal, extractos botánicos.</span></div></div>
+          <div class="modal-detail-item"><span>⏱️</span> <div><strong>Rendimiento:</strong> <span id="modalProductDuration">35–45 lavadas</span></div></div>
+          <div class="modal-detail-item"><span>🌱</span> <div><strong>Empaque:</strong> Papel orgánico biodegradable con semillas que puedes plantar tras el uso.</div></div>
+        </div>
+      </div>
+      <a href="#" id="modalProductWaBtn" class="btn-wa-modal" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Pedir este producto por WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
 
 
 <!-- ════════════════════════════════════════════════════════
@@ -1466,7 +1457,7 @@
     <div class="footer-grid">
 
       <div class="footer-brand">
-        <div class="footer-logo"><img src="Imagenes/logos/LOGO.png" alt="LULIS" width="120" height="42" /></div>
+        <div class="footer-logo"><img src="Imagenes/logos/LOGO.png" alt="LULIS" /></div>
         <p>Cosmética consciente desde Bolivia. Shampoos y acondicionadores sólidos de alta calidad, sin plástico, para personas que eligen consumir mejor.</p>
         <nav class="footer-socials" aria-label="Redes sociales LULIS">
           <a href="https://wa.me/59173515698"
