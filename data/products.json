@@ -8,7 +8,10 @@
     "size": "50g",
     "duracion": "35–45 lavadas",
     "precio": "35 Bs.",
-    "tipoCabello": ["mixto", "normal"],
+    "tipoCabello": [
+      "mixto",
+      "normal"
+    ],
     "badge": "Nuevo",
     "badgeClass": "badge-hot",
     "disponible": true,
@@ -29,7 +32,10 @@
     "size": "50g",
     "duracion": "35–45 lavadas",
     "precio": "35 Bs.",
-    "tipoCabello": ["graso", "mixto"],
+    "tipoCabello": [
+      "graso",
+      "mixto"
+    ],
     "badge": "Popular",
     "badgeClass": "badge-hot",
     "disponible": true,
@@ -50,7 +56,11 @@
     "size": "50g",
     "duracion": "35–45 lavadas",
     "precio": "35 Bs.",
-    "tipoCabello": ["seco", "rizado", "dañado"],
+    "tipoCabello": [
+      "seco",
+      "rizado",
+      "dañado"
+    ],
     "badge": "Nuevo",
     "badgeClass": "badge-new",
     "disponible": true,
@@ -71,7 +81,11 @@
     "size": "50g",
     "duracion": "40–50 lavadas",
     "precio": "38 Bs.",
-    "tipoCabello": ["graso", "mixto", "fino"],
+    "tipoCabello": [
+      "graso",
+      "mixto",
+      "fino"
+    ],
     "badge": "Eco",
     "badgeClass": "badge-eco",
     "disponible": true,
@@ -92,7 +106,11 @@
     "size": "50g",
     "duracion": "40–50 lavadas",
     "precio": "38 Bs.",
-    "tipoCabello": ["seco", "dañado", "teñido"],
+    "tipoCabello": [
+      "seco",
+      "dañado",
+      "teñido"
+    ],
     "badge": "Popular",
     "badgeClass": "badge-hot",
     "disponible": true,
@@ -113,7 +131,10 @@
     "size": "50g + 50g",
     "duracion": "Hasta 90 lavadas",
     "precio": "68 Bs.",
-    "tipoCabello": ["graso", "mixto"],
+    "tipoCabello": [
+      "graso",
+      "mixto"
+    ],
     "badge": "Oferta",
     "badgeClass": "badge-hot",
     "disponible": true,
@@ -134,7 +155,10 @@
     "size": "50g + 50g",
     "duracion": "Hasta 90 lavadas",
     "precio": "68 Bs.",
-    "tipoCabello": ["seco", "mixto"],
+    "tipoCabello": [
+      "seco",
+      "mixto"
+    ],
     "badge": "Popular",
     "badgeClass": "badge-hot",
     "disponible": true,
@@ -155,7 +179,11 @@
     "size": "50g + 50g",
     "duracion": "Hasta 90 lavadas",
     "precio": "65 Bs.",
-    "tipoCabello": ["todos", "mixto", "graso"],
+    "tipoCabello": [
+      "todos",
+      "mixto",
+      "graso"
+    ],
     "badge": "Nuevo",
     "badgeClass": "badge-new",
     "disponible": true,
@@ -166,5 +194,29 @@
     "descripcionLarga": "Alterna entre ambos shampoos según las necesidades de tu cuero cabelludo a lo largo de la semana. Viene con semillas para plantar tu packaging.",
     "ingredientes": "1 barra Shampoo Jamaica 50g + 1 barra Shampoo Romero 50g.",
     "modoUso": "Alternar entre ambas barras según la necesidad del cuero cabelludo."
+  },
+  {
+    "id": "manteca-corporal-karite-cacao",
+    "nombre": "Manteca Corporal Karité & Cacao",
+    "variante": "Karité Puro & Cacao Boliviano",
+    "categoria": "manteca",
+    "categoriaLabel": "Manteca Corporal",
+    "size": "80g",
+    "duracion": "Formato sólido barra",
+    "precio": "42 Bs.",
+    "tipoCabello": [
+      "piel seca",
+      "todo tipo"
+    ],
+    "badge": "Próximamente",
+    "badgeClass": "badge-hot",
+    "disponible": false,
+    "destacado": true,
+    "orden": 9,
+    "imagenUrl": "Imagenes/galeria/packagin.jpeg",
+    "descripcion": "Nutrición profunda sin plástico para piel seca o expuesta al clima andino. Se derrite al contacto con la piel.",
+    "descripcionLarga": "Formulada con manteca pura de karité prensada en frío y cacao silvestre boliviano. Repara la barrera cutánea sin dejar sensación pegajosa.",
+    "ingredientes": "Manteca de karité cruda, manteca de cacao boliviano, aceite virgen de almendras dulces, cera de arroz y extracto de vainilla botánica.",
+    "modoUso": "Deslizar la barra sobre la piel limpia y tibia tras la ducha. Masajear hasta completa absorción."
   }
 ]

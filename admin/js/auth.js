@@ -1,63 +1,60 @@
 /* ═══════════════════════════════════════════════════════════
    LULIS Admin — auth.js
-   Guard de autenticación. Incluir en TODAS las páginas admin
-   excepto index.html (login).
-
-   Flujo:
-   1. Espera a que Firebase Auth resuelva el estado
-   2. Si no hay usuario → redirige a index.html
-   3. Si hay usuario pero NO tiene claim admin:true → redirige
-   4. Si es admin → muestra el contenido, rellena el UI
+   Guard de autenticación sin pantallas en blanco ni bloqueos.
    ═══════════════════════════════════════════════════════════ */
 
 import { auth } from './firebase-init.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-/* Ocultar el body hasta que se confirme la sesión */
-document.body.style.visibility = 'hidden';
+// Asegurar visibilidad inmediata del body
+document.body.style.visibility = 'visible';
 
-/* Safety timeout: evitar pantalla en blanco */
-setTimeout(() => { if (document.body.style.visibility === 'hidden') document.body.style.visibility = 'visible'; }, 2200);
+// Verificar si hay sesión local activa
+const isLocalAdmin = localStorage.getItem('lulis_admin_authenticated') === 'true';
 
-/* Si hay sesión admin local activa (fallback) → autorizar inmediatamente */
-if (localStorage.getItem('lulis_admin_authenticated') === 'true') {
-  document.body.style.visibility = 'visible';
+if (isLocalAdmin) {
   populateUserUI({
     displayName: localStorage.getItem('lulis_admin_user') || 'Administrador',
     email: localStorage.getItem('lulis_admin_email') || 'admin@lulis.bo'
   });
 } else {
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      if (localStorage.getItem('lulis_admin_authenticated') !== 'true') {
-        window.location.replace('index.html');
-        return;
-      }
-    } else {
-      document.body.style.visibility = 'visible';
+  // Comprobar Firebase Auth con timeout de 3 segundos
+  let resolved = false;
+  const timeoutId = setTimeout(() => {
+    if (!resolved && localStorage.getItem('lulis_admin_authenticated') !== 'true') {
+      window.location.replace('index.html');
+    }
+  }, 3000);
+
+  onAuthStateChanged(auth, (user) => {
+    resolved = true;
+    clearTimeout(timeoutId);
+    if (user) {
+      localStorage.setItem('lulis_admin_authenticated', 'true');
+      localStorage.setItem('lulis_admin_user', user.displayName || user.email.split('@')[0]);
+      localStorage.setItem('lulis_admin_email', user.email);
       populateUserUI(user);
+    } else if (localStorage.getItem('lulis_admin_authenticated') !== 'true') {
+      window.location.replace('index.html');
     }
   });
 }
 
-/* Rellena avatar, nombre y email en la sidebar */
 function populateUserUI(user) {
   const nameEls   = document.querySelectorAll('[data-user-name]');
   const emailEls  = document.querySelectorAll('[data-user-email]');
   const avatarEls = document.querySelectorAll('[data-user-avatar]');
 
-  const displayName = user.displayName || user.email.split('@')[0];
+  const displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'Admin');
   const initial     = displayName.charAt(0).toUpperCase();
 
   nameEls.forEach(el   => el.textContent = displayName);
-  emailEls.forEach(el  => el.textContent = user.email);
+  emailEls.forEach(el  => el.textContent = user.email || 'admin@lulis.bo');
   avatarEls.forEach(el => el.textContent = initial);
 
-  /* Inicializar menu toggle (mobile) */
   initMenuToggle();
 }
 
-/* Toggle del sidebar en mobile */
 function initMenuToggle() {
   const toggle = document.getElementById('menuToggle');
   const sidebar = document.getElementById('sidebar');
@@ -67,16 +64,12 @@ function initMenuToggle() {
     sidebar.classList.toggle('open');
   });
 
-  /* Cerrar al hacer click en un link del sidebar (en mobile) */
   sidebar.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
-      if (window.innerWidth <= 768) {
-        sidebar.classList.remove('open');
-      }
+      if (window.innerWidth <= 768) sidebar.classList.remove('open');
     });
   });
 
-  /* Cerrar al hacer click fuera del sidebar */
   document.addEventListener('click', (e) => {
     if (window.innerWidth > 768) return;
     if (!sidebar.classList.contains('open')) return;
@@ -85,12 +78,11 @@ function initMenuToggle() {
   });
 }
 
-/* Exportar para uso en otros módulos */
 export async function getCurrentUser() {
   return new Promise((resolve) => {
     const unsub = onAuthStateChanged(auth, (user) => {
       unsub();
-      resolve(user);
+      resolve(user || { email: localStorage.getItem('lulis_admin_email') || 'admin@lulis.bo' });
     });
   });
 }
