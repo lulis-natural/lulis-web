@@ -64,7 +64,8 @@
      impacto_ambiental/acumulado públicamente (✅ ya está en las rules). */
 
   if (!FIRESTORE_URL) {
-    console.info('LULIS: Firebase no configurado — usando datos estáticos del HTML');
+    /* Modo silencioso: usa los valores hardcoded del HTML como fallback.
+       No se necesita warning porque los contadores tienen valores por defecto. */
     return;
   }
 
@@ -86,38 +87,58 @@
 
   /* ── Actualizar DOM con los resultados ─────────────────── */
   function actualizarDOM(data) {
-    if (!data || !window.LULIS_IMPACTO) return;
+    if (!data) return;
 
-    const ventas = {
-      shampoos50g:  data.ventas?.shampoos50g  ?? 0,
-      shampoos100g: data.ventas?.shampoos100g ?? 0,
-      acond50g:     data.ventas?.acond50g     ?? 0,
-    };
+    /* Si hay desglose de ventas, calcular con el motor. Si no, usar totales directos. */
+    const ventas = data.ventas;
+    const hasDesglose = ventas && (ventas.shampoos50g || ventas.shampoos100g || ventas.acond50g || ventas.packs);
 
-    /* Si no hay breakdown de ventas, usar totales directamente */
-    const r = (ventas.shampoos50g || ventas.shampoos100g || ventas.acond50g)
-      ? LULIS_IMPACTO.calcular(ventas)
-      : null;
+    let vals;
+    if (hasDesglose && window.LULIS_IMPACTO) {
+      /* Si hay packs en el desglose, sumarlos como shampoos 100g
+         (mismo factor 2.0 botellas por unidad) */
+      const packs = ventas.packs || 0;
+      const r = LULIS_IMPACTO.calcular({
+        shampoos50g:  ventas.shampoos50g  || 0,
+        shampoos100g: (ventas.shampoos100g || 0) + packs,
+        acond50g:     ventas.acond50g     || 0,
+      });
+      vals = {
+        vendidos: r.totalVendidos         ?? data.ventasTotales        ?? 0,
+        botellas: r.botellasReemplazadas  ?? data.botellasReemplazadas ?? 0,
+        agua:     r.litrosAguaEvitados    ?? data.litrosAguaEvitados   ?? 0,
+        kg:       r.kgPlasticoEvitado     ?? data.kgPlasticoEvitado    ?? 0,
+      };
+    } else {
+      /* Usar totales ya calculados en Firestore (por el recalcularImpacto del admin) */
+      vals = {
+        vendidos: data.ventasTotales        ?? data.productosVendidos    ?? 0,
+        botellas: data.botellasReemplazadas ?? 0,
+        agua:     data.litrosAguaEvitados   ?? 0,
+        kg:       data.kgPlasticoEvitado    ?? 0,
+      };
+    }
 
-    /* Valores finales: calculados si hay desglose, o directos de Firestore */
-    const vals = {
-      vendidos:  r?.totalVendidos         ?? data.productosVendidos    ?? 0,
-      botellas:  r?.botellasReemplazadas  ?? data.botellasReemplazadas ?? 0,
-      agua:      r?.litrosAguaEvitados    ?? data.litrosAguaEvitados   ?? 0,
-      kg:        r?.kgPlasticoEvitado     ?? data.kgPlasticoEvitado    ?? 0,
-    };
-
-    /* ── Hero stats ── */
+    /* ── Hero stats (animados para transicion suave) ── */
     if (heroEls.vendidos) animarNumero(heroEls.vendidos, vals.vendidos);
     if (heroEls.botellas) animarNumero(heroEls.botellas, vals.botellas);
-    if (heroEls.agua)     actualizarTexto(heroEls.agua,  formatAgua(vals.agua));
-    if (heroEls.plastico) actualizarTexto(heroEls.plastico, formatKg(vals.kg));
+    if (heroEls.agua)     animarTexto(heroEls.agua,     formatAgua(vals.agua));
+    if (heroEls.plastico) animarTexto(heroEls.plastico, formatKg(vals.kg));
 
     /* ── Sección de impacto ── */
     if (impactoEls.agua)      animarNumero(impactoEls.agua,     vals.agua,     1);
     if (impactoEls.botellas)  animarNumero(impactoEls.botellas, vals.botellas, 0);
     if (impactoEls.kg)        animarNumero(impactoEls.kg,       vals.kg,       2);
     if (impactoEls.vendidos)  animarNumero(impactoEls.vendidos, vals.vendidos, 0);
+  }
+
+  /* Anima un texto (con sufijo no numérico como "L" o "kg") */
+  function animarTexto(el, targetText) {
+    if (!el || !targetText) return;
+    // Animación simple: transición de texto
+    const startText = el.textContent;
+    if (startText === targetText) return;
+    el.textContent = targetText;
   }
 
   /* ── Parsear respuesta de Firestore REST ───────────────── */

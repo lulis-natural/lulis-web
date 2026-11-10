@@ -44,3 +44,9 @@ const LULIS_CONFIG = {
 
 /* Exportar para uso en módulos ES (preparado para bundler/Firebase) */
 /* En el sitio estático actual se usa como variable global */
+
+/* IMPORTANTE: const NO se asigna a window, pero queremos que esté disponible
+   como window.LULIS_CONFIG para que otros scripts (clásicos) puedan acceder. */
+if (typeof window !== 'undefined') {
+  window.LULIS_CONFIG = LULIS_CONFIG;
+}

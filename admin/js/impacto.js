@@ -1,300 +1,151 @@
 /* ═══════════════════════════════════════════════════════════
-   LULIS Admin — impacto.js (v2 — cálculo automático)
-
-   El admin ingresa ÚNICAMENTE las unidades vendidas por tipo.
-   impacto-engine.js calcula todo lo demás automáticamente.
-   Los resultados se guardan en Firestore y el sitio público
-   los muestra en tiempo real.
+   LULIS Admin — impacto.js
+   Impacto Ambiental calculado automáticamente desde ventas.
+   Lee la colección `ventas` y aplica el motor de fórmulas.
    ═══════════════════════════════════════════════════════════ */
 
 import {
-  db, auth, signOut,
-  doc, collection,
-  setDoc, addDoc,
-  onSnapshot,
-  query, orderBy, limit,
-  serverTimestamp
+  db, signOut,
+  collection, doc, setDoc,
+  onSnapshot
 } from './firebase-init.js';
 
-/* Cargar el motor de cálculo (ruta absoluta) */
-const engineScript     = document.createElement('script');
-engineScript.src       = '/js/services/impacto-engine.js';
-engineScript.onload    = () => init();
-engineScript.onerror   = () => {
-  console.warn('No se pudo cargar impacto-engine.js');
-  init(); /* continuar sin el motor — modo manual */
-};
-document.head.appendChild(engineScript);
+const $ = (id) => document.getElementById(id);
 
-const $   = (id) => document.getElementById(id);
-const DOC = 'acumulado';
-const COL = 'impacto_ambiental';
+let allVentas = [];
 
-/* ─── Toast ──────────────────────────────────────────────── */
-function toast(msg, type = '') {
-  const t = $('toast');
-  t.textContent = msg;
-  t.className   = `toast show ${type}`;
-  setTimeout(() => t.className = 'toast', 3500);
-}
+const fmtBs = (n) => 'Bs ' + (n || 0).toLocaleString('es-BO', { minimumFractionDigits: 0 });
 
-/* ─── Init ───────────────────────────────────────────────── */
-function init() {
+/* ── Init ──────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
   $('logoutBtn')?.addEventListener('click', signOut);
-  $('btnGuardar').addEventListener('click', solicitarConfirmacion);
-  $('confirmCancel').addEventListener('click', () => $('confirmOverlay').classList.remove('open'));
-  $('confirmSave').addEventListener('click', guardarCambios);
+  initImpacto();
+});
 
-  /* Recalcular en tiempo real cuando el admin cambia las ventas */
-  ['vShampoo50', 'vShampoo100', 'vAcond50'].forEach(id => {
-    $(id)?.addEventListener('input', recalcular);
+function initImpacto() {
+  const observer = new MutationObserver(() => {
+    if (document.body.style.visibility === 'visible') {
+      observer.disconnect();
+      load();
+    }
   });
-
-  cargarDatos();
-  cargarHistorial();
+  observer.observe(document.body, { attributes: true, attributeFilter: ['style'] });
+  setTimeout(load, 600);
 }
 
-/* ─── Cargar datos actuales desde Firestore ──────────────── */
-function cargarDatos() {
-  onSnapshot(doc(db, COL, DOC), (snap) => {
-    $('pageLoading').style.display    = 'none';
-    $('impactoContent').style.display = 'block';
+let _loaded = false;
+function load() {
+  if (_loaded) return;
+  _loaded = true;
+  subscribeVentas();
+}
 
-    if (!snap.exists()) {
-      /* Sin datos aún, solo recalcular para mostrar 0s */
-      recalcular();
-      return;
-    }
-
-    const d = snap.data();
-
-    /* Rellenar los campos de ventas (inputs del admin) */
-    $('vShampoo50').value  = d.ventas?.shampoos50g  ?? '';
-    $('vShampoo100').value = d.ventas?.shampoos100g ?? '';
-    $('vAcond50').value    = d.ventas?.acond50g     ?? '';
-    $('mNota').value       = '';
-
-    recalcular();
+function subscribeVentas() {
+  onSnapshot(collection(db, 'ventas'), (snap) => {
+    allVentas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
   }, (err) => {
-    console.warn('[impacto]', err.code, err.message);
-    $('pageLoading').style.display    = 'none';
+    console.warn('[ventas]', err.code, err.message);
+    $('pageLoading').style.display = 'none';
     $('impactoContent').style.display = 'block';
-    if (err.code === 'permission-denied') {
-      toast('Sin permisos para leer el impacto ambiental. Verifica las reglas.', 'error');
-    } else {
-      toast('Error al cargar: ' + (err.message || ''), 'error');
-    }
   });
 }
 
-/* ─── Recalcular con el motor ────────────────────────────── */
-function recalcular() {
-  const ventas = leerVentas();
-  const engine = window.LULIS_IMPACTO;
+/* ── Cálculo de impacto ───────────────────────────────── */
+function calcular() {
+  const ventasValidas = allVentas.filter(v => v.estado !== 'cancelado');
 
-  if (!engine) {
-    /* Motor no disponible: mostrar guiones */
-    ['res-vendidos','res-botellas','res-agua','res-kg'].forEach(id => {
-      const el = $(id);
-      if (el) el.textContent = '—';
+  // Sumar por tipo de producto
+  const porTipo = {
+    shampoo50:  { und: 0, botellas: 0, factor: 1.0,  label: 'Shampoo 50g',   gramo: 50  },
+    shampoo100: { und: 0, botellas: 0, factor: 2.0,  label: 'Shampoo 100g',  gramo: 100 },
+    acond50:    { und: 0, botellas: 0, factor: 0.75, label: 'Acondicionador 50g', gramo: 50 },
+    pack:       { und: 0, botellas: 0, factor: 2.0,  label: 'Pack / Combo',  gramo: 100 }
+  };
+
+  let totalUnidades = 0;
+  let totalBotellas = 0;
+  let totalMonto    = 0;
+
+  ventasValidas.forEach(v => {
+    totalMonto += (v.total || 0);
+    (v.lineas || []).forEach(l => {
+      const cant = l.cantidad || 0;
+      totalUnidades += cant;
+      let key = null;
+      if (l.tipo === 'shampoo' && l.tamano === 50)  key = 'shampoo50';
+      else if (l.tipo === 'shampoo' && l.tamano === 100) key = 'shampoo100';
+      else if (l.tipo === 'acondicionador')             key = 'acond50';
+      else if (l.tipo === 'pack')                       key = 'pack';
+      if (key) {
+        porTipo[key].und += cant;
+        porTipo[key].botellas += cant * porTipo[key].factor;
+        totalBotellas += cant * porTipo[key].factor;
+      }
     });
-    return;
-  }
+  });
 
-  const { valido, errores } = engine.validar(ventas);
-  if (!valido) {
-    mostrarErroresValidacion(errores);
-    return;
-  }
-  limpiarErrores();
+  const agua      = totalBotellas * 0.300 * 0.70;
+  const plastico  = totalBotellas * 0.020;
 
-  const r = engine.calcular(ventas);
-  actualizarResultados(r);
-}
-
-function leerVentas() {
   return {
-    shampoos50g:  parseInt($('vShampoo50').value)  || 0,
-    shampoos100g: parseInt($('vShampoo100').value) || 0,
-    acond50g:     parseInt($('vAcond50').value)    || 0,
+    totalUnidades, totalBotellas, totalMonto,
+    ventasCount: ventasValidas.length,
+    agua: Math.round(agua * 10) / 10,
+    plastico: Math.round(plastico * 100) / 100,
+    porTipo
   };
 }
 
-/* ─── Actualizar tabla de resultados ─────────────────────── */
-function actualizarResultados(r) {
-  /* Totales */
-  $('res-vendidos').textContent = r.totalVendidos;
-  $('res-botellas').textContent = r.botellasReemplazadas;
-  $('res-agua').textContent     = `${r.litrosAguaEvitados} L`;
-  $('res-kg').textContent       = `${r.kgPlasticoEvitado} kg`;
+/* ── Render ───────────────────────────────────────────── */
+function render() {
+  $('pageLoading').style.display = 'none';
+  $('impactoContent').style.display = 'block';
 
-  /* Desglose shampoo 50g */
-  $('des-s50-u').textContent  = r.desglose.shampoos50g.unidades;
-  $('des-s50-b').textContent  = r.desglose.shampoos50g.botellas;
-  $('des-s50-l').textContent  = `${r.desglose.shampoos50g.litros} L`;
-  $('des-s50-k').textContent  = `${r.desglose.shampoos50g.kg} kg`;
+  const r = calcular();
 
-  /* Desglose shampoo 100g */
-  $('des-s100-u').textContent = r.desglose.shampoos100g.unidades;
-  $('des-s100-b').textContent = r.desglose.shampoos100g.botellas;
-  $('des-s100-l').textContent = `${r.desglose.shampoos100g.litros} L`;
-  $('des-s100-k').textContent = `${r.desglose.shampoos100g.kg} kg`;
+  // KPIs
+  $('r-vendidos').textContent     = r.totalUnidades;
+  $('r-vendidos-sub').textContent = `${r.ventasCount} ventas registradas`;
+  $('r-botellas').textContent     = r.totalBotellas.toFixed(0);
+  $('r-botellas-sub').textContent = `≈ ${r.porTipo.shampoo50.botellas.toFixed(0)} shampoo50 + ${r.porTipo.shampoo100.botellas.toFixed(0)} shampoo100 + ${r.porTipo.acond50.botellas.toFixed(0)} acond + ${r.porTipo.pack.botellas.toFixed(0)} pack`;
+  $('r-agua').textContent         = `${r.agua.toFixed(1)} L`;
+  $('r-agua-sub').textContent     = `botellas × 0.300L × 70%`;
+  $('r-kg').textContent           = `${r.plastico.toFixed(2)} kg`;
+  $('r-kg-sub').textContent       = `botellas × 0.020 kg`;
 
-  /* Desglose acondicionador */
-  $('des-a50-u').textContent  = r.desglose.acond50g.unidades;
-  $('des-a50-b').textContent  = r.desglose.acond50g.botellas;
-  $('des-a50-l').textContent  = `${r.desglose.acond50g.litros} L`;
-  $('des-a50-k').textContent  = `${r.desglose.acond50g.kg} kg`;
+  // Desglose por producto
+  const tbody = $('desgloseBody');
+  const rows = Object.entries(r.porTipo)
+    .filter(([k, v]) => v.und > 0)
+    .sort((a, b) => b[1].und - a[1].und);
 
-  /* Preview de cómo se verá en el sitio */
-  $('prev-vendidos').textContent = r.totalVendidos;
-  $('prev-botellas').textContent = r.botellasReemplazadas;
-  $('prev-agua').textContent     = r.hero.agua;
-  $('prev-kg').textContent       = r.hero.plastico;
-
-  /* Guardar resultado para usar al confirmar */
-  window._impactoResultado = r;
-}
-
-/* ─── Confirmación ───────────────────────────────────────── */
-function solicitarConfirmacion() {
-  const engine = window.LULIS_IMPACTO;
-  const r      = window._impactoResultado;
-
-  if (!r) { toast('Ingresa las ventas primero', 'error'); return; }
-
-  $('confirmMsg').innerHTML = engine
-    ? `<strong>${engine.resumir(r)}</strong><br><small>Los números se publicarán inmediatamente en el sitio.</small>`
-    : 'Los cambios se publicarán en el sitio inmediatamente.';
-
-  $('confirmOverlay').classList.add('open');
-}
-
-/* ─── Guardar en Firestore ───────────────────────────────── */
-async function guardarCambios() {
-  $('confirmOverlay').classList.remove('open');
-  setBtnLoading(true);
-
-  const r    = window._impactoResultado;
-  const nota = $('mNota').value.trim();
-
-  if (!r) { setBtnLoading(false); return; }
-
-  const payload = {
-    /* Inputs — ventas por tipo */
-    ventas: {
-      shampoos50g:  r.ventas.shampoos50g,
-      shampoos100g: r.ventas.shampoos100g,
-      acond50g:     r.ventas.acond50g,
-    },
-    /* Resultados calculados automáticamente */
-    totalVendidos:        r.totalVendidos,
-    botellasReemplazadas: r.botellasReemplazadas,
-    litrosAguaEvitados:   r.litrosAguaEvitados,
-    kgPlasticoEvitado:    r.kgPlasticoEvitado,
-
-    /* Compatibilidad con campos legacy */
-    productosVendidos:   r.totalVendidos,
-    envasesEvitados:     Math.round(r.botellasReemplazadas),
-    litrosAguaAhorrados: r.litrosAguaEvitados,
-    kgPlasticoEliminado: r.kgPlasticoEvitado,
-
-    /* Strings formateados para el hero del sitio público */
-    hero: {
-      vendidos: r.hero.vendidos,
-      botellas: r.hero.botellas,
-      agua:     r.hero.agua,
-      plastico: r.hero.plastico,
-    },
-
-    /* Constantes usadas (para auditoría) */
-    constantesUsadas: {
-      botellasPorShampoo50g:  1.5,
-      botellasPorShampoo100g: 3.0,
-      botellasPorAcond50g:    1.0,
-      botellaMl:              350,
-      aguaPct:                0.80,
-      plasticoKgPorBotella:   0.025,
-    },
-
-    actualizadoEn:  serverTimestamp(),
-    actualizadoPor: auth.currentUser?.email || 'admin',
-  };
-
-  try {
-    await setDoc(doc(db, COL, DOC), payload, { merge: true });
-
-    await addDoc(collection(db, COL, DOC, 'historial'), {
-      ...payload,
-      nota,
-      guardadoEn: serverTimestamp(),
-    });
-
-    $('mNota').value         = '';
-    window._impactoResultado = null;
-    toast('✅ Métricas calculadas y publicadas en el sitio', 'success');
-  } catch (err) {
-    console.error(err);
-    toast('Error al guardar: ' + err.message, 'error');
-  } finally {
-    setBtnLoading(false);
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--mid)">Aún no hay ventas registradas. Las métricas se calcularán automáticamente al registrar ventas.</td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(([k, t]) => {
+      const botellas = t.botellas;
+      const agua     = botellas * 0.300 * 0.70;
+      const plastico = botellas * 0.020;
+      return `
+        <tr>
+          <td><strong>${escapeHtml(t.label)}</strong></td>
+          <td><span class="td-factor">×${t.factor} botellas c/u</span></td>
+          <td class="td-num td-strong">${t.und}</td>
+          <td class="td-num td-strong">${botellas.toFixed(0)}</td>
+          <td class="td-num">${agua.toFixed(1)} L</td>
+          <td class="td-num">${plastico.toFixed(2)} kg</td>
+        </tr>`;
+    }).join('');
   }
 }
 
-/* ─── Historial ──────────────────────────────────────────── */
-function cargarHistorial() {
-  const q = query(
-    collection(db, COL, DOC, 'historial'),
-    orderBy('guardadoEn', 'desc'),
-    limit(20)
-  );
-
-  onSnapshot(q, (snap) => {
-    $('historialLoading').style.display = 'none';
-
-    if (snap.empty) {
-      $('historialEmpty').style.display = 'block';
-      return;
-    }
-
-    $('historialWrap').style.display = 'block';
-    $('historialEmpty').style.display = 'none';
-    $('historialBody').innerHTML = snap.docs.map(d => {
-      const h = d.data();
-      const fecha = h.guardadoEn?.toDate?.()
-        .toLocaleDateString('es-BO', {
-          day: '2-digit', month: 'short', year: 'numeric',
-          hour: '2-digit', minute: '2-digit'
-        }) ?? '—';
-
-      return `<tr>
-        <td style="white-space:nowrap;font-size:.78rem">${fecha}</td>
-        <td>${h.ventas?.shampoos50g  ?? '—'}</td>
-        <td>${h.ventas?.shampoos100g ?? '—'}</td>
-        <td>${h.ventas?.acond50g     ?? '—'}</td>
-        <td><strong>${h.totalVendidos ?? '—'}</strong></td>
-        <td>${h.botellasReemplazadas ?? '—'}</td>
-        <td>${h.litrosAguaEvitados   ?? '—'} L</td>
-        <td>${h.kgPlasticoEvitado    ?? '—'} kg</td>
-        <td style="font-size:.78rem;color:var(--mid)">${h.nota || '—'}</td>
-        <td style="font-size:.75rem;color:var(--mid)">${h.actualizadoPor || '—'}</td>
-      </tr>`;
-    }).join('');
-  }, (err) => {
-    console.warn('[impacto historial]', err.code, err.message);
-    $('historialLoading').style.display = 'none';
-    $('historialEmpty').style.display = 'block';
-  });
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
-
-/* ─── Helpers ────────────────────────────────────────────── */
-function setBtnLoading(on) {
-  $('btnGuardar').disabled              = on;
-  $('btnGuardarText').style.display     = on ? 'none'  : 'inline';
-  $('btnGuardarSpinner').style.display  = on ? 'block' : 'none';
-}
-
-function mostrarErroresValidacion(errores) {
-  console.warn('Validación:', errores);
-}
-function limpiarErrores() {}

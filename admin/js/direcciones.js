@@ -7,7 +7,7 @@ import {
   db, signOut,
   collection, doc,
   addDoc, updateDoc, deleteDoc,
-  query, orderBy, onSnapshot,
+  onSnapshot,
   serverTimestamp
 } from './firebase-init.js';
 
@@ -40,9 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ─── Suscripción en tiempo real ─────────────────────────── */
 function subscribeDirecciones() {
-  const q = query(collection(db, COL), orderBy('orden', 'asc'));
-  onSnapshot(q, (snap) => {
-    allDirs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  // Sin orderBy para evitar requerir índice. Ordenamos en JS.
+  onSnapshot(collection(db, COL), (snap) => {
+    allDirs = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (a.orden || 99) - (b.orden || 99));
     renderTable();
     $('dirLoading').style.display = 'none';
   }, (err) => {

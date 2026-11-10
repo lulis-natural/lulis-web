@@ -39,7 +39,7 @@
 
   function animateAll() {
     document
-      .querySelectorAll('.hero-stat-num')
+      .querySelectorAll('.hero-stat-num:not([data-impact])')
       .forEach(animateCounter);
   }
 

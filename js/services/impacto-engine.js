@@ -7,21 +7,22 @@
    Sin dependencias externas — funciona en cualquier contexto.
 
    ── Constantes del modelo ──────────────────────────────────
-   Basadas en los parámetros definidos por LULIS:
+   Definidas por LULIS:
 
    Equivalencias de reemplazo:
-     Shampoo sólido 50g  → reemplaza 1.5 botellas convencionales
-     Shampoo sólido 100g → reemplaza 3.0 botellas convencionales
-     Acondicionador 50g  → reemplaza 1.0 botella convencional
-       (acond. líquido tiene menos agua, factor conservador)
+     Shampoo sólido 50g          → reemplaza 1.0  botella convencional
+     Shampoo sólido 100g         → reemplaza 2.0  botellas convencionales
+     Acondicionador sólido 50g   → reemplaza 0.75 botella convencional
 
-   Botella convencional:
-     Volumen:    350 ml
-     Agua:       80% del contenido = 280 ml = 0.280 L
-     Plástico:   ~25 g por envase = 0.025 kg
+   Por cada botella convencional no producida:
+     Volumen:  300 ml
+     Agua:     70% del contenido → 0.210 L de agua incorporada evitada
+     Plástico: 0.020 kg evitado
 
-   Agua evitada por botella no producida:
-     0.350 L × 0.80 = 0.280 L
+   Fórmulas:
+     Botellas   = (u50 × 1.0) + (u100 × 2.0) + (ua × 0.75)
+     Agua (L)  = Botellas × 0.300 × 0.70
+     Plástico (kg) = Botellas × 0.020
 
    ─────────────────────────────────────────────────────────── */
 
@@ -30,19 +31,19 @@ const LULIS_IMPACTO = (() => {
   /* ── Constantes del modelo ── */
   const K = Object.freeze({
     /* Equivalencias de botellas */
-    BOTELLAS_POR_SHAMPOO_50G:   1.5,
-    BOTELLAS_POR_SHAMPOO_100G:  3.0,
-    BOTELLAS_POR_ACOND_50G:     1.0,
+    BOTELLAS_POR_SHAMPOO_50G:   1.0,
+    BOTELLAS_POR_SHAMPOO_100G:  2.0,
+    BOTELLAS_POR_ACOND_50G:     0.75,
 
     /* Botella convencional */
-    BOTELLA_ML:     350,          /* mililitros */
-    BOTELLA_LITROS: 0.350,        /* litros */
-    AGUA_PCT:       0.80,         /* 80% del contenido es agua */
-    PLASTICO_KG:    0.025,        /* kg de plástico por envase */
+    BOTELLA_ML:     300,          /* mililitros */
+    BOTELLA_LITROS: 0.300,        /* litros */
+    AGUA_PCT:       0.70,         /* 70% del contenido es agua */
+    PLASTICO_KG:    0.020,        /* kg de plástico por envase */
 
     /* Derivados */
     get AGUA_LITROS_POR_BOTELLA() {
-      return this.BOTELLA_LITROS * this.AGUA_PCT; /* 0.280 L */
+      return this.BOTELLA_LITROS * this.AGUA_PCT; /* 0.210 L */
     },
   });
 
