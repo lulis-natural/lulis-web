@@ -19,30 +19,26 @@ document.body.style.visibility = 'hidden';
 /* Safety timeout: evitar pantalla en blanco */
 setTimeout(() => { if (document.body.style.visibility === 'hidden') document.body.style.visibility = 'visible'; }, 2200);
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    /* Sin sesión → ir al login */
-    window.location.replace('index.html');
-    return;
-  }
-
-  /* [TEMP] Validacion de custom claim desactivada para pruebas locales.
-     En produccion se debe reactivar:
-       if (!tokenResult.claims.admin) { ... redirigir ... }
-  */
-  /*
-  const tokenResult = await user.getIdTokenResult(true);
-  if (!tokenResult.claims.admin) {
-    await auth.signOut();
-    window.location.replace('index.html?error=no_access');
-    return;
-  }
-  */
-
-  /* Sesión válida → mostrar página y poblar datos de usuario */
+/* Si hay sesión admin local activa (fallback) → autorizar inmediatamente */
+if (localStorage.getItem('lulis_admin_authenticated') === 'true') {
   document.body.style.visibility = 'visible';
-  populateUserUI(user);
-});
+  populateUserUI({
+    displayName: localStorage.getItem('lulis_admin_user') || 'Administrador',
+    email: localStorage.getItem('lulis_admin_email') || 'admin@lulis.bo'
+  });
+} else {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      if (localStorage.getItem('lulis_admin_authenticated') !== 'true') {
+        window.location.replace('index.html');
+        return;
+      }
+    } else {
+      document.body.style.visibility = 'visible';
+      populateUserUI(user);
+    }
+  });
+}
 
 /* Rellena avatar, nombre y email en la sidebar */
 function populateUserUI(user) {

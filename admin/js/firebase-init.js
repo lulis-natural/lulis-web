@@ -51,7 +51,10 @@ const storage = getStorage(app);
 
 /* ── Logout helper ── */
 async function signOut() {
-  await fbSignOut(auth);
+  localStorage.removeItem('lulis_admin_authenticated');
+  localStorage.removeItem('lulis_admin_user');
+  localStorage.removeItem('lulis_admin_email');
+  try { await fbSignOut(auth); } catch (_) {}
   window.location.replace('index.html');
 }
 

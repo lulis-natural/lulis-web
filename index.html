@@ -148,11 +148,16 @@
       .hero-actions .btn{width:100%;justify-content:center}
       .btn{padding:13px 22px;font-size:.92rem}
     }
+  
+    .catalog-filters{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:24px auto 40px;background:#fff;padding:6px 10px;border-radius:60px;border:1.5px solid #E6DCCD;max-width:fit-content;box-shadow:0 4px 20px rgba(95,15,63,.05)}
+    .filter-btn{background:transparent;border:none;color:#4A3E38;padding:10px 22px;border-radius:50px;font-family:var(--ff-body);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .22s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+    .filter-btn:hover{color:var(--wine);background:rgba(95,15,63,.06)}
+    .filter-btn.active{background:var(--wine)!important;color:#fff!important;font-weight:700;box-shadow:0 4px 14px rgba(95,15,63,.28)}
+  
   </style>
 
   <!-- main.css cargado de forma NO bloqueante (print trick) -->
-  <link rel="stylesheet" href="css/main.css?v=8" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="css/main.css?v=8"></noscript>
+  <link rel="stylesheet" href="css/main.css?v=15">
 
   <!-- ═══ SCHEMA.ORG — LocalBusiness + ItemList de productos -->
   <script type="application/ld+json">
@@ -459,23 +464,26 @@
 
     <!-- Filtros de categoría para alternar bloques -->
     <div class="catalog-filters reveal" id="catalogFilters" role="tablist" aria-label="Filtrar por bloque de catálogo">
-      <button type="button" class="filter-btn active" data-filter="all">Ver todos los bloques</button>
+      <button type="button" class="filter-btn active" data-filter="all">Ver todos los productos</button>
       <button type="button" class="filter-btn" data-filter="shampoo">🌿 Shampoos Sólidos (3)</button>
       <button type="button" class="filter-btn" data-filter="acondicionador">✨ Acondicionadores (2)</button>
       <button type="button" class="filter-btn" data-filter="pack">🎁 Packs y Dúos (3)</button>
     </div>
 
-    <!-- Columnas ordenadas por bloques -->
+    <!-- Contenedor ordenado en bloques con 3 productos por fila -->
     <div class="products-categories-wrap" id="productos-wrap">
 
-      <!-- BLOQUE 1: SHAMPOOS SÓLIDOS -->
+      <!-- BLOQUE 1: SHAMPOOS SÓLIDOS (Fila de 3 productos) -->
       <div class="category-block reveal" data-category="shampoo">
         <div class="category-block-header">
-          <span class="category-block-icon" aria-hidden="true">🌿</span>
-          <div class="category-block-info">
-            <h3 class="category-block-title">Shampoos Sólidos</h3>
-            <span class="category-block-sub">35–45 lavadas · 50g</span>
+          <div class="category-block-header-left">
+            <span class="category-block-icon" aria-hidden="true">🌿</span>
+            <div>
+              <h3 class="category-block-title">Shampoos Sólidos</h3>
+              <span class="category-block-sub">35–45 lavadas · Cero plástico · 50g</span>
+            </div>
           </div>
+          <span class="category-block-count">3 variedades</span>
         </div>
         <div class="product-list" id="list-shampoo">
           
@@ -483,7 +491,7 @@
               <div class="product-img">
                 <img src="Imagenes/productos/Jamaica.jpg"
                      alt="Shampoo Sólido Jamaica — cosmética consciente LULIS"
-                     width="400" height="195" loading="lazy" decoding="async">
+                     width="400" height="205" loading="lazy" decoding="async">
                 <span class="product-badge badge-hot">Nuevo</span>
               </div>
               <div class="product-body">
@@ -495,7 +503,7 @@
                 <p class="product-variante-sub">Jamaica & Hibisco</p>
                 <div class="product-tags">
                   <span class="product-duracion">35–45 lavadas</span>
-                  <span class="hair-tag">mixto</span> <span class="hair-tag">normal</span>
+                  <span class="hair-tag">Cabello mixto</span> <span class="hair-tag">Cabello normal</span>
                 </div>
                 <p class="product-desc">Equilibrio y revitalización para cabello mixto. Limpieza suave, espuma abundante y aroma natural a flor de hibisco.</p>
                 <div class="product-footer">
@@ -508,7 +516,7 @@
                    data-product="Shampoo Sólido Jamaica (50g)"
                    aria-label="Consultar por WhatsApp el Shampoo Sólido Jamaica"
                    target="_blank" rel="noopener noreferrer">
-                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  <svg class="wa-icon" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                   Consultar por WhatsApp
                 </a>
               </div>
@@ -518,7 +526,7 @@
               <div class="product-img">
                 <img src="Imagenes/productos/Romeros.jpg"
                      alt="Shampoo Sólido Romero — cosmética consciente LULIS"
-                     width="400" height="195" loading="lazy" decoding="async">
+                     width="400" height="205" loading="lazy" decoding="async">
                 <span class="product-badge badge-hot">Popular</span>
               </div>
               <div class="product-body">
@@ -530,7 +538,7 @@
                 <p class="product-variante-sub">Romero & Menta Silvestre</p>
                 <div class="product-tags">
                   <span class="product-duracion">35–45 lavadas</span>
-                  <span class="hair-tag">graso</span> <span class="hair-tag">mixto</span>
+                  <span class="hair-tag">Cabello graso</span> <span class="hair-tag">Cabello mixto</span>
                 </div>
                 <p class="product-desc">Fortalecimiento y control de grasa. Purifica el cuero cabelludo, previene la caída y estimula el crecimiento saludable.</p>
                 <div class="product-footer">
@@ -543,7 +551,7 @@
                    data-product="Shampoo Sólido Romero (50g)"
                    aria-label="Consultar por WhatsApp el Shampoo Sólido Romero"
                    target="_blank" rel="noopener noreferrer">
-                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  <svg class="wa-icon" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                   Consultar por WhatsApp
                 </a>
               </div>
@@ -553,7 +561,7 @@
               <div class="product-img">
                 <img src="Imagenes/productos/Coco.jpg"
                      alt="Shampoo Sólido Coco — cosmética consciente LULIS"
-                     width="400" height="195" loading="lazy" decoding="async">
+                     width="400" height="205" loading="lazy" decoding="async">
                 <span class="product-badge badge-new">Nuevo</span>
               </div>
               <div class="product-body">
@@ -565,7 +573,7 @@
                 <p class="product-variante-sub">Coco & Almendras Dulces</p>
                 <div class="product-tags">
                   <span class="product-duracion">35–45 lavadas</span>
-                  <span class="hair-tag">seco</span> <span class="hair-tag">rizado</span> <span class="hair-tag">dañado</span>
+                  <span class="hair-tag">Cabello seco</span> <span class="hair-tag">Cabello rizado</span> <span class="hair-tag">Cabello dañado</span>
                 </div>
                 <p class="product-desc">Hidratación profunda para cabello seco o maltratado. Nutrición intensa desde la primera lavada sin apelmazar.</p>
                 <div class="product-footer">
@@ -578,7 +586,7 @@
                    data-product="Shampoo Sólido Coco (50g)"
                    aria-label="Consultar por WhatsApp el Shampoo Sólido Coco"
                    target="_blank" rel="noopener noreferrer">
-                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  <svg class="wa-icon" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                   Consultar por WhatsApp
                 </a>
               </div>
@@ -586,14 +594,17 @@
         </div>
       </div>
 
-      <!-- BLOQUE 2: ACONDICIONADORES SÓLIDOS -->
+      <!-- BLOQUE 2: ACONDICIONADORES SÓLIDOS (Fila de productos) -->
       <div class="category-block reveal delay-1" data-category="acondicionador">
         <div class="category-block-header">
-          <span class="category-block-icon" aria-hidden="true">✨</span>
-          <div class="category-block-info">
-            <h3 class="category-block-title">Acondicionadores Sólidos</h3>
-            <span class="category-block-sub">50g · Desenredado e hidratación</span>
+          <div class="category-block-header-left">
+            <span class="category-block-icon" aria-hidden="true">✨</span>
+            <div>
+              <h3 class="category-block-title">Acondicionadores Sólidos</h3>
+              <span class="category-block-sub">50g · Desenredado botánico y nutrición profunda</span>
+            </div>
           </div>
+          <span class="category-block-count">2 variedades</span>
         </div>
         <div class="product-list" id="list-acondicionador">
           
@@ -601,7 +612,7 @@
               <div class="product-img">
                 <img src="Imagenes/productos/Pack_coco_y_melon.jpeg"
                      alt="Acondicionador Sólido Melón — cosmética consciente LULIS"
-                     width="400" height="195" loading="lazy" decoding="async">
+                     width="400" height="205" loading="lazy" decoding="async">
                 <span class="product-badge badge-eco">Eco</span>
               </div>
               <div class="product-body">
@@ -613,7 +624,7 @@
                 <p class="product-variante-sub">Melón & Semillas de Chía</p>
                 <div class="product-tags">
                   <span class="product-duracion">40–50 lavadas</span>
-                  <span class="hair-tag">graso</span> <span class="hair-tag">mixto</span> <span class="hair-tag">fino</span>
+                  <span class="hair-tag">Cabello graso</span> <span class="hair-tag">Cabello mixto</span> <span class="hair-tag">Cabello fino</span>
                 </div>
                 <p class="product-desc">Ligero, sedoso y desenredante. Ideal para cabello graso o fino. Acondiciona y aporta brillo sin dejar residuo pesado.</p>
                 <div class="product-footer">
@@ -626,7 +637,7 @@
                    data-product="Acondicionador Sólido Melón (50g)"
                    aria-label="Consultar por WhatsApp el Acondicionador Sólido Melón"
                    target="_blank" rel="noopener noreferrer">
-                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  <svg class="wa-icon" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                   Consultar por WhatsApp
                 </a>
               </div>
@@ -636,7 +647,7 @@
               <div class="product-img">
                 <img src="Imagenes/productos/Pack_jamaica_y_jamaica.jpeg"
                      alt="Acondicionador Uva & Jamaica — cosmética consciente LULIS"
-                     width="400" height="195" loading="lazy" decoding="async">
+                     width="400" height="205" loading="lazy" decoding="async">
                 <span class="product-badge badge-hot">Popular</span>
               </div>
               <div class="product-body">
@@ -648,7 +659,7 @@
                 <p class="product-variante-sub">Uva Negra & Flor de Jamaica</p>
                 <div class="product-tags">
                   <span class="product-duracion">40–50 lavadas</span>
-                  <span class="hair-tag">seco</span> <span class="hair-tag">dañado</span> <span class="hair-tag">teñido</span>
+                  <span class="hair-tag">Cabello seco</span> <span class="hair-tag">Cabello dañado</span> <span class="hair-tag">Cabello teñido</span>
                 </div>
                 <p class="product-desc">Nutrición e hidratación intensa para cabello seco o con color. Efecto sellador de puntas y brillo espejo.</p>
                 <div class="product-footer">
@@ -661,7 +672,7 @@
                    data-product="Acondicionador Uva & Jamaica (50g)"
                    aria-label="Consultar por WhatsApp el Acondicionador Uva & Jamaica"
                    target="_blank" rel="noopener noreferrer">
-                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  <svg class="wa-icon" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                   Consultar por WhatsApp
                 </a>
               </div>
@@ -669,14 +680,17 @@
         </div>
       </div>
 
-      <!-- BLOQUE 3: PACKS & COMBOS CONSCIENTES -->
+      <!-- BLOQUE 3: PACKS & COMBOS CONSCIENTES (Fila de 3 productos) -->
       <div class="category-block reveal delay-2" data-category="pack">
         <div class="category-block-header">
-          <span class="category-block-icon" aria-hidden="true">🎁</span>
-          <div class="category-block-info">
-            <h3 class="category-block-title">Packs & Dúos Ahorro</h3>
-            <span class="category-block-sub">Dúos con empaque de semillas plantable</span>
+          <div class="category-block-header-left">
+            <span class="category-block-icon" aria-hidden="true">🎁</span>
+            <div>
+              <h3 class="category-block-title">Packs & Dúos Ahorro</h3>
+              <span class="category-block-sub">Dúos completos con caja de semillas plantables</span>
+            </div>
           </div>
+          <span class="category-block-count">3 packs</span>
         </div>
         <div class="product-list" id="list-pack">
           
@@ -684,7 +698,7 @@
               <div class="product-img">
                 <img src="Imagenes/productos/Pack_romero_y_melon.jpeg"
                      alt="Pack Dúo Pureza (Romero + Melón) — cosmética consciente LULIS"
-                     width="400" height="195" loading="lazy" decoding="async">
+                     width="400" height="205" loading="lazy" decoding="async">
                 <span class="product-badge badge-hot">Oferta</span>
               </div>
               <div class="product-body">
@@ -696,7 +710,7 @@
                 <p class="product-variante-sub">Shampoo Romero + Acondicionador Melón</p>
                 <div class="product-tags">
                   <span class="product-duracion">Hasta 90 lavadas</span>
-                  <span class="hair-tag">graso</span> <span class="hair-tag">mixto</span>
+                  <span class="hair-tag">Cabello graso</span> <span class="hair-tag">Cabello mixto</span>
                 </div>
                 <p class="product-desc">El dúo perfecto para control de grasa y frescura completa. Incluye caja ecológica con semillas plantables.</p>
                 <div class="product-footer">
@@ -709,7 +723,7 @@
                    data-product="Pack Dúo Pureza (Romero + Melón) (50g + 50g)"
                    aria-label="Consultar por WhatsApp el Pack Dúo Pureza (Romero + Melón)"
                    target="_blank" rel="noopener noreferrer">
-                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  <svg class="wa-icon" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                   Consultar por WhatsApp
                 </a>
               </div>
@@ -719,7 +733,7 @@
               <div class="product-img">
                 <img src="Imagenes/productos/Pack_coco_y_melon.jpeg"
                      alt="Pack Dúo Hidratación (Coco + Melón) — cosmética consciente LULIS"
-                     width="400" height="195" loading="lazy" decoding="async">
+                     width="400" height="205" loading="lazy" decoding="async">
                 <span class="product-badge badge-hot">Popular</span>
               </div>
               <div class="product-body">
@@ -731,7 +745,7 @@
                 <p class="product-variante-sub">Shampoo Coco + Acondicionador Melón</p>
                 <div class="product-tags">
                   <span class="product-duracion">Hasta 90 lavadas</span>
-                  <span class="hair-tag">seco</span> <span class="hair-tag">mixto</span>
+                  <span class="hair-tag">Cabello seco</span> <span class="hair-tag">Cabello mixto</span>
                 </div>
                 <p class="product-desc">Nutrición equilibrada para raíces limpias y puntas ultra hidratadas. Ideal para uso diario familiar.</p>
                 <div class="product-footer">
@@ -744,7 +758,7 @@
                    data-product="Pack Dúo Hidratación (Coco + Melón) (50g + 50g)"
                    aria-label="Consultar por WhatsApp el Pack Dúo Hidratación (Coco + Melón)"
                    target="_blank" rel="noopener noreferrer">
-                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  <svg class="wa-icon" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                   Consultar por WhatsApp
                 </a>
               </div>
@@ -754,7 +768,7 @@
               <div class="product-img">
                 <img src="Imagenes/productos/Jamaica y romero.jpg"
                      alt="Pack Dúo Botánico (Jamaica + Romero) — cosmética consciente LULIS"
-                     width="400" height="195" loading="lazy" decoding="async">
+                     width="400" height="205" loading="lazy" decoding="async">
                 <span class="product-badge badge-new">Nuevo</span>
               </div>
               <div class="product-body">
@@ -766,7 +780,7 @@
                 <p class="product-variante-sub">2 Shampoos Sólidos 50g</p>
                 <div class="product-tags">
                   <span class="product-duracion">Hasta 90 lavadas</span>
-                  <span class="hair-tag">todos</span> <span class="hair-tag">mixto</span> <span class="hair-tag">graso</span>
+                  <span class="hair-tag">Cabello todos</span> <span class="hair-tag">Cabello mixto</span> <span class="hair-tag">Cabello graso</span>
                 </div>
                 <p class="product-desc">Doble poder herbal: equilibrio con Jamaica y estimulación tónica con Romero. Excelente para regalar.</p>
                 <div class="product-footer">
@@ -779,7 +793,7 @@
                    data-product="Pack Dúo Botánico (Jamaica + Romero) (50g + 50g)"
                    aria-label="Consultar por WhatsApp el Pack Dúo Botánico (Jamaica + Romero)"
                    target="_blank" rel="noopener noreferrer">
-                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  <svg class="wa-icon" aria-hidden="true" style="width:16px;height:16px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                   Consultar por WhatsApp
                 </a>
               </div>
