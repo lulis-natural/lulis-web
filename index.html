@@ -457,299 +457,337 @@
       <p>Formato sólido, sin plástico, con packaging de papel orgánico con semillas. Más concentrados, más eficientes, más responsables.</p>
     </div>
 
-    
-    <!-- Filtros de categoría -->
-    <div class="catalog-filters reveal" id="catalogFilters" role="tablist" aria-label="Filtrar por categoría">
-      <button type="button" class="filter-btn active" data-filter="all">Todos los productos (8)</button>
+    <!-- Filtros de categoría para alternar bloques -->
+    <div class="catalog-filters reveal" id="catalogFilters" role="tablist" aria-label="Filtrar por bloque de catálogo">
+      <button type="button" class="filter-btn active" data-filter="all">Ver todos los bloques</button>
       <button type="button" class="filter-btn" data-filter="shampoo">🌿 Shampoos Sólidos (3)</button>
       <button type="button" class="filter-btn" data-filter="acondicionador">✨ Acondicionadores (2)</button>
       <button type="button" class="filter-btn" data-filter="pack">🎁 Packs y Dúos (3)</button>
     </div>
 
-    <!-- Grilla completa de catálogo -->
-    <div class="catalog-grid" id="catalogProductsGrid">
-      
-      <article class="product-card reveal" data-category="shampoo" data-name="shampoo sólido jamaica">
-        <div class="product-img">
-          <img src="Imagenes/productos/Jamaica.jpg"
-               alt="Shampoo Sólido Jamaica — cosmética consciente LULIS"
-               width="400" height="300" loading="lazy" decoding="async">
-          <span class="product-badge badge-hot">Nuevo</span>
-        </div>
-        <div class="product-body">
-          <div class="product-meta-top">
-            <p class="product-category">Shampoo Sólido</p>
-            <div class="product-price"><strong>35 Bs.</strong></div>
-          </div>
-          <h3 class="product-name">Shampoo Sólido Jamaica</h3>
-          <p class="product-variante-sub">Jamaica & Hibisco</p>
-          <div class="product-tags">
-            <span class="product-duracion">35–45 lavadas</span>
-            <span class="hair-tag">Para cabello mixto</span> <span class="hair-tag">Para cabello normal</span>
-          </div>
-          <p class="product-desc">Equilibrio y revitalización para cabello mixto. Limpieza suave, espuma abundante y aroma natural a flor de hibisco.</p>
-          <div class="product-footer">
-            <div class="product-avail avail-yes" aria-label="Disponible">
-              <span class="avail-dot" aria-hidden="true"></span> Disponible
-            </div>
-            <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Shampoo%20S%C3%B3lido%20Jamaica%20(50g)%20por%2035%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-               class="product-wa"
-               data-product="Shampoo Sólido Jamaica (50g)"
-               aria-label="Consultar por WhatsApp el Shampoo Sólido Jamaica"
-               target="_blank" rel="noopener noreferrer">
-              <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-              Consultar por WhatsApp
-            </a>
-          </div>
-        </div>
-      </article>
+    <!-- Columnas ordenadas por bloques -->
+    <div class="products-categories-wrap" id="productos-wrap">
 
-      <article class="product-card reveal" data-category="shampoo" data-name="shampoo sólido romero">
-        <div class="product-img">
-          <img src="Imagenes/productos/Romeros.jpg"
-               alt="Shampoo Sólido Romero — cosmética consciente LULIS"
-               width="400" height="300" loading="lazy" decoding="async">
-          <span class="product-badge badge-hot">Popular</span>
-        </div>
-        <div class="product-body">
-          <div class="product-meta-top">
-            <p class="product-category">Shampoo Sólido</p>
-            <div class="product-price"><strong>35 Bs.</strong></div>
-          </div>
-          <h3 class="product-name">Shampoo Sólido Romero</h3>
-          <p class="product-variante-sub">Romero & Menta Silvestre</p>
-          <div class="product-tags">
-            <span class="product-duracion">35–45 lavadas</span>
-            <span class="hair-tag">Para cabello graso</span> <span class="hair-tag">Para cabello mixto</span>
-          </div>
-          <p class="product-desc">Fortalecimiento y control de grasa. Purifica el cuero cabelludo, previene la caída y estimula el crecimiento saludable.</p>
-          <div class="product-footer">
-            <div class="product-avail avail-yes" aria-label="Disponible">
-              <span class="avail-dot" aria-hidden="true"></span> Disponible
-            </div>
-            <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Shampoo%20S%C3%B3lido%20Romero%20(50g)%20por%2035%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-               class="product-wa"
-               data-product="Shampoo Sólido Romero (50g)"
-               aria-label="Consultar por WhatsApp el Shampoo Sólido Romero"
-               target="_blank" rel="noopener noreferrer">
-              <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-              Consultar por WhatsApp
-            </a>
+      <!-- BLOQUE 1: SHAMPOOS SÓLIDOS -->
+      <div class="category-block reveal" data-category="shampoo">
+        <div class="category-block-header">
+          <span class="category-block-icon" aria-hidden="true">🌿</span>
+          <div class="category-block-info">
+            <h3 class="category-block-title">Shampoos Sólidos</h3>
+            <span class="category-block-sub">35–45 lavadas · 50g</span>
           </div>
         </div>
-      </article>
+        <div class="product-list" id="list-shampoo">
+          
+            <article class="product-card reveal" data-category="shampoo" data-id="shampoo-jamaica" data-name="shampoo sólido jamaica">
+              <div class="product-img">
+                <img src="Imagenes/productos/Jamaica.jpg"
+                     alt="Shampoo Sólido Jamaica — cosmética consciente LULIS"
+                     width="400" height="195" loading="lazy" decoding="async">
+                <span class="product-badge badge-hot">Nuevo</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta-top">
+                  <p class="product-category">Shampoo Sólido</p>
+                  <div class="product-price"><strong>35 Bs.</strong></div>
+                </div>
+                <h3 class="product-name">Shampoo Sólido Jamaica</h3>
+                <p class="product-variante-sub">Jamaica & Hibisco</p>
+                <div class="product-tags">
+                  <span class="product-duracion">35–45 lavadas</span>
+                  <span class="hair-tag">mixto</span> <span class="hair-tag">normal</span>
+                </div>
+                <p class="product-desc">Equilibrio y revitalización para cabello mixto. Limpieza suave, espuma abundante y aroma natural a flor de hibisco.</p>
+                <div class="product-footer">
+                  <div class="product-avail avail-yes" aria-label="Disponible">
+                    <span class="avail-dot" aria-hidden="true"></span> Disponible
+                  </div>
+                </div>
+                <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Shampoo%20S%C3%B3lido%20Jamaica%20(50g)%20por%2035%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
+                   class="product-wa"
+                   data-product="Shampoo Sólido Jamaica (50g)"
+                   aria-label="Consultar por WhatsApp el Shampoo Sólido Jamaica"
+                   target="_blank" rel="noopener noreferrer">
+                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  Consultar por WhatsApp
+                </a>
+              </div>
+            </article>
 
-      <article class="product-card reveal" data-category="shampoo" data-name="shampoo sólido coco">
-        <div class="product-img">
-          <img src="Imagenes/productos/Coco.jpg"
-               alt="Shampoo Sólido Coco — cosmética consciente LULIS"
-               width="400" height="300" loading="lazy" decoding="async">
-          <span class="product-badge badge-new">Nuevo</span>
-        </div>
-        <div class="product-body">
-          <div class="product-meta-top">
-            <p class="product-category">Shampoo Sólido</p>
-            <div class="product-price"><strong>35 Bs.</strong></div>
-          </div>
-          <h3 class="product-name">Shampoo Sólido Coco</h3>
-          <p class="product-variante-sub">Coco & Almendras Dulces</p>
-          <div class="product-tags">
-            <span class="product-duracion">35–45 lavadas</span>
-            <span class="hair-tag">Para cabello seco</span> <span class="hair-tag">Para cabello rizado</span> <span class="hair-tag">Para cabello dañado</span>
-          </div>
-          <p class="product-desc">Hidratación profunda para cabello seco o maltratado. Nutrición intensa desde la primera lavada sin apelmazar.</p>
-          <div class="product-footer">
-            <div class="product-avail avail-yes" aria-label="Disponible">
-              <span class="avail-dot" aria-hidden="true"></span> Disponible
-            </div>
-            <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Shampoo%20S%C3%B3lido%20Coco%20(50g)%20por%2035%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-               class="product-wa"
-               data-product="Shampoo Sólido Coco (50g)"
-               aria-label="Consultar por WhatsApp el Shampoo Sólido Coco"
-               target="_blank" rel="noopener noreferrer">
-              <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-              Consultar por WhatsApp
-            </a>
-          </div>
-        </div>
-      </article>
+            <article class="product-card reveal" data-category="shampoo" data-id="shampoo-romero" data-name="shampoo sólido romero">
+              <div class="product-img">
+                <img src="Imagenes/productos/Romeros.jpg"
+                     alt="Shampoo Sólido Romero — cosmética consciente LULIS"
+                     width="400" height="195" loading="lazy" decoding="async">
+                <span class="product-badge badge-hot">Popular</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta-top">
+                  <p class="product-category">Shampoo Sólido</p>
+                  <div class="product-price"><strong>35 Bs.</strong></div>
+                </div>
+                <h3 class="product-name">Shampoo Sólido Romero</h3>
+                <p class="product-variante-sub">Romero & Menta Silvestre</p>
+                <div class="product-tags">
+                  <span class="product-duracion">35–45 lavadas</span>
+                  <span class="hair-tag">graso</span> <span class="hair-tag">mixto</span>
+                </div>
+                <p class="product-desc">Fortalecimiento y control de grasa. Purifica el cuero cabelludo, previene la caída y estimula el crecimiento saludable.</p>
+                <div class="product-footer">
+                  <div class="product-avail avail-yes" aria-label="Disponible">
+                    <span class="avail-dot" aria-hidden="true"></span> Disponible
+                  </div>
+                </div>
+                <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Shampoo%20S%C3%B3lido%20Romero%20(50g)%20por%2035%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
+                   class="product-wa"
+                   data-product="Shampoo Sólido Romero (50g)"
+                   aria-label="Consultar por WhatsApp el Shampoo Sólido Romero"
+                   target="_blank" rel="noopener noreferrer">
+                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  Consultar por WhatsApp
+                </a>
+              </div>
+            </article>
 
-      <article class="product-card reveal" data-category="acondicionador" data-name="acondicionador sólido melón">
-        <div class="product-img">
-          <img src="Imagenes/productos/Pack_coco_y_melon.jpeg"
-               alt="Acondicionador Sólido Melón — cosmética consciente LULIS"
-               width="400" height="300" loading="lazy" decoding="async">
-          <span class="product-badge badge-eco">Eco</span>
+            <article class="product-card reveal" data-category="shampoo" data-id="shampoo-coco" data-name="shampoo sólido coco">
+              <div class="product-img">
+                <img src="Imagenes/productos/Coco.jpg"
+                     alt="Shampoo Sólido Coco — cosmética consciente LULIS"
+                     width="400" height="195" loading="lazy" decoding="async">
+                <span class="product-badge badge-new">Nuevo</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta-top">
+                  <p class="product-category">Shampoo Sólido</p>
+                  <div class="product-price"><strong>35 Bs.</strong></div>
+                </div>
+                <h3 class="product-name">Shampoo Sólido Coco</h3>
+                <p class="product-variante-sub">Coco & Almendras Dulces</p>
+                <div class="product-tags">
+                  <span class="product-duracion">35–45 lavadas</span>
+                  <span class="hair-tag">seco</span> <span class="hair-tag">rizado</span> <span class="hair-tag">dañado</span>
+                </div>
+                <p class="product-desc">Hidratación profunda para cabello seco o maltratado. Nutrición intensa desde la primera lavada sin apelmazar.</p>
+                <div class="product-footer">
+                  <div class="product-avail avail-yes" aria-label="Disponible">
+                    <span class="avail-dot" aria-hidden="true"></span> Disponible
+                  </div>
+                </div>
+                <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Shampoo%20S%C3%B3lido%20Coco%20(50g)%20por%2035%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
+                   class="product-wa"
+                   data-product="Shampoo Sólido Coco (50g)"
+                   aria-label="Consultar por WhatsApp el Shampoo Sólido Coco"
+                   target="_blank" rel="noopener noreferrer">
+                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  Consultar por WhatsApp
+                </a>
+              </div>
+            </article>
         </div>
-        <div class="product-body">
-          <div class="product-meta-top">
-            <p class="product-category">Acondicionador Sólido</p>
-            <div class="product-price"><strong>38 Bs.</strong></div>
-          </div>
-          <h3 class="product-name">Acondicionador Sólido Melón</h3>
-          <p class="product-variante-sub">Melón & Semillas de Chía</p>
-          <div class="product-tags">
-            <span class="product-duracion">40–50 lavadas</span>
-            <span class="hair-tag">Para cabello graso</span> <span class="hair-tag">Para cabello mixto</span> <span class="hair-tag">Para cabello fino</span>
-          </div>
-          <p class="product-desc">Ligero, sedoso y desenredante. Ideal para cabello graso o fino. Acondiciona y aporta brillo sin dejar residuo pesado.</p>
-          <div class="product-footer">
-            <div class="product-avail avail-yes" aria-label="Disponible">
-              <span class="avail-dot" aria-hidden="true"></span> Disponible
-            </div>
-            <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Acondicionador%20S%C3%B3lido%20Mel%C3%B3n%20(50g)%20por%2038%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-               class="product-wa"
-               data-product="Acondicionador Sólido Melón (50g)"
-               aria-label="Consultar por WhatsApp el Acondicionador Sólido Melón"
-               target="_blank" rel="noopener noreferrer">
-              <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-              Consultar por WhatsApp
-            </a>
-          </div>
-        </div>
-      </article>
+      </div>
 
-      <article class="product-card reveal" data-category="acondicionador" data-name="acondicionador uva & jamaica">
-        <div class="product-img">
-          <img src="Imagenes/productos/Pack_jamaica_y_jamaica.jpeg"
-               alt="Acondicionador Uva & Jamaica — cosmética consciente LULIS"
-               width="400" height="300" loading="lazy" decoding="async">
-          <span class="product-badge badge-hot">Popular</span>
-        </div>
-        <div class="product-body">
-          <div class="product-meta-top">
-            <p class="product-category">Acondicionador Sólido</p>
-            <div class="product-price"><strong>38 Bs.</strong></div>
-          </div>
-          <h3 class="product-name">Acondicionador Uva & Jamaica</h3>
-          <p class="product-variante-sub">Uva Negra & Flor de Jamaica</p>
-          <div class="product-tags">
-            <span class="product-duracion">40–50 lavadas</span>
-            <span class="hair-tag">Para cabello seco</span> <span class="hair-tag">Para cabello dañado</span> <span class="hair-tag">Para cabello teñido</span>
-          </div>
-          <p class="product-desc">Nutrición e hidratación intensa para cabello seco o con color. Efecto sellador de puntas y brillo espejo.</p>
-          <div class="product-footer">
-            <div class="product-avail avail-yes" aria-label="Disponible">
-              <span class="avail-dot" aria-hidden="true"></span> Disponible
-            </div>
-            <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Acondicionador%20Uva%20%26%20Jamaica%20(50g)%20por%2038%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-               class="product-wa"
-               data-product="Acondicionador Uva & Jamaica (50g)"
-               aria-label="Consultar por WhatsApp el Acondicionador Uva & Jamaica"
-               target="_blank" rel="noopener noreferrer">
-              <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-              Consultar por WhatsApp
-            </a>
+      <!-- BLOQUE 2: ACONDICIONADORES SÓLIDOS -->
+      <div class="category-block reveal delay-1" data-category="acondicionador">
+        <div class="category-block-header">
+          <span class="category-block-icon" aria-hidden="true">✨</span>
+          <div class="category-block-info">
+            <h3 class="category-block-title">Acondicionadores Sólidos</h3>
+            <span class="category-block-sub">50g · Desenredado e hidratación</span>
           </div>
         </div>
-      </article>
+        <div class="product-list" id="list-acondicionador">
+          
+            <article class="product-card reveal" data-category="acondicionador" data-id="acond-melon" data-name="acondicionador sólido melón">
+              <div class="product-img">
+                <img src="Imagenes/productos/Pack_coco_y_melon.jpeg"
+                     alt="Acondicionador Sólido Melón — cosmética consciente LULIS"
+                     width="400" height="195" loading="lazy" decoding="async">
+                <span class="product-badge badge-eco">Eco</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta-top">
+                  <p class="product-category">Acondicionador Sólido</p>
+                  <div class="product-price"><strong>38 Bs.</strong></div>
+                </div>
+                <h3 class="product-name">Acondicionador Sólido Melón</h3>
+                <p class="product-variante-sub">Melón & Semillas de Chía</p>
+                <div class="product-tags">
+                  <span class="product-duracion">40–50 lavadas</span>
+                  <span class="hair-tag">graso</span> <span class="hair-tag">mixto</span> <span class="hair-tag">fino</span>
+                </div>
+                <p class="product-desc">Ligero, sedoso y desenredante. Ideal para cabello graso o fino. Acondiciona y aporta brillo sin dejar residuo pesado.</p>
+                <div class="product-footer">
+                  <div class="product-avail avail-yes" aria-label="Disponible">
+                    <span class="avail-dot" aria-hidden="true"></span> Disponible
+                  </div>
+                </div>
+                <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Acondicionador%20S%C3%B3lido%20Mel%C3%B3n%20(50g)%20por%2038%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
+                   class="product-wa"
+                   data-product="Acondicionador Sólido Melón (50g)"
+                   aria-label="Consultar por WhatsApp el Acondicionador Sólido Melón"
+                   target="_blank" rel="noopener noreferrer">
+                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  Consultar por WhatsApp
+                </a>
+              </div>
+            </article>
 
-      <article class="product-card reveal" data-category="pack" data-name="pack dúo pureza (romero + melón)">
-        <div class="product-img">
-          <img src="Imagenes/productos/Pack_romero_y_melon.jpeg"
-               alt="Pack Dúo Pureza (Romero + Melón) — cosmética consciente LULIS"
-               width="400" height="300" loading="lazy" decoding="async">
-          <span class="product-badge badge-hot">Oferta</span>
+            <article class="product-card reveal" data-category="acondicionador" data-id="acond-uva-jamaica" data-name="acondicionador uva & jamaica">
+              <div class="product-img">
+                <img src="Imagenes/productos/Pack_jamaica_y_jamaica.jpeg"
+                     alt="Acondicionador Uva & Jamaica — cosmética consciente LULIS"
+                     width="400" height="195" loading="lazy" decoding="async">
+                <span class="product-badge badge-hot">Popular</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta-top">
+                  <p class="product-category">Acondicionador Sólido</p>
+                  <div class="product-price"><strong>38 Bs.</strong></div>
+                </div>
+                <h3 class="product-name">Acondicionador Uva & Jamaica</h3>
+                <p class="product-variante-sub">Uva Negra & Flor de Jamaica</p>
+                <div class="product-tags">
+                  <span class="product-duracion">40–50 lavadas</span>
+                  <span class="hair-tag">seco</span> <span class="hair-tag">dañado</span> <span class="hair-tag">teñido</span>
+                </div>
+                <p class="product-desc">Nutrición e hidratación intensa para cabello seco o con color. Efecto sellador de puntas y brillo espejo.</p>
+                <div class="product-footer">
+                  <div class="product-avail avail-yes" aria-label="Disponible">
+                    <span class="avail-dot" aria-hidden="true"></span> Disponible
+                  </div>
+                </div>
+                <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Acondicionador%20Uva%20%26%20Jamaica%20(50g)%20por%2038%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
+                   class="product-wa"
+                   data-product="Acondicionador Uva & Jamaica (50g)"
+                   aria-label="Consultar por WhatsApp el Acondicionador Uva & Jamaica"
+                   target="_blank" rel="noopener noreferrer">
+                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  Consultar por WhatsApp
+                </a>
+              </div>
+            </article>
         </div>
-        <div class="product-body">
-          <div class="product-meta-top">
-            <p class="product-category">Pack Dúo</p>
-            <div class="product-price"><strong>68 Bs.</strong></div>
-          </div>
-          <h3 class="product-name">Pack Dúo Pureza (Romero + Melón)</h3>
-          <p class="product-variante-sub">Shampoo Romero + Acondicionador Melón</p>
-          <div class="product-tags">
-            <span class="product-duracion">Hasta 90 lavadas</span>
-            <span class="hair-tag">Para cabello graso</span> <span class="hair-tag">Para cabello mixto</span>
-          </div>
-          <p class="product-desc">El dúo perfecto para control de grasa y frescura completa. Incluye caja ecológica con semillas plantables.</p>
-          <div class="product-footer">
-            <div class="product-avail avail-yes" aria-label="Disponible">
-              <span class="avail-dot" aria-hidden="true"></span> Disponible
-            </div>
-            <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Pack%20D%C3%BAo%20Pureza%20(Romero%20%2B%20Mel%C3%B3n)%20(50g%20%2B%2050g)%20por%2068%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-               class="product-wa"
-               data-product="Pack Dúo Pureza (Romero + Melón) (50g + 50g)"
-               aria-label="Consultar por WhatsApp el Pack Dúo Pureza (Romero + Melón)"
-               target="_blank" rel="noopener noreferrer">
-              <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-              Consultar por WhatsApp
-            </a>
-          </div>
-        </div>
-      </article>
+      </div>
 
-      <article class="product-card reveal" data-category="pack" data-name="pack dúo hidratación (coco + melón)">
-        <div class="product-img">
-          <img src="Imagenes/productos/Pack_coco_y_melon.jpeg"
-               alt="Pack Dúo Hidratación (Coco + Melón) — cosmética consciente LULIS"
-               width="400" height="300" loading="lazy" decoding="async">
-          <span class="product-badge badge-hot">Popular</span>
-        </div>
-        <div class="product-body">
-          <div class="product-meta-top">
-            <p class="product-category">Pack Dúo</p>
-            <div class="product-price"><strong>68 Bs.</strong></div>
-          </div>
-          <h3 class="product-name">Pack Dúo Hidratación (Coco + Melón)</h3>
-          <p class="product-variante-sub">Shampoo Coco + Acondicionador Melón</p>
-          <div class="product-tags">
-            <span class="product-duracion">Hasta 90 lavadas</span>
-            <span class="hair-tag">Para cabello seco</span> <span class="hair-tag">Para cabello mixto</span>
-          </div>
-          <p class="product-desc">Nutrición equilibrada para raíces limpias y puntas ultra hidratadas. Ideal para uso diario familiar.</p>
-          <div class="product-footer">
-            <div class="product-avail avail-yes" aria-label="Disponible">
-              <span class="avail-dot" aria-hidden="true"></span> Disponible
-            </div>
-            <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Pack%20D%C3%BAo%20Hidrataci%C3%B3n%20(Coco%20%2B%20Mel%C3%B3n)%20(50g%20%2B%2050g)%20por%2068%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-               class="product-wa"
-               data-product="Pack Dúo Hidratación (Coco + Melón) (50g + 50g)"
-               aria-label="Consultar por WhatsApp el Pack Dúo Hidratación (Coco + Melón)"
-               target="_blank" rel="noopener noreferrer">
-              <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-              Consultar por WhatsApp
-            </a>
+      <!-- BLOQUE 3: PACKS & COMBOS CONSCIENTES -->
+      <div class="category-block reveal delay-2" data-category="pack">
+        <div class="category-block-header">
+          <span class="category-block-icon" aria-hidden="true">🎁</span>
+          <div class="category-block-info">
+            <h3 class="category-block-title">Packs & Dúos Ahorro</h3>
+            <span class="category-block-sub">Dúos con empaque de semillas plantable</span>
           </div>
         </div>
-      </article>
+        <div class="product-list" id="list-pack">
+          
+            <article class="product-card reveal" data-category="pack" data-id="pack-duo-romero-melon" data-name="pack dúo pureza (romero + melón)">
+              <div class="product-img">
+                <img src="Imagenes/productos/Pack_romero_y_melon.jpeg"
+                     alt="Pack Dúo Pureza (Romero + Melón) — cosmética consciente LULIS"
+                     width="400" height="195" loading="lazy" decoding="async">
+                <span class="product-badge badge-hot">Oferta</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta-top">
+                  <p class="product-category">Pack Dúo</p>
+                  <div class="product-price"><strong>68 Bs.</strong></div>
+                </div>
+                <h3 class="product-name">Pack Dúo Pureza (Romero + Melón)</h3>
+                <p class="product-variante-sub">Shampoo Romero + Acondicionador Melón</p>
+                <div class="product-tags">
+                  <span class="product-duracion">Hasta 90 lavadas</span>
+                  <span class="hair-tag">graso</span> <span class="hair-tag">mixto</span>
+                </div>
+                <p class="product-desc">El dúo perfecto para control de grasa y frescura completa. Incluye caja ecológica con semillas plantables.</p>
+                <div class="product-footer">
+                  <div class="product-avail avail-yes" aria-label="Disponible">
+                    <span class="avail-dot" aria-hidden="true"></span> Disponible
+                  </div>
+                </div>
+                <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Pack%20D%C3%BAo%20Pureza%20(Romero%20%2B%20Mel%C3%B3n)%20(50g%20%2B%2050g)%20por%2068%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
+                   class="product-wa"
+                   data-product="Pack Dúo Pureza (Romero + Melón) (50g + 50g)"
+                   aria-label="Consultar por WhatsApp el Pack Dúo Pureza (Romero + Melón)"
+                   target="_blank" rel="noopener noreferrer">
+                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  Consultar por WhatsApp
+                </a>
+              </div>
+            </article>
 
-      <article class="product-card reveal" data-category="pack" data-name="pack dúo botánico (jamaica + romero)">
-        <div class="product-img">
-          <img src="Imagenes/productos/Jamaica y romero.jpg"
-               alt="Pack Dúo Botánico (Jamaica + Romero) — cosmética consciente LULIS"
-               width="400" height="300" loading="lazy" decoding="async">
-          <span class="product-badge badge-new">Nuevo</span>
+            <article class="product-card reveal" data-category="pack" data-id="pack-duo-coco-melon" data-name="pack dúo hidratación (coco + melón)">
+              <div class="product-img">
+                <img src="Imagenes/productos/Pack_coco_y_melon.jpeg"
+                     alt="Pack Dúo Hidratación (Coco + Melón) — cosmética consciente LULIS"
+                     width="400" height="195" loading="lazy" decoding="async">
+                <span class="product-badge badge-hot">Popular</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta-top">
+                  <p class="product-category">Pack Dúo</p>
+                  <div class="product-price"><strong>68 Bs.</strong></div>
+                </div>
+                <h3 class="product-name">Pack Dúo Hidratación (Coco + Melón)</h3>
+                <p class="product-variante-sub">Shampoo Coco + Acondicionador Melón</p>
+                <div class="product-tags">
+                  <span class="product-duracion">Hasta 90 lavadas</span>
+                  <span class="hair-tag">seco</span> <span class="hair-tag">mixto</span>
+                </div>
+                <p class="product-desc">Nutrición equilibrada para raíces limpias y puntas ultra hidratadas. Ideal para uso diario familiar.</p>
+                <div class="product-footer">
+                  <div class="product-avail avail-yes" aria-label="Disponible">
+                    <span class="avail-dot" aria-hidden="true"></span> Disponible
+                  </div>
+                </div>
+                <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Pack%20D%C3%BAo%20Hidrataci%C3%B3n%20(Coco%20%2B%20Mel%C3%B3n)%20(50g%20%2B%2050g)%20por%2068%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
+                   class="product-wa"
+                   data-product="Pack Dúo Hidratación (Coco + Melón) (50g + 50g)"
+                   aria-label="Consultar por WhatsApp el Pack Dúo Hidratación (Coco + Melón)"
+                   target="_blank" rel="noopener noreferrer">
+                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  Consultar por WhatsApp
+                </a>
+              </div>
+            </article>
+
+            <article class="product-card reveal" data-category="pack" data-id="pack-duo-jamaica-romero" data-name="pack dúo botánico (jamaica + romero)">
+              <div class="product-img">
+                <img src="Imagenes/productos/Jamaica y romero.jpg"
+                     alt="Pack Dúo Botánico (Jamaica + Romero) — cosmética consciente LULIS"
+                     width="400" height="195" loading="lazy" decoding="async">
+                <span class="product-badge badge-new">Nuevo</span>
+              </div>
+              <div class="product-body">
+                <div class="product-meta-top">
+                  <p class="product-category">Pack Dúo</p>
+                  <div class="product-price"><strong>65 Bs.</strong></div>
+                </div>
+                <h3 class="product-name">Pack Dúo Botánico (Jamaica + Romero)</h3>
+                <p class="product-variante-sub">2 Shampoos Sólidos 50g</p>
+                <div class="product-tags">
+                  <span class="product-duracion">Hasta 90 lavadas</span>
+                  <span class="hair-tag">todos</span> <span class="hair-tag">mixto</span> <span class="hair-tag">graso</span>
+                </div>
+                <p class="product-desc">Doble poder herbal: equilibrio con Jamaica y estimulación tónica con Romero. Excelente para regalar.</p>
+                <div class="product-footer">
+                  <div class="product-avail avail-yes" aria-label="Disponible">
+                    <span class="avail-dot" aria-hidden="true"></span> Disponible
+                  </div>
+                </div>
+                <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Pack%20D%C3%BAo%20Bot%C3%A1nico%20(Jamaica%20%2B%20Romero)%20(50g%20%2B%2050g)%20por%2065%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
+                   class="product-wa"
+                   data-product="Pack Dúo Botánico (Jamaica + Romero) (50g + 50g)"
+                   aria-label="Consultar por WhatsApp el Pack Dúo Botánico (Jamaica + Romero)"
+                   target="_blank" rel="noopener noreferrer">
+                  <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+                  Consultar por WhatsApp
+                </a>
+              </div>
+            </article>
         </div>
-        <div class="product-body">
-          <div class="product-meta-top">
-            <p class="product-category">Pack Dúo</p>
-            <div class="product-price"><strong>65 Bs.</strong></div>
-          </div>
-          <h3 class="product-name">Pack Dúo Botánico (Jamaica + Romero)</h3>
-          <p class="product-variante-sub">2 Shampoos Sólidos 50g</p>
-          <div class="product-tags">
-            <span class="product-duracion">Hasta 90 lavadas</span>
-            <span class="hair-tag">Para cabello todos</span> <span class="hair-tag">Para cabello mixto</span> <span class="hair-tag">Para cabello graso</span>
-          </div>
-          <p class="product-desc">Doble poder herbal: equilibrio con Jamaica y estimulación tónica con Romero. Excelente para regalar.</p>
-          <div class="product-footer">
-            <div class="product-avail avail-yes" aria-label="Disponible">
-              <span class="avail-dot" aria-hidden="true"></span> Disponible
-            </div>
-            <a href="https://wa.me/59173515698?text=Hola%20LULIS%20%F0%9F%91%8B%20Me%20interesa%20el%20producto%3A%20Pack%20D%C3%BAo%20Bot%C3%A1nico%20(Jamaica%20%2B%20Romero)%20(50g%20%2B%2050g)%20por%2065%20Bs..%20%C2%BFTienen%20disponibilidad%3F"
-               class="product-wa"
-               data-product="Pack Dúo Botánico (Jamaica + Romero) (50g + 50g)"
-               aria-label="Consultar por WhatsApp el Pack Dúo Botánico (Jamaica + Romero)"
-               target="_blank" rel="noopener noreferrer">
-              <svg class="wa-icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-              Consultar por WhatsApp
-            </a>
-          </div>
-        </div>
-      </article>
+      </div>
+
     </div>
-
   </div>
 </section>
 

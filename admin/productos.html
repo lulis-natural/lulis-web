@@ -178,10 +178,15 @@
             <label class="label-required" for="pCategoria">Categoría</label>
             <select id="pCategoria" required>
               <option value="">Seleccionar categoría…</option>
-              <option value="shampoo">Shampoo Sólido</option>
-              <option value="acondicionador">Acondicionador Sólido</option>
-              <option value="pack">Pack / Dúo</option>
+              <option value="shampoo">🌿 Shampoos Sólidos</option>
+              <option value="acondicionador">✨ Acondicionadores Sólidos</option>
+              <option value="pack">🎁 Packs y Dúos</option>
+              <option value="__nuevo__">➕ Crear nuevo bloque / categoría…</option>
             </select>
+            <div id="nuevaCategoriaWrap" style="display:none;margin-top:8px">
+              <input type="text" id="pCategoriaNueva" placeholder="Nombre del nuevo bloque (ej: Jabones Sólidos, Aceites, etc.)" style="width:100%;padding:8px 12px;border:1.5px solid var(--wine);border-radius:6px;font-size:0.9rem">
+              <span class="field-hint" style="color:var(--wine)">Se creará automáticamente una nueva columna para este bloque en el catálogo.</span>
+            </div>
           </div>
           <div class="form-group">
             <label for="pPrecio">Precio sugerido (Bs.)</label>

@@ -30,6 +30,10 @@ function toast(msg, type = '') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  $('pCategoria')?.addEventListener('change', (e) => {
+    const wrap = $('nuevaCategoriaWrap');
+    if (wrap) wrap.style.display = e.target.value === '__nuevo__' ? 'block' : 'none';
+  });
   $('logoutBtn')?.addEventListener('click', signOut);
   $('btnNuevo')?.addEventListener('click', openModalNew);
   $('modalClose')?.addEventListener('click', closeModal);
@@ -181,6 +185,9 @@ function escapeHtml(str) {
 
 /* ─── Modal nuevo ────────────────────────────────────────── */
 function openModalNew() {
+  const wrap = $('nuevaCategoriaWrap');
+  if (wrap) wrap.style.display = 'none';
+  if ($('pCategoriaNueva')) $('pCategoriaNueva').value = '';
   editingId = null;
   $('modalTitle').textContent     = 'Nuevo producto';
   $('btnGuardarText').textContent = 'Guardar producto';
@@ -206,7 +213,16 @@ window.editarProducto = function(id) {
   $('imagenUrlActual').value      = p.imagenUrl || '';
   $('pNombre').value              = p.nombre || '';
   $('pVariante').value            = p.variante || '';
+  let catOpt = Array.from($('pCategoria').options).find(o => o.value === p.categoria);
+  if (!catOpt && p.categoria) {
+    const opt = document.createElement('option');
+    opt.value = p.categoria;
+    opt.textContent = p.categoriaLabel || p.categoria;
+    $('pCategoria').appendChild(opt);
+  }
   $('pCategoria').value           = p.categoria || 'shampoo';
+  const wrapEdit = $('nuevaCategoriaWrap');
+  if (wrapEdit) wrapEdit.style.display = 'none';
   $('pPrecio').value              = p.precio || '';
   $('pSize').value                = p.size || '50g';
   $('pDuracion').value            = p.duracion || '';
@@ -236,7 +252,24 @@ window.editarProducto = function(id) {
 /* ─── Guardar / Actualizar ───────────────────────────────── */
 async function guardarProducto() {
   const nombre      = $('pNombre').value.trim();
-  const categoria   = $('pCategoria').value;
+  let categoria   = $('pCategoria').value;
+  let categoriaLabel = '';
+  if (categoria === '__nuevo__') {
+    const customName = ($('pCategoriaNueva')?.value || '').trim();
+    if (!customName) {
+      toast('Escribe el nombre del nuevo bloque', 'error');
+      setBtnLoading(false);
+      return;
+    }
+    categoria = customName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+    categoriaLabel = customName;
+  } else {
+    categoriaLabel = ({
+      shampoo: 'Shampoo Sólido',
+      acondicionador: 'Acondicionador Sólido',
+      pack: 'Pack Dúo'
+    })[categoria] || categoria;
+  }
   const descripcion = $('pDescripcion').value.trim();
 
   if (!nombre || !categoria || !descripcion) {
