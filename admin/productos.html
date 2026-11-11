@@ -132,13 +132,14 @@
           <thead>
             <tr>
               <th>Imagen</th>
+              <th>Código / SKU</th>
               <th>Producto</th>
               <th>Categoría</th>
-              <th>Precio</th>
-              <th>Tipo de cabello</th>
-              <th>Badge</th>
+              <th>Precio Venta</th>
+              <th>Costo Unitario</th>
+              <th>Margen Unitario</th>
+              <th>Empaque</th>
               <th>Estado</th>
-              <th>Orden</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -195,10 +196,7 @@
               <span class="field-hint" style="color:var(--wine)">Se creará automáticamente una nueva columna para este bloque en el catálogo.</span>
             </div>
           </div>
-          <div class="form-group">
-            <label for="pPrecio">Precio sugerido (Bs.)</label>
-            <input type="text" id="pPrecio" placeholder="Ej: 35 Bs.">
-          </div>
+          
         </div>
 
         <div class="form-row">
@@ -287,6 +285,46 @@
               <div class="progress-bar-fill" id="progressFill"></div>
             </div>
             <div class="progress-text" id="progressText">0%</div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN FINANCIERA: COSTOS, PRECIOS Y SKU -->
+        <div style="background:#FAF8F3;border:1.5px solid var(--beige);border-radius:10px;padding:16px;margin:14px 0">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <h4 style="margin:0;font-size:0.95rem;color:var(--wine);font-weight:700;display:flex;align-items:center;gap:6px">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Costos, Precios y Rentabilidad (Finanzas)
+            </h4>
+            <span style="font-size:0.75rem;color:#78350F;background:#FEF3C7;padding:3px 8px;border-radius:12px;font-weight:600">Base para Punto de Equilibrio</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pSku">Código / SKU</label>
+              <input type="text" id="pSku" placeholder="Ej: SHA-JAM-50" style="font-weight:700;font-family:monospace;letter-spacing:0.05em">
+              <span class="field-hint">Código único para ventas y reportes</span>
+            </div>
+            <div class="form-group">
+              <label class="label-required" for="pPrecio">Precio de Venta (Bs)</label>
+              <input type="number" id="pPrecio" step="0.5" min="0" placeholder="Ej: 35.00" required style="font-size:1.1rem;font-weight:700;color:var(--wine)">
+              <span class="field-hint">Precio al público</span>
+            </div>
+            <div class="form-group">
+              <label class="label-required" for="pCosto">Costo Unitario (Bs)</label>
+              <input type="number" id="pCosto" step="0.5" min="0" placeholder="Ej: 22.00" required style="font-size:1.1rem;font-weight:700;color:#DC2626">
+              <span class="field-hint">Materia prima e insumos</span>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top:8px;align-items:center">
+            <div class="form-group">
+              <label for="pEmpaque">Tipo de Empaque</label>
+              <input type="text" id="pEmpaque" placeholder="Ej: Papel orgánico con semillas o Vidrio">
+            </div>
+            <div class="form-group">
+              <label>Margen Bruto por Unidad</label>
+              <div id="pMargenPreview" style="font-weight:800;font-size:1.1rem;color:#059669;padding-top:4px">Bs 0,00 (0.0%)</div>
+            </div>
           </div>
         </div>
 

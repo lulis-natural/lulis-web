@@ -533,8 +533,14 @@
         <!-- TAB 3: PRODUCTOS & RENTABILIDAD -->
         <div id="tab-productos" class="tab-content">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-            <h3 style="margin:0;font-size:1.05rem;color:var(--wine)">Rendimiento y Rentabilidad por Producto</h3>
-            <span style="font-size:.85rem;color:#6B7280">Cantidades, ingresos, costos y margen</span>
+            <div>
+              <h3 style="margin:0;font-size:1.05rem;color:var(--wine)">Rendimiento y Rentabilidad por Producto</h3>
+              <span style="font-size:.82rem;color:#6B7280">Cantidades vendidas, ingresos, costos unitarios y margen de contribución</span>
+            </div>
+            <a href="/admin/productos" class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:6px;font-size:0.82rem;border-color:var(--wine);color:var(--wine);font-weight:600">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Editar Costos en Catálogo
+            </a>
           </div>
           <div class="table-container">
             <table class="rep-table" id="productosTable">

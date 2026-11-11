@@ -1,4 +1,34 @@
 
+function updateMargenPreview() {
+  const p = parsePrice($('pPrecio')?.value) || 0;
+  const c = parsePrice($('pCosto')?.value) || 0;
+  const margen = p - c;
+  const pct = p > 0 ? ((margen / p) * 100).toFixed(1) : '0.0';
+  const el = $('pMargenPreview');
+  if (el) {
+    el.textContent = `${fmtBs(margen)} (${pct}%)`;
+    el.style.color = margen >= 0 ? '#059669' : '#DC2626';
+  }
+}
+
+
+function parsePrice(val) {
+  if (val == null) return 0;
+  if (typeof val === 'number') return isNaN(val) ? 0 : val;
+  let s = String(val).trim();
+  s = s.replace(/^[bB][sS]\.?\s*/, '').replace(/\s*[bB][sS]\.?$/, '').trim();
+  if (s.includes(',') && !s.includes('.')) {
+    s = s.replace(',', '.');
+  } else {
+    s = s.replace(/,/g, '');
+  }
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
+const fmtBs = (n) => 'Bs ' + (Number(n) || 0).toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+
 function generateSku(nombre, categoria, size) {
   const clean = (str) => (str || '').toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 3);
   const catCode = clean(categoria || 'PROD');
@@ -53,6 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
   $('filterCat')?.addEventListener('change', renderTable);
   $('filterDisp')?.addEventListener('change', renderTable);
   $('btnCargarSemilla')?.addEventListener('click', cargarSemillaInicial);
+  ['pPrecio', 'pCosto'].forEach(id => {
+    $(id)?.addEventListener('input', updateMargenPreview);
+  });
 
   initUpload();
   subscribeProductos();
@@ -232,7 +265,13 @@ window.editarProducto = function(id) {
   $('pCategoria').value           = p.categoria || 'shampoo';
   const wrapEdit = $('nuevaCategoriaWrap');
   if (wrapEdit) wrapEdit.style.display = 'none';
-  $('pPrecio').value              = p.precio || '';
+  const precioNum = parsePrice(p.precio) || 35;
+  const costoNum  = parsePrice(p.costo) || (precioNum * 0.4);
+  $('pPrecio').value  = precioNum;
+  if ($('pCosto')) $('pCosto').value = costoNum;
+  if ($('pSku')) $('pSku').value = p.sku || generateSku(p.nombre, p.categoria, p.size);
+  if ($('pEmpaque')) $('pEmpaque').value = p.empaque || (p.categoria === 'manteca' ? 'Envase de vidrio retornable / reutilizable' : 'Papel orgánico biodegradable con semillas plantables');
+  updateMargenPreview();
   $('pSize').value                = p.size || '50g';
   $('pDuracion').value            = p.duracion || '';
   $('pBadge').value               = p.badge || '';
@@ -328,7 +367,10 @@ async function guardarProducto() {
       variante:         $('pVariante').value.trim(),
       categoria,
       categoriaLabel,
-      precio:           $('pPrecio').value.trim() || '35 Bs.',
+      precio:           parsePrice($('pPrecio').value) || 35,
+      costo:            parsePrice($('pCosto').value) || 0,
+      sku:              $('pSku').value.trim() || generateSku(nombre, categoria, $('pSize')?.value),
+      empaque:          $('pEmpaque').value.trim() || (categoria === 'manteca' ? 'Envase de vidrio retornable / reutilizable' : 'Papel orgánico biodegradable con semillas plantables'),
       size:             $('pSize').value.trim() || '50g',
       duracion:         $('pDuracion').value.trim() || '35–45 lavadas',
       badge:            $('pBadge').value || '',
