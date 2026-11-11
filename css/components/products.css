@@ -449,3 +449,50 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
 }
+
+/* ═══ MARCO DISTINTIVO Y COLOR TURQUESA DE LA MARCA ═══ */
+.product-card {
+  border: 2.5px solid #DEC8B0 !important;
+  border-radius: 22px !important;
+  box-shadow: 0 8px 24px rgba(95, 15, 63, 0.08) !important;
+}
+.product-card:hover {
+  border-color: #07BC8A !important;
+  box-shadow: 0 14px 36px rgba(7, 188, 138, 0.22) !important;
+}
+.product-desc-turquoise {
+  background: rgba(7, 188, 138, 0.10) !important;
+  border: 1.5px solid rgba(7, 188, 138, 0.35) !important;
+  color: #067A5B !important;
+  font-weight: 700 !important;
+  font-size: 0.84rem !important;
+  border-radius: 10px !important;
+  padding: 6px 12px !important;
+  margin: 4px 0 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+.tag-pill.tag-turquesa {
+  background: rgba(7, 188, 138, 0.12) !important;
+  color: #058562 !important;
+  border-color: #07BC8A !important;
+  font-weight: 700 !important;
+}
+.btn-more-info {
+  background: #FAF8F3 !important;
+  border: 1.5px solid #07BC8A !important;
+  color: #067A5B !important;
+  font-weight: 700 !important;
+  font-size: 0.82rem !important;
+  padding: 7px 12px !important;
+  border-radius: 20px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+.btn-more-info:hover {
+  background: #07BC8A !important;
+  color: #FFFFFF !important;
+}

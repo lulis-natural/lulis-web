@@ -461,6 +461,162 @@
       margin-bottom: 16px !important;
     }
 
+  
+    /* ═══ MARCO DISTINTIVO DE PRODUCTO (NO SE PIERDE CON EL FONDO) ═══ */
+    .product-card {
+      background: #FFFFFF !important;
+      border: 2.5px solid #DEC8B0 !important;
+      border-radius: 22px !important;
+      box-shadow: 0 8px 24px rgba(95, 15, 63, 0.08) !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease !important;
+      cursor: pointer !important;
+    }
+    .product-card:hover {
+      transform: translateY(-6px) !important;
+      border-color: #07BC8A !important;
+      box-shadow: 0 14px 36px rgba(7, 188, 138, 0.22) !important;
+    }
+    .product-img-box {
+      width: 100% !important;
+      height: 220px !important;
+      background: #FAF8F3 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      border-bottom: 2px solid #EFE5D7 !important;
+    }
+    .product-img-box img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      transition: transform 0.4s ease !important;
+    }
+    .product-card:hover .product-img-box img {
+      transform: scale(1.06) !important;
+    }
+    .product-info-box {
+      padding: 20px 22px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      flex: 1 !important;
+    }
+    .product-meta-top {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin-bottom: 6px !important;
+    }
+    .product-category-label {
+      font-size: 0.74rem !important;
+      font-weight: 700 !important;
+      color: var(--wine) !important;
+      letter-spacing: 0.12em !important;
+      text-transform: uppercase !important;
+    }
+    .product-price-val {
+      font-size: 1.35rem !important;
+      font-weight: 800 !important;
+      color: var(--wine) !important;
+    }
+    .product-title {
+      font-family: var(--ff-display) !important;
+      font-size: 1.25rem !important;
+      font-weight: 800 !important;
+      color: #1C1611 !important;
+      line-height: 1.2 !important;
+      margin-bottom: 8px !important;
+    }
+
+    /* ═══ DESCRIPCIÓN EN TURQUESA DE LA MARCA (#07BC8A) ═══ */
+    .product-desc-turquoise {
+      background: rgba(7, 188, 138, 0.10) !important;
+      border: 1.5px solid rgba(7, 188, 138, 0.35) !important;
+      color: #067A5B !important;
+      font-weight: 700 !important;
+      font-size: 0.84rem !important;
+      border-radius: 10px !important;
+      padding: 6px 12px !important;
+      margin: 4px 0 12px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      line-height: 1.35 !important;
+    }
+    .product-tags {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 6px !important;
+      margin-bottom: 18px !important;
+    }
+    .tag-pill {
+      font-size: 0.74rem !important;
+      font-weight: 600 !important;
+      padding: 4px 10px !important;
+      border-radius: 20px !important;
+      background: #FAF6EF !important;
+      color: #55443B !important;
+      border: 1px solid #EBE2D5 !important;
+    }
+    .tag-pill.tag-turquesa {
+      background: rgba(7, 188, 138, 0.12) !important;
+      color: #058562 !important;
+      border-color: #07BC8A !important;
+      font-weight: 700 !important;
+    }
+
+    /* ═══ BOTONES INFERIORES: MÁS INFO & PEDIR WHATSAPP ═══ */
+    .product-bottom-row {
+      margin-top: auto !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 8px !important;
+      padding-top: 14px !important;
+      border-top: 1.5px solid #F0E8DC !important;
+    }
+    .btn-more-info {
+      background: #FAF8F3 !important;
+      border: 1.5px solid #07BC8A !important;
+      color: #067A5B !important;
+      font-weight: 700 !important;
+      font-size: 0.82rem !important;
+      padding: 7px 12px !important;
+      border-radius: 20px !important;
+      cursor: pointer !important;
+      transition: all 0.22s ease !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+    }
+    .btn-more-info:hover {
+      background: #07BC8A !important;
+      color: #FFFFFF !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 12px rgba(7, 188, 138, 0.35) !important;
+    }
+    .btn-wa-compact {
+      background: #25D366 !important;
+      color: #FFFFFF !important;
+      font-size: 0.84rem !important;
+      font-weight: 700 !important;
+      padding: 8px 15px !important;
+      border-radius: 30px !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      box-shadow: 0 3px 12px rgba(37, 211, 102, 0.32) !important;
+      transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    .btn-wa-compact:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 5px 16px rgba(37, 211, 102, 0.45) !important;
+    }
+
   </style>
 
   <!-- main.css cargado de forma NO bloqueante (print trick) -->
@@ -1886,5 +2042,140 @@
     </div>
   </div>
 </div>
+
+<script>
+  /* ═══ LULIS PRODUCT MODAL LOGIC (100% FUNCIONAL Y REACTIVO) ═══ */
+  var LULIS_MODAL_DATA = {
+    'shampoo-jamaica': {
+      nombre: 'Shampoo Sólido Jamaica',
+      categoria: 'SHAMPOO SÓLIDO',
+      precio: 'Bs 35,00',
+      img: 'Imagenes/productos/Jamaica.jpg',
+      desc: 'Formulado con extracto natural de Flor de Jamaica y manteca pura. Brinda brillo vibrante, fortalecimiento desde la raíz y limpieza equilibrada sin resecar el cuero cabelludo.',
+      ingredientes: 'Tensioactivo vegetal de coco (SCI), infusión concentrada de flor de Jamaica, arcilla blanca caolín, aceite de ricino prensado en frío, manteca de cacao.',
+      duracion: '50g · Rinde de 35 a 45 lavadas (equivale a 2–3 botellas de shampoo tradicional).',
+      waText: 'Hola LULIS 👋 Quisiera pedir el Shampoo Sólido Jamaica (Bs 35).'
+    },
+    'shampoo-romero': {
+      nombre: 'Shampoo Sólido Romero',
+      categoria: 'SHAMPOO SÓLIDO',
+      precio: 'Bs 35,00',
+      img: 'Imagenes/productos/Romeros.jpg',
+      desc: 'Formulado con romero silvestre y menta silvestre. Estimula la microcirculación capilar, previene la caída, fortalece la raíz y regula el exceso de sebo.',
+      ingredientes: 'Tensioactivo vegetal de coco (SCI), romero en polvo y aceite esencial de romero, menta silvestre, ortiga verde, aceite de jojoba.',
+      duracion: '50g · Rinde de 35 a 45 lavadas.',
+      waText: 'Hola LULIS 👋 Quisiera pedir el Shampoo Sólido Romero (Bs 35).'
+    },
+    'shampoo-coco': {
+      nombre: 'Shampoo Sólido Coco',
+      categoria: 'SHAMPOO SÓLIDO',
+      precio: 'Bs 35,00',
+      img: 'Imagenes/productos/Coco.jpg',
+      desc: 'Ultra hidratante para cabellos secos, rizados o dañados. Restaura la elasticidad, suavidad y sedosidad natural con nutrientes botánicos puros.',
+      ingredientes: 'Tensioactivo vegetal de coco (SCI), aceite virgen de coco prensado en frío, manteca de karité, proteína de trigo hidrolizada, extracto botánico.',
+      duracion: '50g · Rinde de 35 a 45 lavadas.',
+      waText: 'Hola LULIS 👋 Quisiera pedir el Shampoo Sólido Coco (Bs 35).'
+    },
+    'acond-melon': {
+      nombre: 'Acondicionador Sólido Melón',
+      categoria: 'ACONDICIONADOR SÓLIDO',
+      precio: 'Bs 38,00',
+      img: 'Imagenes/productos/Pack_coco_y_melon.jpeg',
+      desc: 'Desenredado botánico instantáneo y suavidad profunda sin dejar residuo graso. Deja el cabello ligero, sedoso y perfumado.',
+      ingredientes: 'Manteca de karité pura, extracto de melón, semillas de chía, alcohol cetoestearílico vegetal, vitamina E.',
+      duracion: '50g · Rinde de 40 a 50 lavadas.',
+      waText: 'Hola LULIS 👋 Quisiera pedir el Acondicionador Sólido Melón (Bs 38).'
+    },
+    'acond-uva-jamaica': {
+      nombre: 'Acondicionador Uva & Jamaica',
+      categoria: 'ACONDICIONADOR SÓLIDO',
+      precio: 'Bs 38,00',
+      img: 'Imagenes/productos/Pack_jamaica_y_jamaica.jpeg',
+      desc: 'Poder antioxidante para cabellos teñidos, tratados o resecos. Sella las cutículas, previene el frizz y potencia el brillo natural.',
+      ingredientes: 'Manteca de cacao boliviana, extracto de uva negra, infusión de flor de Jamaica, aceite de argán puro.',
+      duracion: '50g · Rinde de 40 a 50 lavadas.',
+      waText: 'Hola LULIS 👋 Quisiera pedir el Acondicionador Uva & Jamaica (Bs 38).'
+    },
+    'pack-duo-romero-melon': {
+      nombre: 'Pack Dúo Pureza (Romero + Melón)',
+      categoria: 'PACK DÚO AHORRO',
+      precio: 'Bs 68,00',
+      img: 'Imagenes/productos/Pack_romero_y_melon.jpeg',
+      desc: 'Rutina capilar integral: Shampoo Romero para purificar y estimular la raíz + Acondicionador Melón para desenredar y sellar puntas.',
+      ingredientes: '1 Shampoo Romero 50g + 1 Acondicionador Melón 50g + Caja plantable con semillas.',
+      duracion: 'Hasta 90 lavadas combinadas.',
+      waText: 'Hola LULIS 👋 Quisiera pedir el Pack Dúo Pureza (Bs 68).'
+    },
+    'pack-duo-coco-melon': {
+      nombre: 'Pack Dúo Hidratación (Coco + Melón)',
+      categoria: 'PACK DÚO AHORRO',
+      precio: 'Bs 68,00',
+      img: 'Imagenes/productos/Pack_coco_y_melon.jpeg',
+      desc: 'Nutrición máxima para cabellos secos o rizados. Aporta suavidad, brillo y definición sin químicos agresivos.',
+      ingredientes: '1 Shampoo Coco 50g + 1 Acondicionador Melón 50g + Caja plantable con semillas.',
+      duracion: 'Hasta 90 lavadas combinadas.',
+      waText: 'Hola LULIS 👋 Quisiera pedir el Pack Dúo Hidratación (Bs 68).'
+    },
+    'pack-duo-jamaica-romero': {
+      nombre: 'Pack Dúo Botánico (Jamaica + Romero)',
+      categoria: 'PACK DÚO AHORRO',
+      precio: 'Bs 65,00',
+      img: 'Imagenes/productos/Jamaica y romero.jpg',
+      desc: 'Dúo de 2 shampoos complementarios: brillo y equilibrio con Jamaica + fuerza y estimulación con Romero.',
+      ingredientes: '1 Shampoo Jamaica 50g + 1 Shampoo Romero 50g + Caja plantable con semillas.',
+      duracion: 'Hasta 90 lavadas combinadas.',
+      waText: 'Hola LULIS 👋 Quisiera pedir el Pack Dúo Botánico (Bs 65).'
+    },
+    'manteca-corporal-karite-cacao': {
+      nombre: 'Mantecas Corporales Sólidas',
+      categoria: 'LÍNEA CORPORAL BOTÁNICA',
+      precio: 'Próximo lanzamiento',
+      img: 'Imagenes/galeria/packagin.jpeg',
+      desc: 'Nutrición botánica en barra a base de manteca de cacao pura boliviana y karité virgen. Hidrata la piel profundamente sin envases plásticos.',
+      ingredientes: 'Manteca de cacao virgen boliviana, manteca de karité, aceites vegetales andinos, aceites esenciales aromáticos.',
+      duracion: 'Barra corporal sólida de larga duración.',
+      waText: 'Hola LULIS 👋 Quisiera más información sobre el lanzamiento de las Mantecas Corporales.'
+    }
+  };
+
+  window.openProductModal = function(id) {
+    var data = LULIS_MODAL_DATA[id] || LULIS_MODAL_DATA['shampoo-jamaica'];
+    var modal = document.getElementById('productDetailModal');
+    if (!modal) return;
+
+    var imgEl = document.getElementById('modalProductImg');
+    var nameEl = document.getElementById('modalProductName');
+    var catEl = document.getElementById('modalProductCategory');
+    var priceEl = document.getElementById('modalProductPrice');
+    var descEl = document.getElementById('modalProductDesc');
+    var ingEl = document.getElementById('modalProductIngredients');
+    var durEl = document.getElementById('modalProductDuration');
+    var waBtn = document.getElementById('modalProductWaBtn');
+
+    if (imgEl) imgEl.src = data.img;
+    if (nameEl) nameEl.textContent = data.nombre;
+    if (catEl) catEl.textContent = data.categoria;
+    if (priceEl) priceEl.textContent = data.precio;
+    if (descEl) descEl.textContent = data.desc;
+    if (ingEl) ingEl.textContent = data.ingredientes;
+    if (durEl) durEl.textContent = data.duracion;
+    if (waBtn) waBtn.href = 'https://wa.me/59173515698?text=' + encodeURIComponent(data.waText);
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeProductModal = function(e) {
+    var modal = document.getElementById('productDetailModal');
+    if (!modal) return;
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') window.closeProductModal();
+  });
+</script>
+
 </body>
 </html>

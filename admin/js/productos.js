@@ -464,7 +464,12 @@ function initUpload() {
       previewImg.src = e.target.result;
       preview.style.display = 'inline-block';
       area.style.display    = 'none';
-      progress.classList.add('show');
+      if ($('uploadStatusText')) {
+        $('uploadStatusText').style.display = 'block';
+        $('uploadStatusText').textContent = '✅ Imagen "' + file.name + '" lista para guardar.';
+      }
+      if ($('uploadProgress')) $('uploadProgress').classList.remove('show');
+      setBtnLoading(false);
     };
     reader.readAsDataURL(file);
   }
