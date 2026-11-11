@@ -2180,19 +2180,30 @@
       waText: 'Hola LULIS 👋 Quisiera pedir el Pack Dúo Botánico (Bs 65).'
     },
     'manteca-corporal-karite-cacao': {
-      nombre: 'Mantecas Corporales Sólidas',
+      nombre: 'Manteca Corporal',
       categoria: 'LÍNEA CORPORAL BOTÁNICA',
-      precio: 'Próximo lanzamiento',
+      precio: 'Bs 50,00',
       img: 'Imagenes/galeria/packagin.jpeg',
-      desc: 'Nutrición botánica en barra a base de manteca de cacao pura boliviana y karité virgen. Hidrata la piel profundamente sin envases plásticos.',
-      ingredientes: 'Manteca de cacao virgen boliviana, manteca de karité, aceites vegetales andinos, aceites esenciales aromáticos.',
-      duracion: 'Barra corporal sólida de larga duración.',
-      waText: 'Hola LULIS 👋 Quisiera más información sobre el lanzamiento de las Mantecas Corporales.'
+      desc: 'Manteca corporal de manzanilla, hidratación profunda y cuidado consciente de la piel.',
+      ingredientes: 'Manzanilla, manteca de copuazú, manteca de cacao pura boliviana, aceites vegetales andinos.',
+      duracion: '120ml · Alta concentración hidratante.',
+      empaque: 'Envase de vidrio retornable / reutilizable',
+      waText: 'Hola LULIS 👋 Quisiera pedir la Manteca Corporal (Bs 50).'
     }
   };
 
   window.openProductModal = function(id) {
-    var data = LULIS_MODAL_DATA[id] || LULIS_MODAL_DATA['shampoo-jamaica'];
+    var data = LULIS_MODAL_DATA[id];
+    if (!data && typeof id === 'string') {
+      var idLower = id.toLowerCase();
+      for (var k in LULIS_MODAL_DATA) {
+        if (k.toLowerCase() === idLower || (idLower.includes('manteca') && k.toLowerCase().includes('manteca'))) {
+          data = LULIS_MODAL_DATA[k];
+          break;
+        }
+      }
+    }
+    if (!data) data = LULIS_MODAL_DATA['shampoo-jamaica'];
     var modal = document.getElementById('productDetailModal');
     if (!modal) return;
 
@@ -2203,16 +2214,22 @@
     var descEl = document.getElementById('modalProductDesc');
     var ingEl = document.getElementById('modalProductIngredients');
     var durEl = document.getElementById('modalProductDuration');
+    var empaqueEl = document.getElementById('modalProductEmpaque');
     var waBtn = document.getElementById('modalProductWaBtn');
 
-    if (imgEl) imgEl.src = data.img;
-    if (nameEl) nameEl.textContent = data.nombre;
-    if (catEl) catEl.textContent = data.categoria;
-    if (priceEl) priceEl.textContent = data.precio;
-    if (descEl) descEl.textContent = data.desc;
-    if (ingEl) ingEl.textContent = data.ingredientes;
-    if (durEl) durEl.textContent = data.duracion;
-    if (waBtn) waBtn.href = 'https://wa.me/59173515698?text=' + encodeURIComponent(data.waText);
+    if (imgEl && data.img) imgEl.src = data.img;
+    if (nameEl) nameEl.textContent = data.nombre || '';
+    if (catEl) catEl.textContent = data.categoria || '';
+    if (priceEl) priceEl.textContent = data.precio || '';
+    if (descEl) descEl.textContent = data.desc || '';
+    if (ingEl) ingEl.textContent = data.ingredientes || '';
+    if (durEl) durEl.textContent = data.duracion || '';
+    if (empaqueEl) {
+      var isManteca = (data.categoria && data.categoria.toLowerCase().includes('manteca')) || (data.nombre && data.nombre.toLowerCase().includes('manteca'));
+      var defEmpaque = isManteca ? 'Envase de vidrio retornable / reutilizable' : 'Papel orgánico biodegradable con semillas que puedes plantar tras el uso.';
+      empaqueEl.textContent = data.empaque || defEmpaque;
+    }
+    if (waBtn) waBtn.href = 'https://wa.me/59173515698?text=' + encodeURIComponent(data.waText || ('Hola LULIS 👋 Quisiera consultar sobre ' + (data.nombre || 'sus productos')));
 
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -2306,6 +2323,11 @@
 
         window.LULIS_MODAL_DATA[p.id] = modalObj;
         if (p.slug) window.LULIS_MODAL_DATA[p.slug] = modalObj;
+        window.LULIS_MODAL_DATA[nameClean.toLowerCase()] = modalObj;
+        if (cat === 'manteca' || nameClean.toLowerCase().includes('manteca')) {
+          window.LULIS_MODAL_DATA['manteca-corporal-karite-cacao'] = modalObj;
+          window.LULIS_MODAL_DATA['manteca'] = modalObj;
+        }
 
         // 2. Buscar tarjeta existente en el DOM y actualizar en vivo
         const cards = document.querySelectorAll('.product-card');
@@ -2315,7 +2337,7 @@
           const pNameLower = nameClean.toLowerCase();
 
           // Coincidencia exacta o parcial
-          if (cardId === p.id || cardName === pNameLower || (cardName.includes('jamaica') && pNameLower.includes('jamaica') && !cardName.includes('uva')) || (cardName.includes('romero') && pNameLower.includes('romero') && !cardName.includes('mel')) || (cardName.includes('coco') && pNameLower.includes('coco') && !cardName.includes('mel'))) {
+          if (cardId === p.id || cardName === pNameLower || (cardName.includes('jamaica') && pNameLower.includes('jamaica') && !cardName.includes('uva')) || (cardName.includes('romero') && pNameLower.includes('romero') && !cardName.includes('mel')) || (cardName.includes('coco') && pNameLower.includes('coco') && !cardName.includes('mel')) || (cardName.includes('manteca') && pNameLower.includes('manteca'))) {
             // Actualizar ID
             card.setAttribute('data-id', p.id);
             card.onclick = function() { window.openProductModal(p.id); };

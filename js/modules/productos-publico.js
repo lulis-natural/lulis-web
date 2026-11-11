@@ -184,6 +184,11 @@
       window.LULIS_MODAL_DATA[cardId] = modalPayload;
       if (p.id) window.LULIS_MODAL_DATA[p.id] = modalPayload;
       window.LULIS_MODAL_DATA[slugify(p.nombre)] = modalPayload;
+      window.LULIS_MODAL_DATA[(p.nombre || '').toLowerCase()] = modalPayload;
+      if (cat === 'manteca' || (p.nombre || '').toLowerCase().includes('manteca')) {
+        window.LULIS_MODAL_DATA['manteca-corporal-karite-cacao'] = modalPayload;
+        window.LULIS_MODAL_DATA['manteca'] = modalPayload;
+      }
     });
 
     const wrap = document.getElementById(WRAP_ID);
