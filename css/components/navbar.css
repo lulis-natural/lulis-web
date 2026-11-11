@@ -134,8 +134,8 @@
 
 /* ─── Responsive ─────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .nav-links  { display: none; }
-  .hamburger  { display: flex; }
+  .nav-links  { display: none !important; }
+  .hamburger  { display: flex !important; }
 }
 
 

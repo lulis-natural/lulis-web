@@ -14,7 +14,10 @@
     var(--purple) 70%,
     #3D2B5C 100%
   );
-  overflow: hidden;
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 /* Patrón de fondo */
