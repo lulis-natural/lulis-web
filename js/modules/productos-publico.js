@@ -116,7 +116,7 @@
                alt="${p.nombre} — cosmética consciente LULIS"
                loading="lazy" decoding="async"
                onerror="this.onerror=null;this.src='Imagenes/logos/LOGO.jpg'">
-          ${p.badge ? `<span class="product-badge badge-hot">${p.badge}</span>` : ''}
+          
         </div>
         <div class="product-info-box">
           <div>
