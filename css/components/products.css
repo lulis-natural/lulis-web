@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    LULIS — Catálogo Estilo Boutique (Basado en referencia Natural Farma)
    ═══════════════════════════════════════════════════════════ */
 
@@ -126,32 +126,21 @@
   border-radius: 50px;
 }
 
-/* ─── GRILLA DE PRODUCTOS (4 EN PANTALLA GRANDE / 3 EN DESKTOP) ─── */
+/* ─── GRILLA DE PRODUCTOS (2 POR FILA / CATEGORÍA) ─── */
 .product-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(2, minmax(280px, 460px));
+  justify-content: center;
+  gap: 30px;
   width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
 }
 
-@media (min-width: 1200px) {
-  .product-list {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 26px;
-  }
-}
-
-@media (max-width: 900px) {
-  .product-list {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-  }
-}
-
-@media (max-width: 580px) {
+@media (max-width: 680px) {
   .product-list {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 20px;
   }
 }
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es-BO">
 <head>
   <meta charset="UTF-8">
@@ -213,53 +213,66 @@
       }
     }
 
-    /* ═══ BOX DE COLOR PARA CATEGORÍAS DEL CATÁLOGO ═══ */
+    /* ═══ BOX DE COLOR DESTACADO PARA CATEGORÍAS DEL CATÁLOGO ═══ */
     .category-block {
-      margin-bottom: 52px;
+      margin-bottom: 56px;
+      scroll-margin-top: 90px;
+      transition: opacity 0.3s ease;
     }
     .category-block-header {
-      background: linear-gradient(135deg, #FAF4EB 0%, #F5ECDD 100%) !important;
-      border: 1.5px solid #E4D5BE !important;
-      border-radius: 20px !important;
-      padding: 18px 24px !important;
+      background: #FFFFFF !important;
+      border: 2.5px solid #C4A480 !important;
+      border-left: 8px solid var(--wine) !important;
+      border-radius: 22px !important;
+      padding: 20px 28px !important;
       margin-bottom: 26px !important;
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      box-shadow: 0 4px 18px rgba(95, 15, 63, 0.05) !important;
+      box-shadow: 0 8px 26px rgba(95, 15, 63, 0.08) !important;
       gap: 16px;
     }
-    .category-block-left {
+    .category-block-header-left, .category-block-left {
       display: flex;
       align-items: center;
       gap: 16px;
     }
-    .category-box-badge-icon {
+    .category-block-icon, .category-box-badge-icon {
       display: flex;
       align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      line-height: 1;
+      background: #FAF6EF;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      border: 1.5px solid #D5C2A5;
+      flex-shrink: 0;
     }
-    .category-box-title {
+    .category-block-title, .category-box-title {
       font-family: var(--ff-display);
-      font-size: 1.45rem !important;
+      font-size: 1.55rem !important;
       font-weight: 800 !important;
       color: var(--wine) !important;
       line-height: 1.15;
       margin: 0;
     }
-    .category-box-sub {
-      font-size: 0.88rem !important;
-      color: #6B5B52 !important;
+    .category-block-sub, .category-box-sub {
+      font-size: 0.92rem !important;
+      color: #52423A !important;
       margin-top: 4px;
       font-weight: 500;
+      display: block;
     }
-    .category-box-count {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--wine);
-      background: #FFFFFF;
-      padding: 6px 16px;
-      border-radius: 30px;
-      border: 1px solid #D9C9B4;
+    .category-block-count, .category-box-count {
+      font-size: 0.85rem !important;
+      font-weight: 700 !important;
+      color: var(--wine) !important;
+      background: #FAF6EF !important;
+      padding: 8px 18px !important;
+      border-radius: 30px !important;
+      border: 1.5px solid #C4A480 !important;
       white-space: nowrap;
       box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     }
@@ -269,23 +282,72 @@
         align-items: flex-start;
         padding: 16px 18px !important;
       }
-      .category-box-count {
+      .category-block-count, .category-box-count {
         align-self: flex-start;
       }
     }
 
-    /* ═══ TARJETAS DE PRODUCTO — IDEA ORIGINAL FORMATEADA ═══ */
+    /* ═══ TARJETAS DE PRODUCTO (AJUSTADO A 2 POR CATEGORÍA) ═══ */
     .product-list {
       display: grid !important;
-      grid-template-columns: repeat(3, 1fr) !important;
-      gap: 26px !important;
+      grid-template-columns: repeat(2, minmax(280px, 460px)) !important;
+      justify-content: center !important;
+      gap: 30px !important;
       width: 100% !important;
+      max-width: 980px !important;
+      margin: 0 auto !important;
     }
-    @media (max-width: 960px) {
-      .product-list { grid-template-columns: repeat(2, 1fr) !important; gap: 20px !important; }
+    @media (max-width: 680px) {
+      .product-list {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
     }
-    @media (max-width: 580px) {
-      .product-list { grid-template-columns: 1fr !important; gap: 18px !important; }
+
+    /* ═══ FILTROS DE CATEGORÍA INTERACTIVOS CON REDIRECCIÓN ═══ */
+    .catalog-filters {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 24px auto 40px;
+      background: #ffffff;
+      padding: 8px 12px;
+      border-radius: 60px;
+      border: 2px solid #D5C2A5;
+      max-width: fit-content;
+      box-shadow: 0 6px 22px rgba(95, 15, 63, 0.06);
+    }
+    .filter-btn {
+      background: transparent;
+      border: 1.5px solid transparent;
+      color: #4A3E38;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-family: var(--ff-body);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+    .filter-btn:hover {
+      color: var(--wine);
+      background: rgba(95, 15, 63, 0.08);
+      border-color: #E2D3BE;
+      transform: translateY(-1px);
+    }
+    .filter-btn.active {
+      background: var(--wine) !important;
+      color: #ffffff !important;
+      border-color: var(--wine) !important;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(95, 15, 63, 0.3);
+      transform: translateY(-2px);
     }
 
     .product-card {
