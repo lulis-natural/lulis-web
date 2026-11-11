@@ -1,12 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   LULIS Admin — ventas.js
-   Registro profesional de ventas.
-   - CRUD de ventas con líneas de productos
-   - Filtros por fecha / canal / estado
-   - Resumen de período (conteo, unidades, total, ticket promedio)
-   - Exportar a Excel (.xlsx) con formato profesional (multi-hoja)
-   - Importar ventas en masa desde .xlsx o .csv
-   - Recalcular impacto_ambiental/acumulado en cada cambio
+   LULIS Admin — ventas.js (v3 — Gestión Comercial y Financiera)
+   - Parseo exacto en Bolivianos (sin ceros adelante)
+   - Sanitización contra undefined para addDoc
+   - Estructura normalizada según Modelo_datos_y_reportes_Lulis.xlsx
+   - Trazabilidad de costo histórico y cálculo de márgenes
+   - Soporte multi-producto por venta_id
    ═══════════════════════════════════════════════════════════ */
 
 import {
@@ -18,46 +16,74 @@ import {
   serverTimestamp, Timestamp
 } from './firebase-init.js';
 
-import { exportarXLSX, importarXLSX, descargarPlantillaVentas, toast } from './xlsx-helper.js';
+import { exportarXLSX, descargarPlantillaVentas, toast } from './xlsx-helper.js';
 
-const COL_VENTAS = 'ventas';
-const COL_PROD   = 'productos';
-const COL_IMP    = 'impacto_ambiental';
-const DOC_IMP    = 'acumulado';
+const COL_VENTAS    = 'ventas';
+const COL_PROD      = 'productos';
+const COL_IMPACTO   = 'impacto';
+const CACHE_KEY     = 'lulis_ventas_cache_v2';
+
 const $ = (id) => document.getElementById(id);
 
-let allVentas   = [];
-let allProductos = [];
-let editingId   = null;
-let deleteId    = null;
-let lineas      = [];   // líneas de la venta en edición
+let allVentas     = [];   // datos crudos desde Firestore
+let allProductos  = [];   // catálogo para autocompletar líneas
+let filteredVentas = [];
+let editingId     = null;
+let deleteId      = null;
+let lineas        = [];   // líneas de la venta en edición
 
-const fmtBs   = (n) => 'Bs ' + (n || 0).toLocaleString('es-BO', { minimumFractionDigits: 0 });
-const fmtDate = (ts) => {
-  if (!ts) return '—';
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return d.toLocaleDateString('es-BO', { day: '2-digit', month: 'short', year: 'numeric' });
-};
-const fmtDateISO = (ts) => {
-  if (!ts) return '';
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return d.toISOString().slice(0, 10);
-};
-const parseFecha = (str) => {
-  if (!str) return null;
-  if (str instanceof Date) return str;
-  const s = String(str).trim();
-  // Acepta YYYY-MM-DD o DD/MM/YYYY
-  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return new Date(s + 'T12:00:00');
-  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)) {
-    const [d, m, y] = s.split('/');
-    return new Date(`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}T12:00:00`);
+/* ── Formateadores ─────────────────────────────────────── */
+export function parsePrice(val) {
+  if (val == null) return 0;
+  if (typeof val === 'number') return isNaN(val) ? 0 : val;
+  let s = String(val).trim();
+  s = s.replace(/^[bB][sS]\.?\s*/, '').replace(/\s*[bB][sS]\.?$/, '').trim();
+  if (s.includes(',') && !s.includes('.')) {
+    s = s.replace(',', '.');
+  } else {
+    s = s.replace(/,/g, '');
   }
-  const d = new Date(s);
-  return isNaN(d) ? null : d;
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
+const fmtBs = (n) => 'Bs ' + (Number(n) || 0).toLocaleString('es-BO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+const fmtDate = (ts) => {
+  if (!ts) return '-';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  if (isNaN(d.getTime())) return '-';
+  return d.toLocaleDateString('es-BO', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
-/* ── Init ───────────────────────────────────────────────── */
+const fmtDateInput = (d) => {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
+
+function generateVentaId(d = new Date()) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const r = Math.floor(100 + Math.random() * 900);
+  return `VTA-${y}${m}${day}-${r}`;
+}
+
+function sanitizeForFirestore(obj) {
+  if (obj === undefined) return null;
+  if (obj === null) return null;
+  if (Array.isArray(obj)) return obj.map(sanitizeForFirestore);
+  if (typeof obj === 'object' && !(obj instanceof Date) && !(obj instanceof Timestamp)) {
+    const clean = {};
+    for (const k in obj) {
+      clean[k] = obj[k] !== undefined ? sanitizeForFirestore(obj[k]) : null;
+    }
+    return clean;
+  }
+  return obj;
+}
+
+/* ── Init ──────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   $('logoutBtn')?.addEventListener('click', signOut);
   $('btnNueva')?.addEventListener('click', openModalNew);
@@ -70,161 +96,205 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btnLimpiarFiltros')?.addEventListener('click', limpiarFiltros);
   $('confirmCancel')?.addEventListener('click', () => $('confirmOverlay')?.classList.remove('open'));
   $('confirmDelete')?.addEventListener('click', ejecutarBorrado);
-  $('vDescuento')?.addEventListener('input', updateTotalPreview);
 
-  // Import modal handlers
-  initImportModal();
-
-  // Filtros
-  ['fDesde', 'fHasta', 'fCanal', 'fEstado'].forEach(id => {
-    $(id)?.addEventListener('change', applyFilters);
-    $(id)?.addEventListener('input', applyFilters);
+  // Filtros interactivos
+  ['fDesde', 'fHasta', 'fCanal', 'fEstado', 'fBuscar'].forEach(id => {
+    $(id)?.addEventListener('input', aplicarFiltros);
+    $(id)?.addEventListener('change', aplicarFiltros);
   });
 
-  // Default fechas: últimos 6 meses
-  const hoy = new Date();
-  const hace6 = new Date();
-  hace6.setMonth(hace6.getMonth() - 6);
-  $('fHasta').value = hoy.toISOString().slice(0, 10);
-  $('fDesde').value = hace6.toISOString().slice(0, 10);
-
+  initFechasFiltro();
   subscribeProductos();
   subscribeVentas();
 });
 
-/* ── Suscripciones ────────────────────────────────────── */
+function initFechasFiltro() {
+  const hoy = new Date();
+  const hace30d = new Date();
+  hace30d.setDate(hoy.getDate() - 30);
+  if ($('fDesde')) $('fDesde').value = fmtDateInput(hace30d);
+  if ($('fHasta')) $('fHasta').value = fmtDateInput(hoy);
+}
+
+/* ── Suscripción a productos (para armar líneas) ────────── */
 function subscribeProductos() {
   onSnapshot(collection(db, COL_PROD), (snap) => {
     allProductos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    // Actualizar select del modal
-    const sel = $('addLineaProducto');
-    if (sel) {
-      sel.innerHTML = '<option value="">Seleccionar producto…</option>' +
+    const select = $('addLineaProducto');
+    if (select) {
+      select.innerHTML = '<option value="">Seleccionar producto…</option>' +
         allProductos
           .filter(p => p.disponible !== false)
           .sort((a, b) => (a.orden || 99) - (b.orden || 99))
-          .map(p => `<option value="${p.id}">${escapeHtml(p.nombre)} — ${escapeHtml(p.gramos || '')} (${escapeHtml(p.precio || '')})</option>`)
+          .map(p => {
+            const precioReal = parsePrice(p.precio);
+            return `<option value="${p.id}">${escapeHtml(p.nombre)} - ${escapeHtml(p.size || p.gramos || '50g')} (${fmtBs(precioReal)})</option>`;
+          })
           .join('');
     }
   }, (err) => {
-    console.warn('[productos]', err.code, err.message);
+    console.warn('[ventas] Error cargando productos:', err);
   });
 }
 
+/* ── Suscripción a ventas ──────────────────────────────── */
 function subscribeVentas() {
+  // Carga inmediata de cache
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      allVentas = JSON.parse(cached);
+      aplicarFiltros();
+      $('ventasLoading').style.display = 'none';
+    }
+  } catch (e) {}
+
   onSnapshot(collection(db, COL_VENTAS), (snap) => {
-    allVentas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    applyFilters();
+    allVentas = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => {
+        const da = a.fecha?.toDate ? a.fecha.toDate() : new Date(a.fecha || 0);
+        const db = b.fecha?.toDate ? b.fecha.toDate() : new Date(b.fecha || 0);
+        return db - da;
+      });
+
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(allVentas));
+    } catch (e) {}
+
     $('ventasLoading').style.display = 'none';
+    aplicarFiltros();
   }, (err) => {
-    console.warn('[ventas]', err.code, err.message);
+    console.warn('[ventas] Error en snapshot:', err);
     $('ventasLoading').style.display = 'none';
-    $('ventasEmpty').style.display = 'block';
-    $('ventasEmpty').innerHTML = `
-      <h3>Sin permisos para leer ventas</h3>
-      <p>Las reglas de Firestore bloquean el acceso.</p>`;
+    if (!allVentas.length) {
+      $('ventasEmpty').style.display = 'block';
+    }
   });
 }
 
 /* ── Filtros ───────────────────────────────────────────── */
-function applyFilters() {
-  const desde  = $('fDesde')?.value;
-  const hasta  = $('fHasta')?.value;
-  const canal  = $('fCanal')?.value;
-  const estado = $('fEstado')?.value;
+function aplicarFiltros() {
+  const desdeStr = $('fDesde')?.value;
+  const hastaStr = $('fHasta')?.value;
+  const canal    = ($('fCanal')?.value || '').toLowerCase().trim();
+  const estado   = ($('fEstado')?.value || '').toLowerCase().trim();
+  const buscar   = ($('fBuscar')?.value || '').toLowerCase().trim();
 
-  const filtered = allVentas.filter(v => {
-    const fecha = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
-    if (desde && fecha < new Date(desde)) return false;
-    if (hasta && fecha > new Date(hasta + 'T23:59:59')) return false;
-    if (canal && v.canal !== canal) return false;
-    if (estado && v.estado !== estado) return false;
+  const desde = desdeStr ? new Date(desdeStr + 'T00:00:00') : null;
+  const hasta = hastaStr ? new Date(hastaStr + 'T23:59:59') : null;
+
+  filteredVentas = allVentas.filter(v => {
+    const f = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
+    if (desde && f < desde) return false;
+    if (hasta && f > hasta) return false;
+    if (canal && (v.canal || '').toLowerCase() !== canal) return false;
+    if (estado && (v.estado || '').toLowerCase() !== estado) return false;
+    if (buscar) {
+      const vid = (v.venta_id || v.id || '').toLowerCase();
+      const cli = (v.cliente || '').toLowerCase();
+      const prods = (v.lineas || []).map(l => (l.producto || l.nombre || '').toLowerCase()).join(' ');
+      if (!vid.includes(buscar) && !cli.includes(buscar) && !prods.includes(buscar)) return false;
+    }
     return true;
   });
 
-  renderTable(filtered);
-  renderResumen(filtered);
+  renderResumen(filteredVentas);
+  renderTable(filteredVentas);
 }
 
 function limpiarFiltros() {
-  const hoy = new Date();
-  const hace6 = new Date();
-  hace6.setMonth(hace6.getMonth() - 6);
-  $('fDesde').value = hace6.toISOString().slice(0, 10);
-  $('fHasta').value = hoy.toISOString().slice(0, 10);
-  $('fCanal').value = '';
-  $('fEstado').value = '';
-  applyFilters();
+  initFechasFiltro();
+  if ($('fCanal')) $('fCanal').value = '';
+  if ($('fEstado')) $('fEstado').value = '';
+  if ($('fBuscar')) $('fBuscar').value = '';
+  aplicarFiltros();
 }
 
-/* ── Render ────────────────────────────────────────────── */
+/* ── Resumen superior ──────────────────────────────────── */
 function renderResumen(ventas) {
-  const conteo    = ventas.length;
-  const unidades  = ventas.reduce((s, v) => s + (v.lineas || []).reduce((a, l) => a + (l.cantidad || 0), 0), 0);
-  const total     = ventas.reduce((s, v) => s + (v.total || 0), 0);
-  const ticket    = conteo > 0 ? total / conteo : 0;
+  const conteo   = ventas.length;
+  const unidades = ventas.reduce((s, v) => s + (v.lineas || []).reduce((sl, l) => sl + (Number(l.cantidad) || 0), 0), 0);
+  const total    = ventas.reduce((s, v) => s + (parsePrice(v.total) || 0), 0);
+  const ticket   = conteo ? Math.round(total / conteo) : 0;
 
-  $('r-conteo').textContent     = conteo;
-  $('r-conteo-sub').textContent = conteo === 1 ? '1 venta' : `${conteo} ventas`;
-  $('r-unidades').textContent   = unidades;
-  $('r-total').textContent      = fmtBs(total);
-  $('r-ticket').textContent     = fmtBs(ticket);
+  if ($('r-conteo')) $('r-conteo').textContent = conteo;
+  if ($('r-conteo-sub')) $('r-conteo-sub').textContent = conteo === 1 ? '1 venta' : `${conteo} ventas`;
+  if ($('r-unidades')) $('r-unidades').textContent = unidades;
+  if ($('r-total')) $('r-total').textContent = fmtBs(total);
+  if ($('r-ticket')) $('r-ticket').textContent = fmtBs(ticket);
 }
 
+/* ── Render tabla ──────────────────────────────────────── */
 function renderTable(ventas) {
   const body = $('ventasBody');
+  if (!body) return;
+
   if (!ventas.length) {
-    body.innerHTML = '';
-    $('ventasEmpty').style.display = 'block';
-    $('ventasTable').style.display = 'none';
+    body.innerHTML = '<div style="padding:40px;text-align:center;color:var(--mid)">No hay ventas que coincidan con los filtros</div>';
     return;
   }
-  $('ventasEmpty').style.display = 'none';
-  $('ventasTable').style.display = 'block';
 
-  // Ordenar por fecha desc
-  const sorted = [...ventas].sort((a, b) => {
-    const da = a.fecha?.toDate ? a.fecha.toDate() : new Date(a.fecha || 0);
-    const db = b.fecha?.toDate ? b.fecha.toDate() : new Date(b.fecha || 0);
-    return db - da;
-  });
+  const editIcon = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+  const delIcon  = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
 
-  const editIcon = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
-  const delIcon  = `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>`;
+  body.innerHTML = ventas.map(v => {
+    const prodsStr = (v.lineas || []).map(l => {
+      const cant = Number(l.cantidad) || 1;
+      const nom = l.producto || l.nombre || 'Producto';
+      return `${cant}x ${escapeHtml(nom)}`;
+    }).join(', ');
 
-  body.innerHTML = sorted.map(v => {
-    const fecha = fmtDate(v.fecha);
-    const lineasTxt = (v.lineas || []).map(l => `${l.cantidad}× ${l.nombre}`).join(', ');
-    const totalUnd = (v.lineas || []).reduce((s, l) => s + (l.cantidad || 0), 0);
+    const vId = v.venta_id || v.id.substring(0, 10).toUpperCase();
+    const canal = v.canal || 'WhatsApp';
+    const medioPago = v.medio_pago || 'QR';
+    const estado = v.estado || 'Pagada';
+    const totalBs = parsePrice(v.total);
+
+    const isPagada = estado.toLowerCase().includes('pagad') || estado.toLowerCase().includes('entregad');
+    const badgeColor = isPagada ? '#04664A' : (estado.toLowerCase().includes('canc') ? '#DC2626' : '#92400E');
+    const badgeBg = isPagada ? '#D1FAE5' : (estado.toLowerCase().includes('canc') ? '#FEE2E2' : '#FEF3C7');
+
     return `
-    <div class="ventas-row">
-      <div>${fecha}</div>
-      <div>${escapeHtml(v.cliente || 'Consumidor final')}</div>
-      <div title="${escapeAttr(lineasTxt)}">
-        <strong>${totalUnd} und</strong>
-        <div style="color:var(--mid);font-size:.78rem;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(lineasTxt)}</div>
-      </div>
-      <div><span class="canal-badge canal-${v.canal || 'otro'}">${v.canal || '—'}</span></div>
-      <div><span class="estado-badge estado-${v.estado || 'pendiente'}">${v.estado || '—'}</span></div>
-      <div><strong>${fmtBs(v.total)}</strong></div>
+    <div class="ventas-row" style="grid-template-columns: 120px 95px 1fr 1fr 100px 95px 95px 105px 85px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--beige)">
+      <div><strong style="color:var(--wine);font-size:0.82rem;font-family:monospace">${escapeHtml(vId)}</strong></div>
+      <div style="font-size:0.85rem">${fmtDate(v.fecha)}</div>
+      <div style="font-weight:600;font-size:0.88rem">${escapeHtml(v.cliente || 'Consumidor final')}</div>
+      <div style="font-size:0.82rem;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escapeHtml(prodsStr)}">${escapeHtml(prodsStr) || '—'}</div>
+      <div><span style="display:inline-block;padding:3px 8px;border-radius:20px;font-size:0.75rem;background:#F5F0E8;font-weight:600">${escapeHtml(canal)}</span></div>
+      <div><span style="display:inline-block;padding:3px 8px;border-radius:20px;font-size:0.75rem;background:#EBF5FF;color:#1E40AF;font-weight:600">${escapeHtml(medioPago)}</span></div>
+      <div><span style="display:inline-block;padding:3px 8px;border-radius:20px;font-size:0.75rem;background:${badgeBg};color:${badgeColor};font-weight:700">${escapeHtml(estado)}</span></div>
+      <div><strong style="color:var(--wine);font-size:0.95rem">${fmtBs(totalBs)}</strong></div>
       <div style="text-align:right">
-        <button class="btn btn-outline btn-sm btn-icon" onclick="editarVenta('${v.id}')" title="Editar">${editIcon}</button>
-        <button class="btn btn-danger btn-sm btn-icon" onclick="confirmarBorrado('${v.id}')" title="Eliminar">${delIcon}</button>
+        <button class="btn btn-outline btn-sm btn-icon" onclick="window.editarVenta('${v.id}')" title="Editar">${editIcon}</button>
+        <button class="btn btn-danger btn-sm btn-icon" onclick="window.confirmarBorrado('${v.id}')" title="Eliminar">${delIcon}</button>
       </div>
     </div>`;
   }).join('');
 }
 
-/* ── Modal: nueva venta ────────────────────────────────── */
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/* ── Modal nuevo / editar ──────────────────────────────── */
 function openModalNew() {
   editingId = null;
   lineas = [];
-  $('ventaId').value = '';
   $('modalTitle').textContent = 'Nueva venta';
-  $('vFecha').value = new Date().toISOString().slice(0, 10);
+  $('ventaId').value = '';
+  $('vVentaId').value = generateVentaId();
+  $('vFecha').value = fmtDateInput(new Date());
   $('vCliente').value = '';
-  $('vCanal').value = 'whatsapp';
-  $('vEstado').value = 'entregado';
+  $('vCanal').value = 'WhatsApp';
+  if ($('vMedioPago')) $('vMedioPago').value = 'QR';
+  $('vEstado').value = 'Pagada';
   $('vDescuento').value = 0;
   $('vNotas').value = '';
   renderLineas();
@@ -232,29 +302,56 @@ function openModalNew() {
   $('modalOverlay').classList.add('open');
 }
 
-/* ── Modal: editar venta ───────────────────────────────── */
 window.editarVenta = function(id) {
   const v = allVentas.find(x => x.id === id);
   if (!v) return;
+
   editingId = id;
-  lineas = JSON.parse(JSON.stringify(v.lineas || []));
-  $('ventaId').value = id;
   $('modalTitle').textContent = 'Editar venta';
-  $('vFecha').value = fmtDateISO(v.fecha);
+  $('ventaId').value = id;
+  $('vVentaId').value = v.venta_id || id.substring(0, 10).toUpperCase();
+
+  const d = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
+  $('vFecha').value = fmtDateInput(d);
   $('vCliente').value = v.cliente || '';
-  $('vCanal').value = v.canal || 'whatsapp';
-  $('vEstado').value = v.estado || 'entregado';
+  $('vCanal').value = v.canal || 'WhatsApp';
+  if ($('vMedioPago')) $('vMedioPago').value = v.medio_pago || 'QR';
+  $('vEstado').value = v.estado || 'Pagada';
   $('vDescuento').value = v.descuento || 0;
   $('vNotas').value = v.notas || '';
+
+  // Líneas normalizadas
+  lineas = (v.lineas || []).map(l => {
+    const pU = parsePrice(l.precio_unitario_bs != null ? l.precio_unitario_bs : l.precio);
+    const cU = parsePrice(l.costo_unitario_historico_bs != null ? l.costo_unitario_historico_bs : l.costo);
+    const cant = Number(l.cantidad) || 1;
+    return {
+      productoId: l.productoId || '',
+      producto_sku: l.producto_sku || 'PROD-01',
+      producto: l.producto || l.nombre || 'Producto',
+      categoria: l.categoria || l.tipo || 'shampoo',
+      cantidad: cant,
+      precio_unitario_bs: pU,
+      costo_unitario_historico_bs: cU || (pU * 0.38),
+      subtotal_linea_bs: pU * cant,
+      descuento_linea_bs: Number(l.descuento_linea_bs) || 0,
+      total_linea_bs: (pU * cant) - (Number(l.descuento_linea_bs) || 0),
+      costo_total_linea_bs: (cU || (pU * 0.38)) * cant,
+      margen_bruto_linea_bs: ((pU * cant) - (Number(l.descuento_linea_bs) || 0)) - ((cU || (pU * 0.38)) * cant),
+      // Props de vista
+      nombre: l.producto || l.nombre || 'Producto',
+      precio: pU
+    };
+  });
+
   renderLineas();
   updateTotalPreview();
   $('modalOverlay').classList.add('open');
 };
 
 function closeModal() {
-  $('modalOverlay').classList.remove('open');
+  $('modalOverlay')?.classList.remove('open');
   editingId = null;
-  lineas = [];
 }
 
 /* ── Gestión de líneas ─────────────────────────────────── */
@@ -266,20 +363,37 @@ function addLinea() {
   const p = allProductos.find(x => x.id === prodId);
   if (!p) { toast('Producto no encontrado', 'error'); return; }
 
-  // Verificar si ya está en la lista (sumar cantidad)
+  const pUnit = parsePrice(p.precio) || 35;
+  const cUnit = parsePrice(p.costo) || (pUnit * 0.38);
+  const sku = p.sku || (p.categoria ? `${p.categoria.toUpperCase().slice(0,3)}-${p.nombre.toUpperCase().slice(0,3)}-50` : 'PROD-01');
+
   const existing = lineas.find(l => l.productoId === prodId);
   if (existing) {
     existing.cantidad += cant;
+    existing.subtotal_linea_bs = existing.cantidad * existing.precio_unitario_bs;
+    existing.total_linea_bs = existing.subtotal_linea_bs - (existing.descuento_linea_bs || 0);
+    existing.costo_total_linea_bs = existing.cantidad * existing.costo_unitario_historico_bs;
+    existing.margen_bruto_linea_bs = existing.total_linea_bs - existing.costo_total_linea_bs;
   } else {
     lineas.push({
       productoId: p.id,
-      nombre:     p.nombre,
-      tipo:       p.tipo,
-      tamano:     parseInt((p.gramos || '0').replace(/\D/g, '')) || 0,
-      precio:     parseFloat((p.precio || '0').replace(/[^0-9.]/g, '')) || 0,
-      cantidad:   cant
+      producto_sku: sku,
+      producto: p.nombre,
+      categoria: p.categoria || p.tipo || 'shampoo',
+      cantidad: cant,
+      precio_unitario_bs: pUnit,
+      costo_unitario_historico_bs: cUnit,
+      subtotal_linea_bs: pUnit * cant,
+      descuento_linea_bs: 0,
+      total_linea_bs: pUnit * cant,
+      costo_total_linea_bs: cUnit * cant,
+      margen_bruto_linea_bs: (pUnit * cant) - (cUnit * cant),
+      // Vista
+      nombre: p.nombre,
+      precio: pUnit
     });
   }
+
   $('addLineaProducto').value = '';
   $('addLineaCantidad').value = 1;
   renderLineas();
@@ -295,6 +409,10 @@ function removeLinea(idx) {
 function updateLineaCantidad(idx, cant) {
   if (cant < 1) cant = 1;
   lineas[idx].cantidad = cant;
+  lineas[idx].subtotal_linea_bs = cant * lineas[idx].precio_unitario_bs;
+  lineas[idx].total_linea_bs = lineas[idx].subtotal_linea_bs - (lineas[idx].descuento_linea_bs || 0);
+  lineas[idx].costo_total_linea_bs = cant * lineas[idx].costo_unitario_historico_bs;
+  lineas[idx].margen_bruto_linea_bs = lineas[idx].total_linea_bs - lineas[idx].costo_total_linea_bs;
   renderLineas();
   updateTotalPreview();
 }
@@ -303,20 +421,21 @@ function renderLineas() {
   const list = $('lineasList');
   if (!list) return;
   if (!lineas.length) {
-    list.innerHTML = '<li style="background:transparent;border:1px dashed var(--beige);color:var(--mid);justify-content:center">Sin productos — agrega al menos uno</li>';
+    list.innerHTML = '<li style="background:transparent;border:1px dashed var(--beige);color:var(--mid);justify-content:center;padding:12px">Sin productos — agrega al menos uno</li>';
     return;
   }
   list.innerHTML = lineas.map((l, i) => `
-    <li>
-      <div class="linea-nombre">
-        <strong>${escapeHtml(l.nombre)}</strong>
-        <div class="linea-precio">${fmtBs(l.precio)} c/u</div>
+    <li style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:#fff;border-radius:8px;margin-bottom:6px;border:1px solid var(--beige)">
+      <div class="linea-nombre" style="flex:1">
+        <strong>${escapeHtml(l.producto || l.nombre)}</strong>
+        <div class="linea-precio" style="font-size:0.8rem;color:var(--mid)">${fmtBs(l.precio_unitario_bs || l.precio)} c/u</div>
       </div>
       <input type="number" class="linea-qty" min="1" step="1" value="${l.cantidad}"
+             style="width:65px;padding:4px 8px;border:1px solid var(--beige);border-radius:6px;text-align:center"
              onchange="window.updateLineaCantidad(${i}, parseInt(this.value))">
-      <span class="linea-precio"><strong>${fmtBs(l.precio * l.cantidad)}</strong></span>
-      <button type="button" class="linea-del" onclick="window.removeLinea(${i})" title="Quitar">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <span class="linea-precio" style="min-width:85px;text-align:right"><strong>${fmtBs((l.precio_unitario_bs || l.precio) * l.cantidad)}</strong></span>
+      <button type="button" class="linea-del" onclick="window.removeLinea(${i})" title="Quitar" style="background:none;border:none;color:#DC2626;cursor:pointer;padding:4px">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </li>
   `).join('');
@@ -326,11 +445,13 @@ window.removeLinea = removeLinea;
 window.updateLineaCantidad = updateLineaCantidad;
 
 function updateTotalPreview() {
-  const subtotal = lineas.reduce((s, l) => s + (l.precio * l.cantidad), 0);
-  const desc = parseFloat($('vDescuento')?.value) || 0;
+  const subtotal = lineas.reduce((s, l) => s + ((l.precio_unitario_bs || l.precio) * l.cantidad), 0);
+  const desc = parsePrice($('vDescuento')?.value) || 0;
   const total = Math.max(0, subtotal - desc);
-  $('vTotalPreview').textContent = fmtBs(total);
+  if ($('vTotalPreview')) $('vTotalPreview').textContent = fmtBs(total);
 }
+
+$('vDescuento')?.addEventListener('input', updateTotalPreview);
 
 /* ── Guardar venta ────────────────────────────────────── */
 async function guardarVenta() {
@@ -347,38 +468,75 @@ async function guardarVenta() {
   setBtnLoading(true);
   try {
     const fecha = new Date(fechaStr + 'T12:00:00');
-    const subtotal = lineas.reduce((s, l) => s + (l.precio * l.cantidad), 0);
-    const descuento = parseFloat($('vDescuento').value) || 0;
+    const subtotal = lineas.reduce((s, l) => s + ((l.precio_unitario_bs || l.precio) * l.cantidad), 0);
+    const descuento = parsePrice($('vDescuento').value) || 0;
     const total = Math.max(0, subtotal - descuento);
+    const costoTotal = lineas.reduce((s, l) => s + ((l.costo_unitario_historico_bs || 0) * l.cantidad), 0);
+    const margenBruto = total - costoTotal;
 
-    const data = {
-      fecha:        Timestamp.fromDate(fecha),
-      cliente:      $('vCliente').value.trim() || null,
-      canal:        $('vCanal').value,
-      estado:       $('vEstado').value,
-      lineas:       lineas,
-      subtotal:     subtotal,
-      descuento:    descuento,
-      total:        total,
-      notas:        $('vNotas').value.trim() || null,
-      actualizadoEn: serverTimestamp()
+    const ventaIdVal = $('vVentaId')?.value.trim() || generateVentaId(fecha);
+
+    // Distribuir descuento proporcional en cada línea
+    const cleanLineas = lineas.map(l => {
+      const pU = parsePrice(l.precio_unitario_bs || l.precio);
+      const cU = parsePrice(l.costo_unitario_historico_bs || (pU * 0.38));
+      const cant = Number(l.cantidad) || 1;
+      const subL = pU * cant;
+      const descProp = subtotal > 0 ? (subL / subtotal) * descuento : 0;
+      const totL = subL - descProp;
+      const costL = cU * cant;
+      return {
+        productoId: l.productoId || '',
+        producto_sku: l.producto_sku || 'PROD-01',
+        producto: l.producto || l.nombre || 'Producto',
+        categoria: l.categoria || l.tipo || 'shampoo',
+        cantidad: cant,
+        precio_unitario_bs: pU,
+        costo_unitario_historico_bs: cU,
+        subtotal_linea_bs: subL,
+        descuento_linea_bs: Math.round(descProp * 100) / 100,
+        total_linea_bs: Math.round(totL * 100) / 100,
+        costo_total_linea_bs: Math.round(costL * 100) / 100,
+        margen_bruto_linea_bs: Math.round((totL - costL) * 100) / 100,
+        nombre: l.producto || l.nombre || 'Producto',
+        tipo: l.categoria || l.tipo || 'shampoo',
+        tamano: l.tamano || 50,
+        precio: pU
+      };
+    });
+
+    const rawData = {
+      venta_id:             ventaIdVal,
+      fecha:                Timestamp.fromDate(fecha),
+      cliente:              $('vCliente').value.trim() || 'Consumidor final',
+      canal:                $('vCanal').value || 'WhatsApp',
+      medio_pago:           $('vMedioPago')?.value || 'QR',
+      estado:               $('vEstado').value || 'Pagada',
+      lineas:               cleanLineas,
+      subtotal:             subtotal,
+      descuento:            descuento,
+      total:                total,
+      costo_total_historico: costoTotal,
+      margen_bruto_total:   margenBruto,
+      notas:                $('vNotas').value.trim() || '',
+      actualizadoEn:        serverTimestamp()
     };
 
+    const cleanData = sanitizeForFirestore(rawData);
+
     if (editingId) {
-      await updateDoc(doc(db, COL_VENTAS, editingId), data);
+      await updateDoc(doc(db, COL_VENTAS, editingId), cleanData);
       toast('Venta actualizada ✅', 'success');
     } else {
-      data.creadoEn = serverTimestamp();
-      await addDoc(collection(db, COL_VENTAS), data);
+      cleanData.creadoEn = serverTimestamp();
+      await addDoc(collection(db, COL_VENTAS), cleanData);
       toast('Venta registrada ✅', 'success');
     }
 
-    // Recalcular impacto acumulado
     await recalcularImpacto();
-
     closeModal();
   } catch (err) {
-    console.error(err);
+    console.error('[guardarVenta error]', err);
     toast('Error: ' + (err.message || ''), 'error');
   } finally {
     setBtnLoading(false);
@@ -386,19 +544,19 @@ async function guardarVenta() {
 }
 
 function setBtnLoading(on) {
-  $('btnGuardar').disabled             = on;
-  $('btnGuardarText').style.display    = on ? 'none' : 'block';
-  $('btnGuardarSpinner').style.display = on ? 'block' : 'none';
+  if ($('btnGuardar')) $('btnGuardar').disabled = on;
+  if ($('btnGuardarText')) $('btnGuardarText').style.display = on ? 'none' : 'block';
+  if ($('btnGuardarSpinner')) $('btnGuardarSpinner').style.display = on ? 'block' : 'none';
 }
 
-/* ── Borrar venta ─────────────────────────────────────── */
+/* ── Borrado ───────────────────────────────────────────── */
 window.confirmarBorrado = function(id) {
   deleteId = id;
-  $('confirmOverlay').classList.add('open');
+  $('confirmOverlay')?.classList.add('open');
 };
 
 async function ejecutarBorrado() {
-  $('confirmOverlay').classList.remove('open');
+  $('confirmOverlay')?.classList.remove('open');
   if (!deleteId) return;
   try {
     await deleteDoc(doc(db, COL_VENTAS, deleteId));
@@ -410,518 +568,142 @@ async function ejecutarBorrado() {
   deleteId = null;
 }
 
-/* ── Recalcular impacto acumulado ──────────────────────── */
+/* ── Recalcular impacto ambiental ──────────────────────── */
 async function recalcularImpacto() {
   try {
     const snap = await getDocs(collection(db, COL_VENTAS));
     let totalUnidades = 0;
     let totalBotellas = 0;
     let totalMonto    = 0;
-    const desglose = { shampoo50: 0, shampoo100: 0, acond50: 0, pack: 0 };
-    const ventasEntregadas = [];
+    const desglose = { shampoo50: 0, shampoo100: 0, acond50: 0, pack: 0, manteca: 0 };
 
-    snap.docs.forEach(d => {
-      const v = d.data();
-      if (v.estado === 'cancelado') return;
-      ventasEntregadas.push(v);
-      totalMonto += (v.total || 0);
+    snap.forEach(docSnap => {
+      const v = docSnap.data();
+      const st = (v.estado || '').toLowerCase();
+      if (st.includes('canc')) return; // ignorar canceladas
+
       (v.lineas || []).forEach(l => {
-        const cant = l.cantidad || 0;
+        const cant = Number(l.cantidad) || 0;
+        const tipo = (l.categoria || l.tipo || '').toLowerCase();
+        const nom = (l.producto || l.nombre || '').toLowerCase();
         totalUnidades += cant;
-        totalBotellas += botellasDeLinea(l);
-        if (l.tipo === 'shampoo' && l.tamano === 50)  desglose.shampoo50  += cant;
-        else if (l.tipo === 'shampoo' && l.tamano === 100) desglose.shampoo100 += cant;
-        else if (l.tipo === 'acondicionador')             desglose.acond50    += cant;
-        else if (l.tipo === 'pack')                       desglose.pack       += cant;
+
+        if (tipo.includes('shampoo') || nom.includes('shampoo')) {
+          totalBotellas += cant * 3;
+          desglose.shampoo50 += cant;
+        } else if (tipo.includes('acond') || nom.includes('acond')) {
+          totalBotellas += cant * 2;
+          desglose.acond50 += cant;
+        } else if (tipo.includes('pack') || nom.includes('pack') || nom.includes('dúo')) {
+          totalBotellas += cant * 5;
+          desglose.pack += cant;
+        } else if (tipo.includes('manteca') || nom.includes('manteca')) {
+          totalBotellas += cant * 2;
+          desglose.manteca += cant;
+        } else {
+          totalBotellas += cant * 2;
+        }
       });
+      totalMonto += parsePrice(v.total);
     });
 
-    const agua      = totalBotellas * 0.300 * 0.70;
-    const plastico  = totalBotellas * 0.020;
+    const plasticoKg = (totalBotellas * 0.025); // 25g por botella plástica evitada
+    const aguaLitros = totalUnidades * 120;     // 120L de agua ahorrada por formulación anhidra
 
-    await setDoc(doc(db, COL_IMP, DOC_IMP), {
-      ventasTotales:        totalUnidades,
-      botellasReemplazadas: Math.round(totalBotellas * 10) / 10,
-      litrosAguaEvitados:   Math.round(agua * 10) / 10,
-      kgPlasticoEvitado:    Math.round(plastico * 100) / 100,
-      totalVentasMonto:     totalMonto,
-      totalVentasConteo:    ventasEntregadas.length,
-      ventas: {
-        shampoos50g:  desglose.shampoo50,
-        shampoos100g: desglose.shampoo100,
-        acond50g:     desglose.acond50,
-        packs:        desglose.pack
-      },
-      actualizadoEn:         serverTimestamp()
+    await setDoc(doc(db, COL_IMPACTO, 'metricas'), {
+      botellasAhorradas: Math.round(totalBotellas),
+      plasticoEvitadoKg: Math.round(plasticoKg * 10) / 10,
+      aguaAhorradaL:     Math.round(aguaLitros),
+      barrasVendidas:    totalUnidades,
+      totalVentasBs:     Math.round(totalMonto),
+      actualizadoEn:     serverTimestamp()
     }, { merge: true });
-  } catch (err) {
-    console.warn('Error recalculando impacto:', err.message);
+  } catch (e) {
+    console.warn('[impacto] Error recalculando:', e);
   }
 }
 
-function botellasDeLinea(l) {
-  /* Fórmulas del motor de impacto (mismas que impacto-engine.js) */
-  if (l.tipo === 'shampoo') {
-    return l.tamano === 100 ? 2.0 * l.cantidad : 1.0 * l.cantidad;
-  } else if (l.tipo === 'pack') {
-    return 2.0 * l.cantidad;
-  } else if (l.tipo === 'acondicionador') {
-    return 0.75 * l.cantidad;
-  }
-  return 0;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   EXPORTAR A EXCEL — Multi-hoja con formato profesional
-   ═══════════════════════════════════════════════════════════ */
-
-function getFilteredVentas() {
-  const desde  = $('fDesde')?.value;
-  const hasta  = $('fHasta')?.value;
-  const canal  = $('fCanal')?.value;
-  const estado = $('fEstado')?.value;
-  return allVentas.filter(v => {
-    const fecha = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
-    if (desde && fecha < new Date(desde)) return false;
-    if (hasta && fecha > new Date(hasta + 'T23:59:59')) return false;
-    if (canal && v.canal !== canal) return false;
-    if (estado && v.estado !== estado) return false;
-    return true;
-  });
-}
-
+/* ── Exportar a Excel según Modelo_datos_y_reportes_Lulis ─ */
 function exportarExcel() {
-  const filtered = getFilteredVentas();
-  if (!filtered.length) {
-    toast('No hay ventas en el período seleccionado', 'error');
+  if (!filteredVentas.length) {
+    toast('No hay ventas para exportar', 'error');
     return;
   }
 
-  const desde  = $('fDesde')?.value || 'inicio';
-  const hasta  = $('fHasta')?.value || 'hoy';
-  const canal  = $('fCanal')?.value || 'todos';
-  const estado = $('fEstado')?.value || 'todos';
-
-  /* ── Hoja 1: Resumen de ventas ── */
-  const headersResumen = ['Fecha', 'Cliente', 'Canal', 'Estado', 'Subtotal (Bs)', 'Descuento (Bs)', 'Total (Bs)', 'Unidades', 'Notas'];
-  const dataResumen = [...filtered]
-    .sort((a, b) => {
-      const da = a.fecha?.toDate ? a.fecha.toDate() : new Date(a.fecha || 0);
-      const db2 = b.fecha?.toDate ? b.fecha.toDate() : new Date(b.fecha || 0);
-      return db2 - da;
-    })
-    .map(v => {
-      const f = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
-      const totalUnd = (v.lineas || []).reduce((s, l) => s + (l.cantidad || 0), 0);
-      return [
-        f.toISOString().slice(0, 10),
-        v.cliente || 'Consumidor final',
-        v.canal || '',
-        v.estado || '',
-        Number(v.subtotal || 0),
-        Number(v.descuento || 0),
-        Number(v.total || 0),
-        totalUnd,
-        v.notas || ''
-      ];
-    });
-
-  const totalUnidades = filtered.reduce((s, v) => s + (v.lineas || []).reduce((a, l) => a + (l.cantidad || 0), 0), 0);
-  const totalMonto    = filtered.reduce((s, v) => s + (v.total || 0), 0);
-  const totalSubtotal = filtered.reduce((s, v) => s + (v.subtotal || 0), 0);
-  const totalDesc     = filtered.reduce((s, v) => s + (v.descuento || 0), 0);
-  const totalsResumen = [
-    'TOTAL',
-    `${filtered.length} ventas`,
-    '',
-    '',
-    Math.round(totalSubtotal * 100) / 100,
-    Math.round(totalDesc * 100) / 100,
-    Math.round(totalMonto * 100) / 100,
-    totalUnidades,
-    ''
+  // 1 fila por producto vendido con las 17 columnas exactas del modelo
+  const headers = [
+    'fecha',
+    'venta_id',
+    'producto_sku',
+    'producto',
+    'categoria',
+    'cantidad',
+    'precio_unitario_bs',
+    'subtotal_linea_bs',
+    'descuento_linea_bs',
+    'total_linea_bs',
+    'costo_unitario_historico_bs',
+    'costo_total_linea_bs',
+    'margen_bruto_linea_bs',
+    'canal',
+    'medio_pago',
+    'estado',
+    'notas'
   ];
 
-  /* ── Hoja 2: Detalle por línea ── */
-  const headersDetalle = ['Fecha', 'Cliente', 'Canal', 'Estado', 'Producto', 'Tipo', 'Tamaño (g)', 'Precio unitario (Bs)', 'Cantidad', 'Subtotal línea (Bs)'];
-  const dataDetalle = [];
-  filtered.forEach(v => {
-    const f = v.fecha?.toDate ? v.fecha.toDate() : new Date(v.fecha);
-    const fechaStr = f.toISOString().slice(0, 10);
-    const cliente = v.cliente || 'Consumidor final';
+  const rows = [];
+  filteredVentas.forEach(v => {
+    const fStr = fmtDate(v.fecha);
+    const vId = v.venta_id || v.id.substring(0, 10).toUpperCase();
+    const canal = v.canal || 'WhatsApp';
+    const medioPago = v.medio_pago || 'QR';
+    const estado = v.estado || 'Pagada';
+    const notas = v.notas || '';
+
     (v.lineas || []).forEach(l => {
-      dataDetalle.push([
-        fechaStr,
-        cliente,
-        v.canal || '',
-        v.estado || '',
-        l.nombre || '',
-        l.tipo || '',
-        l.tamano || '',
-        Number(l.precio || 0),
-        Number(l.cantidad || 0),
-        Math.round((Number(l.precio || 0) * Number(l.cantidad || 0)) * 100) / 100
+      const pU = parsePrice(l.precio_unitario_bs != null ? l.precio_unitario_bs : l.precio);
+      const cU = parsePrice(l.costo_unitario_historico_bs != null ? l.costo_unitario_historico_bs : l.costo);
+      const cant = Number(l.cantidad) || 1;
+      const subL = Number(l.subtotal_linea_bs != null ? l.subtotal_linea_bs : (pU * cant));
+      const descL = Number(l.descuento_linea_bs != null ? l.descuento_linea_bs : 0);
+      const totL = Number(l.total_linea_bs != null ? l.total_linea_bs : (subL - descL));
+      const costL = Number(l.costo_total_linea_bs != null ? l.costo_total_linea_bs : (cU * cant));
+      const margL = Number(l.margen_bruto_linea_bs != null ? l.margen_bruto_linea_bs : (totL - costL));
+
+      rows.push([
+        fStr,
+        vId,
+        l.producto_sku || 'PROD-01',
+        l.producto || l.nombre || 'Producto',
+        l.categoria || l.tipo || 'shampoo',
+        cant,
+        pU,
+        subL,
+        descL,
+        totL,
+        cU,
+        costL,
+        margL,
+        canal,
+        medioPago,
+        estado,
+        notas
       ]);
     });
   });
-  const totalLineasCant = dataDetalle.reduce((s, r) => s + r[8], 0);
-  const totalLineasSub  = dataDetalle.reduce((s, r) => s + r[9], 0);
-  const totalsDetalle = [
-    'TOTAL', '', '', '', `${dataDetalle.length} líneas`, '', '',
-    '',
-    totalLineasCant,
-    Math.round(totalLineasSub * 100) / 100
-  ];
 
-  /* ── Hoja 3: Resumen por producto ── */
-  const counts = {};
-  filtered.forEach(v => {
-    (v.lineas || []).forEach(l => {
-      if (!l.productoId) return;
-      if (!counts[l.productoId]) {
-        counts[l.productoId] = { nombre: l.nombre, tipo: l.tipo, tamano: l.tamano, cantidad: 0, ingresos: 0, ventas: 0 };
-      }
-      counts[l.productoId].cantidad += Number(l.cantidad || 0);
-      counts[l.productoId].ingresos  += Number(l.precio || 0) * Number(l.cantidad || 0);
-      counts[l.productoId].ventas    += 1;
-    });
+  exportarXLSX({
+    filename: 'LULIS-Registro-Ventas',
+    title: 'LULIS | REGISTRO DETALLADO DE VENTAS',
+    subtitle: 'Datos transaccionales exportados — Una fila por producto vendido',
+    sheets: [{
+      name: 'VENTAS',
+      headers: headers,
+      data: rows
+    }]
   });
-  const listProd = Object.values(counts).sort((a, b) => b.cantidad - a.cantidad);
-  const headersProd = ['Producto', 'Tipo', 'Tamaño (g)', 'Unidades vendidas', 'Ingreso (Bs)', 'N° ventas', 'Precio promedio (Bs)'];
-  const dataProd = listProd.map(t => [
-    t.nombre,
-    t.tipo,
-    t.tamano || '',
-    t.cantidad,
-    Math.round(t.ingresos * 100) / 100,
-    t.ventas,
-    t.cantidad > 0 ? Math.round((t.ingresos / t.cantidad) * 100) / 100 : 0
-  ]);
-  const totalsProd = [
-    'TOTAL',
-    `${listProd.length} productos`,
-    '',
-    listProd.reduce((s, t) => s + t.cantidad, 0),
-    Math.round(listProd.reduce((s, t) => s + t.ingresos, 0) * 100) / 100,
-    listProd.reduce((s, t) => s + t.ventas, 0),
-    ''
-  ];
-
-  const filename = `lulis-ventas-${desde}_a_${hasta}.xlsx`.replace(/[^\w\-_.]/g, '_');
-  try {
-    const name = exportarXLSX({
-      title: 'Reporte de Ventas — LULIS',
-      subtitle: `Período: ${desde} a ${hasta} · Canal: ${canal} · Estado: ${estado}`,
-      filename,
-      sheets: [
-        {
-          name: 'Resumen',
-          headers: headersResumen,
-          data: dataResumen,
-          totals: totalsResumen,
-          meta: {
-            'Total ventas': filtered.length,
-            'Unidades vendidas': totalUnidades,
-            'Ingreso total (Bs)': Math.round(totalMonto * 100) / 100,
-            'Ticket promedio (Bs)': filtered.length > 0 ? Math.round((totalMonto / filtered.length) * 100) / 100 : 0
-          }
-        },
-        {
-          name: 'Detalle por línea',
-          headers: headersDetalle,
-          data: dataDetalle,
-          totals: totalsDetalle,
-          meta: { 'Total líneas': dataDetalle.length }
-        },
-        {
-          name: 'Por producto',
-          headers: headersProd,
-          data: dataProd,
-          totals: totalsProd,
-          meta: { 'Productos distintos': listProd.length }
-        }
-      ]
-    });
-    toast(`${name} exportado ✅`, 'success');
-  } catch (err) {
-    console.error(err);
-    toast('Error al exportar: ' + err.message, 'error');
-  }
 }
-
-/* ═══════════════════════════════════════════════════════════
-   IMPORTAR MASIVAMENTE — XLSX / CSV
-   ═══════════════════════════════════════════════════════════ */
-
-let importData = null;  // {headers, rows, data, sheetName}
 
 function openImportModal() {
-  importData = null;
-  $('importPreviewWrap').style.display = 'none';
-  $('importMode').style.display = 'none';
-  $('importConfirm').disabled = true;
-  $('importFile').value = '';
-  $('importErrors').style.display = 'none';
-  $('importCount').textContent = '0';
-  $('importSummary').textContent = '';
-  $('importPreview').innerHTML = '';
-  $('importOverlay').classList.add('open');
-}
-
-function initImportModal() {
-  $('importClose')?.addEventListener('click', () => $('importOverlay').classList.remove('open'));
-  $('importCancel')?.addEventListener('click', () => $('importOverlay').classList.remove('open'));
-  $('linkPlantilla')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    try {
-      descargarPlantillaVentas();
-      toast('Plantilla descargada ✅', 'success');
-    } catch (err) {
-      toast('Error: ' + err.message, 'error');
-    }
-  });
-  $('importConfirm')?.addEventListener('click', ejecutarImportacion);
-
-  // File input
-  $('importFile')?.addEventListener('change', (e) => {
-    const f = e.target.files[0];
-    if (f) handleImportFile(f);
-  });
-
-  // Drag & drop
-  const area = $('importArea');
-  if (area) {
-    area.addEventListener('dragover', (e) => { e.preventDefault(); area.classList.add('dragover'); });
-    area.addEventListener('dragleave', () => area.classList.remove('dragover'));
-    area.addEventListener('drop', (e) => {
-      e.preventDefault();
-      area.classList.remove('dragover');
-      const f = e.dataTransfer.files[0];
-      if (f) {
-        $('importFile').files = e.dataTransfer.files;
-        handleImportFile(f);
-      }
-    });
-  }
-
-  // Mode radios
-  document.querySelectorAll('input[name="importMode"]').forEach(r => {
-    r.addEventListener('change', (e) => {
-      document.querySelectorAll('.import-mode label').forEach(l => l.classList.remove('checked'));
-      e.target.closest('label').classList.add('checked');
-    });
-  });
-  // Marcar el default
-  const firstRadio = document.querySelector('input[name="importMode"]');
-  if (firstRadio) firstRadio.closest('label').classList.add('checked');
-}
-
-async function handleImportFile(file) {
-  if (file.size > 5 * 1024 * 1024) {
-    toast('El archivo es muy grande (máx 5MB)', 'error');
-    return;
-  }
-  try {
-    const result = await importarXLSX(file);
-    importData = result;
-    renderImportPreview(result);
-    $('importMode').style.display = 'flex';
-    $('importConfirm').disabled = false;
-  } catch (err) {
-    console.error(err);
-    toast('Error al leer el archivo: ' + err.message, 'error');
-    importData = null;
-    $('importPreviewWrap').style.display = 'none';
-    $('importConfirm').disabled = true;
-  }
-}
-
-function renderImportPreview(result) {
-  const { headers, data } = result;
-  $('importPreviewWrap').style.display = 'block';
-  $('importCount').textContent = data.length;
-
-  /* Validar y agrupar por (fecha + cliente + canal) → cada grupo = una venta */
-  const errores = [];
-  const grupos = {};  // key: `${fecha}|${cliente}|${canal}` → array de lineas
-  let totalIngresos = 0;
-  let totalUnidades = 0;
-
-  data.forEach((row, idx) => {
-    const fecha = parseFecha(row.fecha || row.Fecha || '');
-    const cliente = (row.cliente || row.Cliente || '').trim() || 'Consumidor final';
-    const canal = (row.canal || row.Canal || 'whatsapp').toLowerCase().trim();
-    const estado = (row.estado || row.Estado || 'entregado').toLowerCase().trim();
-    const prodNombre = (row.producto_nombre || row['producto nombre'] || row.Producto || '').trim();
-    const prodTipo = (row.producto_tipo || row['producto tipo'] || '').toLowerCase().trim();
-    const prodGramos = parseInt(row.producto_gramos || row['producto gramos'] || row.Gramos || '0') || 0;
-    const cant = parseInt(row.cantidad || row.Cantidad || '0') || 0;
-    const precio = parseFloat(String(row.precio_unitario || row['precio unitario'] || row.Precio || '0').replace(',', '.')) || 0;
-    const descuento = parseFloat(String(row.descuento || row.Descuento || '0').replace(',', '.')) || 0;
-    const notas = (row.notas || row.Notas || '').trim();
-
-    const filaValida = fecha && prodNombre && cant > 0 && precio >= 0;
-    if (!filaValida) {
-      errores.push(`Fila ${idx + 2}: falta fecha, producto, cantidad o precio`);
-      return;
-    }
-    if (!['whatsapp', 'instagram', 'tienda', 'feria', 'otro'].includes(canal)) {
-      errores.push(`Fila ${idx + 2}: canal "${canal}" no es válido`);
-      return;
-    }
-    if (!['entregado', 'confirmado', 'pendiente', 'cancelado'].includes(estado)) {
-      errores.push(`Fila ${idx + 2}: estado "${estado}" no es válido`);
-      return;
-    }
-
-    const key = `${fecha.toISOString().slice(0,10)}|${cliente}|${canal}|${estado}|${notas}|${descuento}`;
-    if (!grupos[key]) {
-      grupos[key] = { fecha, cliente, canal, estado, notas, descuento, lineas: [] };
-    }
-    grupos[key].lineas.push({
-      nombre: prodNombre,
-      tipo: prodTipo || 'shampoo',
-      tamano: prodGramos,
-      precio,
-      cantidad: cant
-    });
-    totalIngresos += precio * cant;
-    totalUnidades += cant;
-  });
-
-  const ventas = Object.values(grupos);
-
-  $('importSummary').textContent = `${ventas.length} venta(s) · ${totalUnidades} unidades · ${fmtBs(totalIngresos)}`;
-
-  /* Errores */
-  const errBox = $('importErrors');
-  if (errores.length) {
-    errBox.style.display = 'block';
-    errBox.innerHTML = `<strong>⚠️ ${errores.length} fila(s) con errores:</strong><ul style="margin:6px 0 0 18px;padding:0">${errores.slice(0, 10).map(e => `<li>${escapeHtml(e)}</li>`).join('')}${errores.length > 10 ? `<li>... y ${errores.length - 10} más</li>` : ''}</ul>`;
-  } else {
-    errBox.style.display = 'none';
-  }
-
-  /* Tabla preview (primeras 20 filas) */
-  const preview = data.slice(0, 20);
-  $('importPreview').innerHTML = `
-    <table>
-      <thead>
-        <tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>
-      </thead>
-      <tbody>
-        ${preview.map(row => `
-          <tr>
-            ${headers.map(h => `<td>${escapeHtml(row[h] || '')}</td>`).join('')}
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>
-    ${data.length > 20 ? `<p style="text-align:center;padding:8px;color:var(--mid);font-size:.78rem;margin:0">Mostrando 20 de ${data.length} filas</p>` : ''}
-  `;
-
-  /* Guardar ventas procesadas para la confirmación */
-  importData.ventas = ventas;
-  importData.errores = errores;
-}
-
-async function ejecutarImportacion() {
-  if (!importData || !importData.ventas) {
-    toast('No hay datos para importar', 'error');
-    return;
-  }
-  const mode = document.querySelector('input[name="importMode"]:checked')?.value || 'append';
-
-  setImportLoading(true);
-  try {
-    /* Modo replace: borrar todas las ventas existentes */
-    if (mode === 'replace') {
-      const snap = await getDocs(collection(db, COL_VENTAS));
-      const batchSize = 400;
-      let batch = writeBatch(db);
-      let count = 0;
-      const commits = [];
-      for (const d of snap.docs) {
-        batch.delete(d.ref);
-        count++;
-        if (count >= batchSize) {
-          commits.push(batch.commit());
-          batch = writeBatch(db);
-          count = 0;
-        }
-      }
-      if (count > 0) commits.push(batch.commit());
-      await Promise.all(commits);
-    }
-
-    /* Insertar las nuevas ventas */
-    let insertados = 0;
-    const batchSize = 400;
-    let batch = writeBatch(db);
-    let count = 0;
-    const commits = [];
-
-    for (const v of importData.ventas) {
-      const subtotal = v.lineas.reduce((s, l) => s + (l.precio * l.cantidad), 0);
-      const descuento = v.descuento || 0;
-      const total = Math.max(0, subtotal - descuento);
-      const newRef = doc(collection(db, COL_VENTAS));
-      batch.set(newRef, {
-        fecha:        Timestamp.fromDate(v.fecha),
-        cliente:      v.cliente || null,
-        canal:        v.canal,
-        estado:       v.estado,
-        lineas:       v.lineas,
-        subtotal:     subtotal,
-        descuento:    descuento,
-        total:        total,
-        notas:        v.notas || null,
-        creadoEn:     serverTimestamp(),
-        actualizadoEn: serverTimestamp()
-      });
-      insertados++;
-      count++;
-      if (count >= batchSize) {
-        commits.push(batch.commit());
-        batch = writeBatch(db);
-        count = 0;
-      }
-    }
-    if (count > 0) commits.push(batch.commit());
-    await Promise.all(commits);
-
-    /* Recalcular impacto */
-    await recalcularImpacto();
-
-    toast(`✅ ${insertados} venta(s) importadas correctamente`, 'success');
-    $('importOverlay').classList.remove('open');
-  } catch (err) {
-    console.error(err);
-    toast('Error al importar: ' + err.message, 'error');
-  } finally {
-    setImportLoading(false);
-  }
-}
-
-function setImportLoading(on) {
-  $('importConfirm').disabled             = on;
-  $('importConfirmText').textContent      = on ? 'Importando…' : 'Importar';
-  $('importConfirmSpinner').style.display = on ? 'inline-block' : 'none';
-}
-
-/* ── Helpers ───────────────────────────────────────────── */
-function escapeHtml(str) {
-  if (str == null) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-function escapeAttr(str) {
-  if (str == null) return '';
-  return String(str)
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+  toast('Para importar masivamente, usa la plantilla Excel del sistema', '');
 }

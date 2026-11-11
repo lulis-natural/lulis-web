@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LULIS Admin — Gestión de Gastos</title>
+  <link rel="icon" type="image/x-icon" href="../Imagenes/logos/LOGO.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <style>
+    .gastos-table-wrap {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+    .gastos-row {
+      display: grid;
+      grid-template-columns: 130px 100px 130px 1fr 100px 115px 105px 85px;
+      padding: 12px 16px;
+      align-items: center;
+      border-bottom: 1px solid var(--beige);
+      font-size: 0.88rem;
+    }
+    .gastos-header {
+      background: var(--light);
+      font-weight: 700;
+      color: var(--wine);
+      text-transform: uppercase;
+      font-size: 0.74rem;
+      letter-spacing: 0.05em;
+    }
+    .badge-fijo {
+      background: #E0E7FF;
+      color: #3730A3;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+    .badge-variable {
+      background: #FEF3C7;
+      color: #92400E;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+    .badge-cat {
+      background: #F3F4F6;
+      color: #374151;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <img src="../Imagenes/logos/LOGO.jpg" alt="LULIS" class="sidebar-logo">
+        <div class="sidebar-brand-text">
+          <span class="sidebar-title">LULIS</span>
+          <span class="sidebar-sub">Gestión Integral</span>
+        </div>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Colapsar menú">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Principal</div>
+      <a href="/admin/dashboard" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <div class="sidebar-section">Catálogo</div>
+      <a href="/admin/productos" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span> Productos y Costos</a>
+      <a href="/admin/galeria" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span> Galería</a>
+      <a href="/admin/direcciones" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Puntos de Venta</a>
+      <div class="sidebar-section">Gestión y Finanzas</div>
+      <a href="/admin/ventas" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span> Ventas</a>
+      <a href="/admin/gastos" class="sidebar-link active"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span> Gastos</a>
+      <a href="/admin/reportes" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Reportes & Finanzas</a>
+      <div class="sidebar-section">Comunicación</div>
+      <a href="/admin/mensajes" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> Mensajes</a>
+      <div class="sidebar-section">Impacto</div>
+      <a href="/admin/impacto" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></span> Impacto Ambiental</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" data-user-avatar>A</div>
+        <div>
+          <div class="sidebar-user-name" data-user-name>Admin</div>
+          <div class="sidebar-user-role">Administrador LULIS</div>
+        </div>
+      </div>
+      <button class="btn-logout" id="logoutBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="topbar-title">Gestión de Gastos Administrativos</div>
+    <div class="topbar-actions">
+      <a href="../index.html" class="topbar-link-site" target="_blank">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y1="3"/></svg>
+        Ver sitio
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="admin-content">
+    <div class="page-header">
+      <div>
+        <h1>Registro de Gastos</h1>
+        <p>Registra gastos fijos y variables para el cálculo del punto de equilibrio y estados financieros.</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-export" id="btnExportar">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar Excel
+        </button>
+        <button class="btn btn-primary" id="btnNuevoGasto">
+          <span style="font-size:18px;line-height:1;margin-right:4px">+</span> Registrar gasto
+        </button>
+      </div>
+    </div>
+
+    <!-- Resumen de Gastos -->
+    <div class="resumen-bar" id="resumenBar">
+      <div class="resumen-card">
+        <div class="resumen-label">Total Gastos (Período)</div>
+        <div class="resumen-value" id="r-gastos-total" style="color:#DC2626">Bs 0,00</div>
+        <div class="resumen-sub" id="r-gastos-sub">0 registros</div>
+      </div>
+      <div class="resumen-card">
+        <div class="resumen-label">Gastos Fijos</div>
+        <div class="resumen-value" id="r-gastos-fijos" style="color:#4F46E5">Bs 0,00</div>
+        <div class="resumen-sub">Alquiler, sueldos, servicios...</div>
+      </div>
+      <div class="resumen-card">
+        <div class="resumen-label">Gastos Variables</div>
+        <div class="resumen-value" id="r-gastos-var" style="color:#D97706">Bs 0,00</div>
+        <div class="resumen-sub">Insumos, empaque, comisiones...</div>
+      </div>
+      <div class="resumen-card">
+        <div class="resumen-label">Proporción Fijos / Var.</div>
+        <div class="resumen-value" id="r-gastos-ratio" style="color:var(--wine)">0% / 0%</div>
+        <div class="resumen-sub">Estructura de costos</div>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters-bar">
+      <div class="filter-group">
+        <label>Buscar</label>
+        <input type="text" id="gBuscar" placeholder="ID, descripción...">
+      </div>
+      <div class="filter-group">
+        <label>Desde</label>
+        <input type="date" id="gDesde">
+      </div>
+      <div class="filter-group">
+        <label>Hasta</label>
+        <input type="date" id="gHasta">
+      </div>
+      <div class="filter-group">
+        <label>Tipo de gasto</label>
+        <select id="gTipo">
+          <option value="">Todos</option>
+          <option value="Fijo">Fijo</option>
+          <option value="Variable">Variable</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Categoría</label>
+        <select id="gCat">
+          <option value="">Todas</option>
+          <option value="Alquiler">Alquiler</option>
+          <option value="Servicios">Servicios básicos</option>
+          <option value="Sueldos">Sueldos</option>
+          <option value="Publicidad">Publicidad / Marketing</option>
+          <option value="Transporte">Transporte / Envíos</option>
+          <option value="Empaque">Empaques / Packaging</option>
+          <option value="Comisiones">Comisiones</option>
+          <option value="Insumos">Insumos / Materia prima</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+      <div class="filter-group" style="align-self:flex-end">
+        <button class="btn btn-outline btn-sm" id="btnLimpiar">Limpiar filtros</button>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="gastos-table-wrap">
+      <div class="gastos-row gastos-header">
+        <div>ID Gasto</div>
+        <div>Fecha</div>
+        <div>Categoría</div>
+        <div>Descripción</div>
+        <div>Tipo</div>
+        <div>Importe (Bs)</div>
+        <div>Pago</div>
+        <div style="text-align:right">Acciones</div>
+      </div>
+      <div id="gastosBody"></div>
+    </div>
+
+    <div class="page-loading" id="gastosLoading">
+      <div class="spinner"></div>
+      <p>Cargando gastos…</p>
+    </div>
+
+    <div class="empty-state" id="gastosEmpty" style="display:none">
+      <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.4;margin-bottom:12px"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      <h3>Sin gastos registrados</h3>
+      <p>Registra tu primer gasto con el botón "+ Registrar gasto".</p>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL REGISTRO DE GASTO -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" style="max-width:540px">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Registrar gasto</span>
+      <button class="modal-close" id="modalClose" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="gastoForm">
+        <input type="hidden" id="gastoDocId">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="gIdDisplay">ID de Gasto</label>
+            <input type="text" id="gIdDisplay" readonly style="background:#FAF8F3;font-weight:700;color:var(--wine)">
+          </div>
+          <div class="form-group">
+            <label class="label-required" for="gFecha">Fecha</label>
+            <input type="date" id="gFecha" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="label-required" for="gCategoriaGasto">Categoría de gasto</label>
+            <select id="gCategoriaGasto" required>
+              <option value="Alquiler">Alquiler</option>
+              <option value="Servicios">Servicios básicos (luz, agua, internet)</option>
+              <option value="Sueldos">Sueldos y mano de obra</option>
+              <option value="Publicidad">Publicidad / Marketing</option>
+              <option value="Transporte">Transporte y fletes</option>
+              <option value="Empaque">Empaques / Etiquetas / Frascos</option>
+              <option value="Comisiones">Comisiones de venta</option>
+              <option value="Insumos">Insumos y materia prima</option>
+              <option value="Mantenimiento">Mantenimiento de taller</option>
+              <option value="Otro">Otro gasto</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="label-required" for="gTipoGasto">Tipo de gasto</label>
+            <select id="gTipoGasto" required>
+              <option value="Fijo">Fijo (independiente de ventas)</option>
+              <option value="Variable">Variable (depende del volumen)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="label-required" for="gImporte">Importe en Bolivianos (Bs)</label>
+            <input type="number" id="gImporte" step="0.5" min="0.5" placeholder="Ej: 350.00" required style="font-size:1.1rem;font-weight:700;color:var(--wine)">
+          </div>
+          <div class="form-group">
+            <label for="gMedioPago">Medio de pago</label>
+            <select id="gMedioPago">
+              <option value="Transferencia" selected>Transferencia bancaria</option>
+              <option value="QR">QR</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Tarjeta">Tarjeta de débito/crédito</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label-required" for="gDescripcion">Descripción del gasto</label>
+          <input type="text" id="gDescripcion" placeholder="Ej: Pago de alquiler del taller mes de noviembre" required>
+        </div>
+
+        <div class="form-group">
+          <label for="gNotas">Observaciones / Notas adicionales</label>
+          <textarea id="gNotas" rows="2" placeholder="N° de factura, recibo o detalle complementario…"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="btnCancelar">Cancelar</button>
+      <button class="btn btn-primary" id="btnGuardar">
+        <span id="btnGuardarText">Guardar gasto</span>
+        <span id="btnGuardarSpinner" style="display:none">
+          <span class="spinner" style="width:16px;height:16px;border-width:2px"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmar borrado -->
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <span class="modal-title">¿Eliminar gasto?</span>
+    </div>
+    <div class="modal-body">
+      <p>Esta acción no se puede deshacer. Se actualizarán automáticamente los reportes financieros.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" id="confirmCancel">Cancelar</button>
+      <button class="btn btn-danger" id="confirmDelete">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script type="module" src="js/gastos.js"></script>
+</body>
+</html>

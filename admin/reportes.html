@@ -3,24 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reportes — LULIS Admin</title>
+  <title>Gestión Administrativa y Financiera — LULIS Admin</title>
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#5F0F3F">
-  <link rel="icon" type="image/svg+xml" href="/admin/../Imagenes/logos/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="../Imagenes/logos/LOGO.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/admin/css/admin.css?v=10">
-  <!-- SheetJS (XLSX) para exportar reportes a Excel -->
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/admin.css?v=11">
+  <!-- SheetJS (XLSX) para exportación profesional -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>
-    .reportes-grid {
+    .reportes-layout-grid {
       display: grid;
-      grid-template-columns: 320px 1fr;
+      grid-template-columns: 300px 1fr;
       gap: 20px;
+      align-items: start;
     }
     @media (max-width: 1024px) {
-      .reportes-grid { grid-template-columns: 1fr; }
+      .reportes-layout-grid { grid-template-columns: 1fr; }
     }
     .filtros-card {
       background: #fff;
@@ -29,27 +30,30 @@
       box-shadow: var(--shadow);
       position: sticky;
       top: 80px;
-      align-self: start;
     }
     .filtros-card h3 {
       margin-bottom: 16px;
-      font-size: 1rem;
+      font-size: 1.05rem;
+      color: var(--wine);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .filtro-grupo {
       margin-bottom: 14px;
     }
     .filtro-grupo label {
       display: block;
-      font-size: .72rem;
+      font-size: .74rem;
       text-transform: uppercase;
-      letter-spacing: .08em;
+      letter-spacing: .06em;
       color: var(--mid);
-      margin-bottom: 4px;
+      margin-bottom: 5px;
       font-weight: 600;
     }
     .filtro-grupo input, .filtro-grupo select {
       width: 100%;
-      padding: 8px 10px;
+      padding: 8px 11px;
       border: 1px solid var(--beige);
       border-radius: 8px;
       font-size: .88rem;
@@ -62,11 +66,11 @@
       border-color: var(--wine);
       box-shadow: 0 0 0 3px rgba(95,15,63,.12);
     }
-    .btn-group {
+    .btn-group-reports {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-top: 16px;
+      margin-top: 18px;
     }
     .preview-card {
       background: #fff;
@@ -74,130 +78,198 @@
       box-shadow: var(--shadow);
       overflow: hidden;
     }
-    .preview-header {
+    .tabs-bar {
+      display: flex;
+      background: #FAF8F3;
+      border-bottom: 2px solid var(--light);
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 13px 20px;
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--mid);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      white-space: nowrap;
+      transition: all .15s ease;
+      font-family: inherit;
+    }
+    .tab-btn.active {
+      color: var(--wine);
+      border-bottom-color: var(--wine);
+      background: #fff;
+    }
+    .tab-btn:hover { color: var(--dark); }
+    .tab-content { display: none; padding: 22px; }
+    .tab-content.active { display: block; }
+
+    /* Indicadores Financieros */
+    .kpi-matrix {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .kpi-box {
+      background: #FAF8F3;
+      border: 1px solid #F0ECE1;
+      border-radius: 10px;
+      padding: 16px;
+      position: relative;
+    }
+    .kpi-title {
+      font-size: .74rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--mid);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .kpi-num {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .kpi-sub {
+      font-size: .78rem;
+      color: #6B7280;
+    }
+
+    /* Punto de Equilibrio Box */
+    .pe-container {
+      background: linear-gradient(135deg, #FFF8F0 0%, #FFF 100%);
+      border: 2px solid #FCD34D;
+      border-radius: 12px;
       padding: 20px;
-      border-bottom: 1px solid var(--light);
+      margin-bottom: 24px;
+    }
+    .pe-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    .preview-stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      padding: 20px;
-      background: var(--light);
-    }
-    .preview-stat {
-      text-align: center;
-    }
-    .preview-stat-num {
-      font-family: 'League Spartan', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--dark);
-    }
-    .preview-stat-label {
-      font-size: .7rem;
+    .pe-tag {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: .8rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .04em;
-      color: var(--mid);
+    }
+    .pe-tag-superavit { background: #D1FAE5; color: #065F46; }
+    .pe-tag-deficit { background: #FEE2E2; color: #991B1B; }
+
+    .pe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .pe-item {
+      border-left: 3px solid #D97706;
+      padding-left: 12px;
+    }
+    .pe-item-label {
+      font-size: .74rem;
+      text-transform: uppercase;
+      color: #78350F;
+      font-weight: 700;
+    }
+    .pe-item-val {
+      font-family: 'League Spartan', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #1F2937;
       margin-top: 2px;
     }
-    .preview-table {
+
+    /* Tablas */
+    .table-container {
+      border: 1px solid var(--beige);
+      border-radius: 8px;
+      overflow-x: auto;
+      background: #fff;
+    }
+    .rep-table {
       width: 100%;
       border-collapse: collapse;
+      font-size: .86rem;
     }
-    .preview-table th, .preview-table td {
-      padding: 10px 12px;
-      text-align: left;
-      font-size: .84rem;
-      border-bottom: 1px solid var(--light);
-    }
-    .preview-table th {
-      background: var(--light);
-      font-size: .72rem;
+    .rep-table th {
+      background: #FAF8F3;
+      padding: 11px 13px;
+      font-size: .74rem;
       text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--mid);
+      letter-spacing: .06em;
+      color: var(--wine);
+      font-weight: 700;
+      border-bottom: 1px solid var(--beige);
+      text-align: left;
+    }
+    .rep-table td {
+      padding: 10px 13px;
+      border-bottom: 1px solid #F3F4F6;
+      color: #374151;
+    }
+    .rep-table tr:hover td {
+      background: #FFFDF9;
+    }
+    .rep-table .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
       font-weight: 600;
     }
-    .preview-table tr:last-child td { border-bottom: none; }
-    .preview-table .td-num { text-align: right; font-variant-numeric: tabular-nums; }
-    .preview-table .td-strong { font-weight: 700; }
-    .preview-empty {
-      padding: 60px 20px;
-      text-align: center;
-      color: var(--mid);
+    .badge-estado {
+      padding: 3px 8px;
+      border-radius: 14px;
+      font-size: .72rem;
+      font-weight: 700;
+      display: inline-block;
     }
-
-    .top-list { list-style: none; padding: 0; margin: 0; }
-    .top-list li {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
-      border-bottom: 1px solid var(--light);
-    }
-    .top-list li:last-child { border-bottom: none; }
-    .top-list .rank {
-      font-family: 'League Spartan', sans-serif;
-      font-weight: 800;
-      font-size: 1.2rem;
-      color: var(--wine);
-      width: 28px;
-    }
-    .top-list .producto-info { flex: 1; }
-    .top-list .producto-nombre { font-weight: 500; font-size: .9rem; }
-    .top-list .producto-stats { font-size: .78rem; color: var(--mid); margin-top: 2px; }
-    .top-list .producto-total { font-weight: 700; color: var(--dark); }
-
-    .tabs {
-      display: flex;
-      border-bottom: 2px solid var(--light);
-      margin-bottom: 16px;
-    }
-    .tab {
-      padding: 10px 20px;
-      font-size: .88rem;
-      font-weight: 500;
-      color: var(--mid);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      transition: all .15s;
-    }
-    .tab.active {
-      color: var(--wine);
-      border-bottom-color: var(--wine);
-    }
-    .tab:hover { color: var(--dark); }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+    .badge-pagada { background: #D1FAE5; color: #065F46; }
+    .badge-entregado { background: #E0E7FF; color: #3730A3; }
+    .badge-pendiente { background: #FEF3C7; color: #92400E; }
+    .badge-cancelado { background: #FEE2E2; color: #991B1B; }
   </style>
 </head>
-<body>
+<body class="admin-body">
 
 <div class="admin-layout">
+
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <div class="sidebar-logo-text">LULIS</div>
-      <div class="sidebar-logo-sub">Panel Admin</div>
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <img src="../Imagenes/logos/LOGO.jpg" alt="LULIS" class="sidebar-logo">
+        <div class="sidebar-brand-text">
+          <span class="sidebar-title">LULIS</span>
+          <span class="sidebar-sub">Gestión Integral</span>
+        </div>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Colapsar menú">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
     </div>
     <nav class="sidebar-nav">
       <div class="sidebar-section">Principal</div>
       <a href="/admin/dashboard" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
       <div class="sidebar-section">Catálogo</div>
-      <a href="/admin/productos" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span> Productos</a>
+      <a href="/admin/productos" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span> Productos y Costos</a>
       <a href="/admin/galeria" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span> Galería</a>
-      <a href="/admin/direcciones" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Direcciones</a>
-      <div class="sidebar-section">Operación</div>
+      <a href="/admin/direcciones" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> Puntos de Venta</a>
+      <div class="sidebar-section">Gestión y Finanzas</div>
       <a href="/admin/ventas" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span> Ventas</a>
-      <a href="/admin/reportes" class="sidebar-link active"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Reportes</a>
+      <a href="/admin/gastos" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span> Gastos</a>
+      <a href="/admin/reportes" class="sidebar-link active"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> Reportes & Finanzas</a>
       <div class="sidebar-section">Comunicación</div>
-      <a href="/admin/mensajes" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> Mensajes
-        <span class="sidebar-badge" id="sb-unread" style="display:none">0</span>
-      </a>
+      <a href="/admin/mensajes" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span> Mensajes</a>
       <div class="sidebar-section">Impacto</div>
       <a href="/admin/impacto" class="sidebar-link"><span class="sidebar-link-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></span> Impacto Ambiental</a>
     </nav>
@@ -206,7 +278,7 @@
         <div class="sidebar-avatar" data-user-avatar>A</div>
         <div>
           <div class="sidebar-user-name" data-user-name>Admin</div>
-          <div class="sidebar-user-role">Administrador</div>
+          <div class="sidebar-user-role">Administrador LULIS</div>
         </div>
       </div>
       <button class="btn-logout" id="logoutBtn">
@@ -216,11 +288,12 @@
     </div>
   </aside>
 
+  <!-- TOPBAR -->
   <header class="topbar">
     <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-      <div class="topbar-title">Reportes</div>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="topbar-title">Gestión Administrativa y Financiera</div>
     <div class="topbar-actions">
       <a href="../index.html" class="topbar-link-site" target="_blank">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y1="3"/></svg>
@@ -229,155 +302,279 @@
     </div>
   </header>
 
+  <!-- CONTENIDO PRINCIPAL -->
   <main class="admin-content">
     <div class="page-header">
       <div>
-        <h1>Reportes</h1>
-        <p>Analiza tus ventas y exporta reportes profesionales a Excel (.xlsx) con tablas, totales y formato presentable para contadores o análisis externo.</p>
+        <h1>Gestión Administrativa y Financiera</h1>
+        <p>Consolidación automática de ventas, costos de productos (COGS), gastos fijos/variables, márgenes y punto de equilibrio.</p>
+      </div>
+      <div>
+        <button class="btn btn-primary" id="btnExportarModelo">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar Modelo Completo (Excel)
+        </button>
       </div>
     </div>
 
-    <div class="reportes-grid">
-      <!-- Filtros -->
+    <div class="reportes-layout-grid">
+      <!-- FILTROS LATERALES -->
       <div class="filtros-card">
-        <h3>Filtros</h3>
+        <h3>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          Filtros de Análisis
+        </h3>
 
         <div class="filtro-grupo">
-          <label>Período predefinido</label>
+          <label for="rPeriodo">Período</label>
           <select id="rPeriodo">
             <option value="mes_actual">Este mes</option>
             <option value="mes_pasado">Mes pasado</option>
             <option value="ultimos_3">Últimos 3 meses</option>
-            <option value="ultimos_6" selected>Últimos 6 meses</option>
-            <option value="anio_actual">Este año</option>
+            <option value="ultimos_6">Últimos 6 meses</option>
+            <option value="anio_actual" selected>Este año completo</option>
             <option value="todo">Todo el historial</option>
-            <option value="personalizado">Personalizado</option>
+            <option value="personalizado">Período personalizado</option>
           </select>
         </div>
 
         <div class="filtro-grupo">
-          <label>Desde</label>
+          <label for="rDesde">Fecha Desde</label>
           <input type="date" id="rDesde">
         </div>
+
         <div class="filtro-grupo">
-          <label>Hasta</label>
+          <label for="rHasta">Fecha Hasta</label>
           <input type="date" id="rHasta">
         </div>
+
         <div class="filtro-grupo">
-          <label>Canal</label>
+          <label for="rCanal">Canal de Venta</label>
           <select id="rCanal">
-            <option value="">Todos</option>
-            <option value="whatsapp">WhatsApp</option>
-            <option value="instagram">Instagram</option>
-            <option value="tienda">Tienda</option>
-            <option value="feria">Feria</option>
-            <option value="otro">Otro</option>
-          </select>
-        </div>
-        <div class="filtro-grupo">
-          <label>Estado</label>
-          <select id="rEstado">
-            <option value="">Todos</option>
-            <option value="entregado">Entregado</option>
-            <option value="confirmado">Confirmado</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="cancelado">Cancelado</option>
-          </select>
-        </div>
-        <div class="filtro-grupo">
-          <label>Producto</label>
-          <select id="rProducto">
-            <option value="">Todos</option>
+            <option value="">Todos los canales</option>
+            <option value="Tienda física">Tienda física</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Ferias">Ferias</option>
+            <option value="Otro">Otro</option>
           </select>
         </div>
 
-        <div class="btn-group">
-          <button class="btn btn-primary" id="btnExportar">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Exportar Excel (Resumen)
+        <div class="filtro-grupo">
+          <label for="rMedioPago">Medio de Pago</label>
+          <select id="rMedioPago">
+            <option value="">Todos los medios</option>
+            <option value="QR">QR</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="filtro-grupo">
+          <label for="rSoloPagadas">Filtro de Cobro</label>
+          <select id="rSoloPagadas">
+            <option value="pagadas" selected>Solo ventas pagadas (criterio financiero)</option>
+            <option value="todas">Todas las operaciones registradas</option>
+          </select>
+        </div>
+
+        <div class="btn-group-reports">
+          <button class="btn btn-outline" id="btnExportarVentas" style="font-size:.85rem">
+            Exportar Detalle Ventas
           </button>
-          <button class="btn btn-outline" id="btnExportarDetalle">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Detalle por línea
-          </button>
-          <button class="btn btn-outline" id="btnExportarProductos">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px;margin-right:4px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-            Resumen por producto
+          <button class="btn btn-outline" id="btnExportarGastos" style="font-size:.85rem">
+            Exportar Gastos Registrados
           </button>
         </div>
       </div>
 
-      <!-- Preview -->
+      <!-- PANEL PRINCIPAL CON TABS -->
       <div class="preview-card">
-        <div class="tabs">
-          <div class="tab active" data-tab="ventas">Ventas</div>
-          <div class="tab" data-tab="productos">Top productos</div>
-          <div class="tab" data-tab="canales">Por canal</div>
+        <div class="tabs-bar">
+          <button class="tab-btn active" data-tab="financiero">Finanzas & Punto de Equilibrio</button>
+          <button class="tab-btn" data-tab="ventas">Ventas Detalladas</button>
+          <button class="tab-btn" data-tab="productos">Productos & Rentabilidad</button>
+          <button class="tab-btn" data-tab="mensual">Comparativo Mensual</button>
         </div>
 
-        <div id="tab-ventas" class="tab-panel active">
-          <div class="preview-header">
-            <h3 style="margin:0">Ventas en el período</h3>
-            <div id="ventasCount">—</div>
+        <!-- TAB 1: FINANZAS & PUNTO DE EQUILIBRIO -->
+        <div id="tab-financiero" class="tab-content active">
+          <!-- Matriz KPI -->
+          <div class="kpi-matrix">
+            <div class="kpi-box">
+              <div class="kpi-title">Ingresos por Ventas</div>
+              <div class="kpi-num" id="f-ingresos" style="color:var(--wine)">Bs 0,00</div>
+              <div class="kpi-sub" id="f-ingresos-sub">0 operaciones pagadas</div>
+            </div>
+
+            <div class="kpi-box">
+              <div class="kpi-title">Costo de Ventas (COGS)</div>
+              <div class="kpi-num" id="f-cogs" style="color:#DC2626">Bs 0,00</div>
+              <div class="kpi-sub">Costo histórico de productos</div>
+            </div>
+
+            <div class="kpi-box">
+              <div class="kpi-title">Margen Bruto</div>
+              <div class="kpi-num" id="f-margen-bruto" style="color:#059669">Bs 0,00</div>
+              <div class="kpi-sub" id="f-margen-bruto-pct">0% s/ ingresos</div>
+            </div>
+
+            <div class="kpi-box">
+              <div class="kpi-title">Gastos Fijos</div>
+              <div class="kpi-num" id="f-gastos-fijos" style="color:#4F46E5">Bs 0,00</div>
+              <div class="kpi-sub">Alquiler, sueldos, servicios...</div>
+            </div>
+
+            <div class="kpi-box">
+              <div class="kpi-title">Gastos Variables</div>
+              <div class="kpi-num" id="f-gastos-var" style="color:#D97706">Bs 0,00</div>
+              <div class="kpi-sub">Insumos, empaque, comisiones...</div>
+            </div>
+
+            <div class="kpi-box">
+              <div class="kpi-title">Margen de Contribución</div>
+              <div class="kpi-num" id="f-margen-contrib" style="color:#2563EB">Bs 0,00</div>
+              <div class="kpi-sub" id="f-margen-contrib-pct">0% margen contribución</div>
+            </div>
+
+            <div class="kpi-box" style="background:#FFFDF0;border-color:#FDE68A">
+              <div class="kpi-title">Resultado Operativo</div>
+              <div class="kpi-num" id="f-resultado-op" style="color:var(--wine)">Bs 0,00</div>
+              <div class="kpi-sub" id="f-rentabilidad-pct">Rentabilidad: 0%</div>
+            </div>
           </div>
-          <div class="preview-stats">
-            <div class="preview-stat">
-              <div class="preview-stat-num" id="prev-ventas">0</div>
-              <div class="preview-stat-label">Ventas</div>
+
+          <!-- RECUADRO PUNTO DE EQUILIBRIO -->
+          <div class="pe-container">
+            <div class="pe-header">
+              <div>
+                <h3 style="margin:0;font-size:1.15rem;color:#78350F;display:flex;align-items:center;gap:6px">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/><path d="m5 7-3 5 3 5"/><path d="m19 7 3 5-3 5"/></svg>
+                  Cálculo del Punto de Equilibrio
+                </h3>
+                <p style="margin:4px 0 0;font-size:.82rem;color:#92400E">
+                  Ventas necesarias en Bolivianos para cubrir la totalidad de costos de productos y gastos fijos del período.
+                </p>
+              </div>
+              <div id="pe-status-badge" class="pe-tag pe-tag-superavit">En Equilibrio</div>
             </div>
-            <div class="preview-stat">
-              <div class="preview-stat-num" id="prev-unidades">0</div>
-              <div class="preview-stat-label">Unidades</div>
+
+            <div class="pe-grid">
+              <div class="pe-item">
+                <div class="pe-item-label">Punto de Equilibrio (Bs)</div>
+                <div class="pe-item-val" id="pe-punto-bs">Bs 0,00</div>
+              </div>
+
+              <div class="pe-item">
+                <div class="pe-item-label">Ventas Reales Período</div>
+                <div class="pe-item-val" id="pe-ventas-reales" style="color:var(--wine)">Bs 0,00</div>
+              </div>
+
+              <div class="pe-item">
+                <div class="pe-item-label">Diferencia (Superávit / Déficit)</div>
+                <div class="pe-item-val" id="pe-diferencia" style="color:#059669">+Bs 0,00</div>
+              </div>
+
+              <div class="pe-item">
+                <div class="pe-item-label">% Margen Contribución</div>
+                <div class="pe-item-val" id="pe-mc-pct">0%</div>
+              </div>
             </div>
-            <div class="preview-stat">
-              <div class="preview-stat-num" id="prev-ingreso">Bs 0</div>
-              <div class="preview-stat-label">Ingreso</div>
-            </div>
-            <div class="preview-stat">
-              <div class="preview-stat-num" id="prev-ticket">Bs 0</div>
-              <div class="preview-stat-label">Ticket prom.</div>
+
+            <div id="pe-aviso" style="margin-top:14px;padding:10px 14px;background:#FEF3C7;border-radius:6px;font-size:.8rem;color:#78350F;display:none">
+              ⚠️ <strong>Atención:</strong> Aún no se han registrado gastos fijos o costos en este período. El cálculo del punto de equilibrio es preliminar.
             </div>
           </div>
-          <div style="max-height:500px;overflow:auto">
-            <table class="preview-table" id="ventasPreview">
+
+          <!-- RESUMEN EN TABLA DE ESTADO FINANCIERO -->
+          <h4 style="margin:20px 0 10px;font-size:.95rem;color:var(--wine)">Estado de Resultados Resumido (Período)</h4>
+          <div class="table-container">
+            <table class="rep-table" id="tablaEERR">
               <thead>
                 <tr>
-                  <th>Fecha</th>
-                  <th>Cliente</th>
-                  <th>Productos</th>
-                  <th>Canal</th>
-                  <th>Estado</th>
-                  <th class="td-num">Total</th>
+                  <th>Concepto Financiero</th>
+                  <th class="num">Importe (Bs)</th>
+                  <th class="num">% sobre Ingresos</th>
                 </tr>
               </thead>
-              <tbody id="ventasPreviewBody"></tbody>
+              <tbody id="eerrBody"></tbody>
             </table>
           </div>
         </div>
 
-        <div id="tab-productos" class="tab-panel">
-          <div class="preview-header">
-            <h3 style="margin:0">Top productos vendidos</h3>
+        <!-- TAB 2: VENTAS DETALLADAS -->
+        <div id="tab-ventas" class="tab-content">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+            <h3 style="margin:0;font-size:1.05rem;color:var(--wine)">Registro de Ventas en el Período</h3>
+            <span id="ventasCount" style="font-size:.85rem;color:#6B7280">0 ventas</span>
           </div>
-          <ul class="top-list" id="topProductosList"></ul>
-        </div>
-
-        <div id="tab-canales" class="tab-panel">
-          <div class="preview-header">
-            <h3 style="margin:0">Distribución por canal</h3>
-          </div>
-          <div style="padding:20px">
-            <table class="preview-table" id="canalesTable">
+          <div class="table-container" style="max-height:550px">
+            <table class="rep-table" id="ventasTable">
               <thead>
                 <tr>
+                  <th>ID Venta</th>
+                  <th>Fecha</th>
                   <th>Canal</th>
-                  <th class="td-num">Ventas</th>
-                  <th class="td-num">Unidades</th>
-                  <th class="td-num">Ingreso</th>
-                  <th class="td-num">% del total</th>
+                  <th>Medio Pago</th>
+                  <th>Productos</th>
+                  <th>Estado</th>
+                  <th class="num">Descuento</th>
+                  <th class="num">Total Venta</th>
                 </tr>
               </thead>
-              <tbody id="canalesBody"></tbody>
+              <tbody id="ventasBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: PRODUCTOS & RENTABILIDAD -->
+        <div id="tab-productos" class="tab-content">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+            <h3 style="margin:0;font-size:1.05rem;color:var(--wine)">Rendimiento y Rentabilidad por Producto</h3>
+            <span style="font-size:.85rem;color:#6B7280">Cantidades, ingresos, costos y margen</span>
+          </div>
+          <div class="table-container">
+            <table class="rep-table" id="productosTable">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Categoría</th>
+                  <th class="num">Cant. Vendida</th>
+                  <th class="num">Ingreso Total</th>
+                  <th class="num">Costo Total</th>
+                  <th class="num">Margen Bruto (Bs)</th>
+                  <th class="num">Margen %</th>
+                </tr>
+              </thead>
+              <tbody id="productosBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 4: COMPARATIVO MENSUAL -->
+        <div id="tab-mensual" class="tab-content">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+            <h3 style="margin:0;font-size:1.05rem;color:var(--wine)">Evolución y Comparativo Mes a Mes</h3>
+            <span style="font-size:.85rem;color:#6B7280">Ventas, costos, gastos fijos/variables y resultado</span>
+          </div>
+          <div class="table-container">
+            <table class="rep-table" id="mensualTable">
+              <thead>
+                <tr>
+                  <th>Mes / Año</th>
+                  <th class="num">Ventas Pagadas</th>
+                  <th class="num">Unidades</th>
+                  <th class="num">Costo Ventas</th>
+                  <th class="num">Margen Bruto</th>
+                  <th class="num">Gastos Fijos</th>
+                  <th class="num">Gastos Variables</th>
+                  <th class="num">Resultado Operativo</th>
+                </tr>
+              </thead>
+              <tbody id="mensualBody"></tbody>
             </table>
           </div>
         </div>
@@ -389,7 +586,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script type="module" defer src="/admin/js/auth.js?v=10"></script>
-<script type="module" defer src="/admin/js/reportes.js?v=10"></script>
+<script type="module" src="/admin/js/auth.js?v=11"></script>
+<script type="module" src="/admin/js/reportes.js?v=11"></script>
 </body>
 </html>

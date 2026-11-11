@@ -177,6 +177,7 @@
         desc: p.descripcion || p.descripcionLarga || 'Cosmética capilar botánica y sólida.',
         ingredientes: p.ingredientes || 'Tensioactivos vegetales de coco (SCI), mantecas puras y extractos botánicos.',
         duracion: p.duracion || (p.size || '50g') + ' · Rinde de 35 a 45 lavadas.',
+        empaque: p.empaque || (cat === 'manteca' || (p.nombre || '').toLowerCase().includes('manteca') ? 'Envase de vidrio retornable / reutilizable' : 'Papel orgánico biodegradable con semillas plantables que puedes plantar tras el uso.'),
         waText: `Hola LULIS 👋 Quisiera pedir el producto: ${p.nombre} (${priceStr}).`
       };
 

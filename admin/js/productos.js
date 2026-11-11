@@ -1,3 +1,11 @@
+
+function generateSku(nombre, categoria, size) {
+  const clean = (str) => (str || '').toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 3);
+  const catCode = clean(categoria || 'PROD');
+  const nomCode = clean(nombre || 'ITEM');
+  const sizeNum = String(size || '').replace(/\D/g, '') || '50';
+  return `${catCode}-${nomCode}-${sizeNum}`;
+}
 ﻿/* ═══════════════════════════════════════════════════════════
    LULIS Admin — productos.js (v10)
    CRUD completo de productos con Firestore + Storage + Semilla inicial.

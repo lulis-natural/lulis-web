@@ -59,6 +59,14 @@
       "destination": "/admin/ventas.html"
     },
     {
+      "source": "/admin/gastos",
+      "destination": "/admin/gastos.html"
+    },
+    {
+      "source": "/admin/gastos/",
+      "destination": "/admin/gastos.html"
+    },
+    {
       "source": "/admin/reportes",
       "destination": "/admin/reportes.html"
     },

@@ -1721,12 +1721,19 @@
       </div>
 
       <div class="faq-item" role="button" aria-expanded="false" tabindex="0">
+              <div class="faq-item" role="button" aria-expanded="false" tabindex="0">
         <div class="faq-question">
-          ¿Hacen envíos?
+          ¿Cuáles son sus puntos de venta y hacen envíos?
           <svg class="faq-icon" aria-hidden="true"><use href="#icon-plus"/></svg>
         </div>
         <div class="faq-answer">
-          <p>Sí, coordinamos envíos según tu ubicación. El costo y modalidad de entrega se coordina directamente por WhatsApp. En La Paz tenemos un punto de entrega en el espacio "CULTORAS".</p>
+          <p>¡Sí! Contamos con 3 puntos de atención presencial en La Paz y El Alto:</p>
+          <ul style="margin: 8px 0 8px 18px; line-height: 1.6;">
+            <li><strong>Salón María (Showroom principal):</strong> Calle Posnansky, frente a PAT, Edificio Parque Miraflores #1608, Miraflores, La Paz (Lun a Sáb 9:00 a 19:00).</li>
+            <li><strong>Cultoras (Punto de venta):</strong> Calle Víctor Eduardo 2258, Miraflores, La Paz (Lun a Sáb 9:00 a 19:00).</li>
+            <li><strong>Mundo Ecológico (Punto de venta):</strong> Av. del Policía, al lado del Hipermaxi, Ciudad Satélite, El Alto / La Paz (Lun a Dom 9:00 a 20:00).</li>
+          </ul>
+          <p>Además, realizamos entregas a domicilio por delivery en La Paz y El Alto, y envíos a toda Bolivia (Cochabamba, Santa Cruz, Sucre, Tarija, Oruro, Potosí, Beni y Pando) por encomienda coordinando por WhatsApp.</p>
         </div>
       </div>
 
@@ -2079,7 +2086,7 @@
       <div class="modal-details-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;font-size:0.88rem;color:#1C1611;">
         <div style="display:flex;align-items:flex-start;gap:10px;"><span class="emoji-badge">🌿</span> <div><strong>Ingredientes clave:</strong> <span id="modalProductIngredients">Tensioactivo vegetal, extractos botánicos.</span></div></div>
         <div style="display:flex;align-items:flex-start;gap:10px;"><span class="emoji-badge">✨</span> <div><strong>Rendimiento:</strong> <span id="modalProductDuration">35–45 lavadas</span></div></div>
-        <div style="display:flex;align-items:flex-start;gap:10px;"><span class="emoji-badge">🌱</span> <div><strong>Empaque:</strong> Papel orgánico biodegradable con semillas que puedes plantar tras el uso.</div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;"><span class="emoji-badge">🌱</span> <div><strong>Empaque:</strong> <span id="modalProductEmpaque">Papel orgánico biodegradable con semillas que puedes plantar tras el uso.</span></div></div>
       </div>
       
       <a id="modalProductWaBtn" href="https://wa.me/59173515698" target="_blank" rel="noopener noreferrer" style="background:#25D366;color:#FFFFFF;padding:12px 24px;border-radius:40px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;box-shadow:0 4px 16px rgba(37,211,102,0.35);font-size:0.95rem;">
@@ -2294,6 +2301,7 @@
           desc: p.descripcion || p.descripcionLarga || 'Cosmética sólida y consciente formulada botánicamente en Bolivia.',
           ingredientes: p.ingredientes || 'Tensioactivos vegetales de coco (SCI), arcillas minerales, mantecas y extractos puros.',
           duracion: p.duracion || (size + ' · Rinde de 35 a 45 lavadas.'),
+          empaque: p.empaque || (cat === 'manteca' || nameClean.toLowerCase().includes('manteca') ? 'Envase de vidrio retornable / reutilizable' : 'Papel orgánico biodegradable con semillas plantables que puedes plantar tras el uso.'),
           waText: `Hola LULIS 👋 Quisiera pedir el producto: ${nameClean} (${priceStr}).`
         };
 
