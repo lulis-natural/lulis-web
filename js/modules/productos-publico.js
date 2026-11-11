@@ -38,6 +38,9 @@
     for (const k in fields) {
       data[k] = getVal(fields[k]);
     }
+    data.imagenUrl = data.imagenUrl || data.foto || '';
+    data.categoria = data.categoria || data.tipo || '';
+    data.size = data.size || data.gramos || '50g';
     return data;
   }
 
