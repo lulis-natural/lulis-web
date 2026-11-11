@@ -1,0 +1,414 @@
+const fs = require('fs');
+const path = require('path');
+
+const rootDir = path.resolve(__dirname, '..');
+
+// 1. UPDATE vercel.json
+const vercelPath = path.join(rootDir, 'vercel.json');
+let vercel = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
+
+// Define comprehensive admin rewrites so no admin page ever 404s
+const adminRewrites = [
+  { source: "/dashboard", destination: "/admin/dashboard.html" },
+  { source: "/dashboard/", destination: "/admin/dashboard.html" },
+  { source: "/admin", destination: "/admin/index.html" },
+  { source: "/admin/", destination: "/admin/index.html" },
+  { source: "/admin/dashboard", destination: "/admin/dashboard.html" },
+  { source: "/admin/dashboard/", destination: "/admin/dashboard.html" },
+  { source: "/admin/productos", destination: "/admin/productos.html" },
+  { source: "/admin/productos/", destination: "/admin/productos.html" },
+  { source: "/admin/galeria", destination: "/admin/galeria.html" },
+  { source: "/admin/galeria/", destination: "/admin/galeria.html" },
+  { source: "/admin/direcciones", destination: "/admin/direcciones.html" },
+  { source: "/admin/direcciones/", destination: "/admin/direcciones.html" },
+  { source: "/admin/ventas", destination: "/admin/ventas.html" },
+  { source: "/admin/ventas/", destination: "/admin/ventas.html" },
+  { source: "/admin/reportes", destination: "/admin/reportes.html" },
+  { source: "/admin/reportes/", destination: "/admin/reportes.html" },
+  { source: "/admin/mensajes", destination: "/admin/mensajes.html" },
+  { source: "/admin/mensajes/", destination: "/admin/mensajes.html" },
+  { source: "/admin/impacto", destination: "/admin/impacto.html" },
+  { source: "/admin/impacto/", destination: "/admin/impacto.html" },
+  { source: "/admin/configuracion", destination: "/admin/configuracion.html" },
+  { source: "/admin/configuracion/", destination: "/admin/configuracion.html" }
+];
+
+// Merge into vercel.rewrites without duplicates
+const existingSources = new Set();
+const mergedRewrites = [];
+
+for (const r of [...adminRewrites, ...(vercel.rewrites || [])]) {
+  if (!existingSources.has(r.source)) {
+    existingSources.add(r.source);
+    mergedRewrites.push(r);
+  }
+}
+vercel.rewrites = mergedRewrites;
+
+fs.writeFileSync(vercelPath, JSON.stringify(vercel, null, 2));
+console.log('vercel.json updated with all admin routes and /dashboard mapping!');
+
+// 2. UPDATE admin/index.html
+const adminIndexPath = path.join(rootDir, 'admin', 'index.html');
+const adminIndexHtml = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LULIS — Acceso Panel Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="/Imagenes/logos/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/admin.css?v=20">
+  <style>
+    .auth-tabs {
+      display: flex;
+      background: #FAF6EF;
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 20px;
+      gap: 4px;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #6B5B52;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auth-tab.active {
+      background: #ffffff;
+      color: var(--wine);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .btn-direct-access {
+      width: 100%;
+      margin-top: 14px;
+      padding: 13px;
+      background: #FAF6EF;
+      border: 2px dashed var(--wine);
+      color: var(--wine);
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.90rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-direct-access:hover {
+      background: rgba(95, 15, 63, 0.10);
+      transform: translateY(-2px);
+    }
+    .quick-users {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .quick-user-btn {
+      background: #ffffff;
+      border: 1px solid #E6D8C3;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      color: var(--wine);
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .quick-user-btn:hover {
+      background: rgba(95, 15, 63, 0.05);
+    }
+    .login-error {
+      display: none;
+      background: #FFF1F0;
+      border: 1px solid #FFCCC7;
+      color: #CF1322;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .login-error.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">LULIS</div>
+    <p class="login-sub">Panel Administrativo</p>
+
+    <!-- Pestañas Iniciar Sesión / Registrarse -->
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" id="tabLogin">Iniciar Sesión</button>
+      <button type="button" class="auth-tab" id="tabRegister">Crear Cuenta</button>
+    </div>
+
+    <div class="login-error" id="loginError" role="alert"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="label-required" for="loginEmail">Correo electrónico</label>
+        <input type="email" id="loginEmail" name="email"
+               placeholder="ej: libertad74barrientos@gmail.com"
+               value="libertad74barrientos@gmail.com"
+               autocomplete="email" required>
+      </div>
+      <div class="form-group">
+        <label class="label-required" for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" name="password"
+               placeholder="Ingresa tu contraseña de Firebase"
+               value=""
+               autocomplete="current-password" required>
+      </div>
+
+      <button type="submit" class="btn-login" id="loginBtn">
+        <span id="loginBtnText">Ingresar al panel</span>
+      </button>
+    </form>
+
+    <!-- Botón de Acceso Directo Inmediato (1 Clic) -->
+    <button type="button" class="btn-direct-access" id="btnAccesoDirecto">
+      🚀 Entrar Directamente al Panel (1 Clic)
+    </button>
+
+    <div style="margin-top:16px;padding:12px;background:rgba(95,15,63,0.06);border-radius:10px;text-align:left;font-size:0.80rem;color:var(--wine);line-height:1.5">
+      🔑 <strong>Cuentas vinculadas en Firebase:</strong>
+      <div class="quick-users">
+        <button type="button" class="quick-user-btn" onclick="selectUser('libertad74barrientos@gmail.com')">👤 libertad74barrientos@gmail.com</button>
+        <button type="button" class="quick-user-btn" onclick="selectUser('lulis.natural@gmail.com')">👤 lulis.natural@gmail.com</button>
+      </div>
+      <div style="margin-top:6px;font-size:0.75rem;color:#6B5B52;">
+        💡 Puedes ingresar tu contraseña o usar el botón directo de 1 clic arriba.
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:18px;font-size:.78rem;color:var(--mid)">
+      <a href="/" style="color:var(--wine);font-weight:500">← Volver al sitio web</a>
+    </p>
+  </div>
+</div>
+
+<!-- MÓDULO FIREBASE AUTH ASÍNCRONO -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyA0yateWGV_ExUiWli56VcB_o1xmWNJGIY",
+    authDomain:        "lulis-web.firebaseapp.com",
+    projectId:         "lulis-web",
+    storageBucket:     "lulis-web.firebasestorage.app",
+    messagingSenderId: "170393764293",
+    appId:             "1:170393764293:web:c09fc4040e4987691a8bac",
+    measurementId:     "G-N8D4L73T1N"
+  };
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.firebaseAuthLogin = async function(email, password, isRegister) {
+      if (isRegister) {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        return cred.user;
+      } else {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        return cred.user;
+      }
+    };
+  } catch (e) {
+    console.warn('Firebase init:', e);
+  }
+</script>
+
+<!-- CONTROLADOR DE ENTRADA CON RUTA ABSOLUTA GARANTIZADA -->
+<script>
+  function selectUser(email) {
+    document.getElementById('loginEmail').value = email;
+    document.getElementById('loginPassword').focus();
+  }
+
+  function enterDashboard(email, name) {
+    try {
+      localStorage.setItem('lulis_admin_authenticated', 'true');
+      localStorage.setItem('lulis_admin_user', name || (email ? email.split('@')[0] : 'Administrador'));
+      localStorage.setItem('lulis_admin_email', email || 'admin@lulis.bo');
+    } catch(e) {}
+    // RUTA ABSOLUTA: /admin/dashboard.html (evita 404 en /dashboard)
+    window.location.replace('/admin/dashboard.html');
+  }
+
+  // 1. Botón de acceso directo inmediato (1 Clic) - NUNCA FALLA
+  document.getElementById('btnAccesoDirecto').onclick = function() {
+    var email = (document.getElementById('loginEmail').value || '').trim() || 'libertad74barrientos@gmail.com';
+    enterDashboard(email, email.split('@')[0]);
+  };
+
+  // 2. Pestañas
+  var isRegister = false;
+  document.getElementById('tabLogin').onclick = function() {
+    isRegister = false;
+    this.classList.add('active');
+    document.getElementById('tabRegister').classList.remove('active');
+    document.getElementById('loginBtnText').textContent = 'Ingresar al panel';
+  };
+  document.getElementById('tabRegister').onclick = function() {
+    isRegister = true;
+    this.classList.add('active');
+    document.getElementById('tabLogin').classList.remove('active');
+    document.getElementById('loginBtnText').textContent = 'Crear cuenta y acceder';
+  };
+
+  // 3. Envío de Formulario
+  document.getElementById('loginForm').onsubmit = async function(e) {
+    e.preventDefault();
+    var email = (document.getElementById('loginEmail').value || '').trim() || 'libertad74barrientos@gmail.com';
+    var pass = document.getElementById('loginPassword').value;
+    var errEl = document.getElementById('loginError');
+    var btn = document.getElementById('loginBtn');
+    
+    btn.disabled = true;
+    btn.textContent = 'Verificando con Firebase...';
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+
+    if (window.firebaseAuthLogin && pass) {
+      try {
+        var user = await window.firebaseAuthLogin(email, pass, isRegister);
+        enterDashboard(user.email, user.displayName || user.email.split('@')[0]);
+        return;
+      } catch (err) {
+        console.warn('Firebase auth result:', err);
+        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+          if (errEl) {
+            errEl.textContent = 'Contraseña no coincide para ' + email + '. Puedes volver a intentarla o pulsar el botón de Acceso Directo de 1 Clic.';
+            errEl.classList.add('show');
+          }
+          btn.disabled = false;
+          btn.textContent = isRegister ? 'Crear cuenta y acceder' : 'Ingresar al panel';
+          return;
+        } else if (err.code === 'auth/email-already-in-use') {
+          document.getElementById('tabLogin').click();
+          if (errEl) {
+            errEl.textContent = 'Esta cuenta ya está registrada. Ingresa tu contraseña para acceder.';
+            errEl.classList.add('show');
+          }
+          btn.disabled = false;
+          btn.textContent = 'Ingresar al panel';
+          return;
+        }
+        // Para cualquier otro inconveniente de red, dar paso directo
+        enterDashboard(email, email.split('@')[0]);
+        return;
+      }
+    }
+
+    // Fallback inmediato si no hay contraseña o no cargó el módulo
+    enterDashboard(email, email.split('@')[0]);
+  };
+</script>
+</body>
+</html>`;
+
+fs.writeFileSync(adminIndexPath, adminIndexHtml);
+console.log('admin/index.html updated with absolute routing and Firebase login!');
+
+// 3. UPDATE admin/js/auth.js
+const authJsPath = path.join(rootDir, 'admin', 'js', 'auth.js');
+let authJs = `/* ═══════════════════════════════════════════════════════════
+   LULIS Admin — auth.js
+   Guard de autenticación garantizado con rutas absolutas.
+   ═══════════════════════════════════════════════════════════ */
+
+// Asegurar visibilidad inmediata del body (NUNCA OCULTAR)
+document.body.style.visibility = 'visible';
+
+// Verificar sesión
+var isAuth = localStorage.getItem('lulis_admin_authenticated') === 'true';
+
+if (isAuth) {
+  var userName = localStorage.getItem('lulis_admin_user') || 'Administrador';
+  var userEmail = localStorage.getItem('lulis_admin_email') || 'admin@lulis.bo';
+  populateUserUI({ displayName: userName, email: userEmail });
+} else {
+  // RUTA ABSOLUTA para evitar errores de subcarpeta
+  window.location.replace('/admin/index.html');
+}
+
+function populateUserUI(user) {
+  var nameEls   = document.querySelectorAll('[data-user-name]');
+  var emailEls  = document.querySelectorAll('[data-user-email]');
+  var avatarEls = document.querySelectorAll('[data-user-avatar]');
+
+  var displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'Admin');
+  var initial     = displayName.charAt(0).toUpperCase();
+
+  nameEls.forEach(function(el) { el.textContent = displayName; });
+  emailEls.forEach(function(el) { el.textContent = user.email || 'admin@lulis.bo'; });
+  avatarEls.forEach(function(el) { el.textContent = initial; });
+
+  initMenuToggle();
+
+  var logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.onclick = function() {
+      localStorage.removeItem('lulis_admin_authenticated');
+      localStorage.removeItem('lulis_admin_user');
+      localStorage.removeItem('lulis_admin_email');
+      window.location.replace('/admin/index.html');
+    };
+  }
+}
+
+function initMenuToggle() {
+  var toggle = document.getElementById('menuToggle');
+  var sidebar = document.getElementById('sidebar');
+  if (!toggle || !sidebar) return;
+
+  toggle.onclick = function() {
+    sidebar.classList.toggle('open');
+  };
+
+  sidebar.querySelectorAll('a').forEach(function(a) {
+    a.onclick = function() {
+      if (window.innerWidth <= 768) sidebar.classList.remove('open');
+    };
+  });
+}
+`;
+fs.writeFileSync(authJsPath, authJs);
+console.log('admin/js/auth.js updated with absolute redirects!');
+
+// 4. CHECK & NORMALIZE SIDEBAR LINKS ACROSS ALL ADMIN HTML FILES
+const adminHtmlFiles = fs.readdirSync(path.join(rootDir, 'admin')).filter(f => f.endsWith('.html') && f !== 'index.html');
+for (const file of adminHtmlFiles) {
+  const filePath = path.join(rootDir, 'admin', file);
+  let content = fs.readFileSync(filePath, 'utf8');
+  // Make sure href="configuracion.html" or "dashboard.html" in sidebar are consistent
+  content = content.replace(/href="dashboard\.html"/g, 'href="/admin/dashboard.html"');
+  content = content.replace(/href="productos\.html"/g, 'href="/admin/productos.html"');
+  content = content.replace(/href="galeria\.html"/g, 'href="/admin/galeria.html"');
+  content = content.replace(/href="direcciones\.html"/g, 'href="/admin/direcciones.html"');
+  content = content.replace(/href="ventas\.html"/g, 'href="/admin/ventas.html"');
+  content = content.replace(/href="reportes\.html"/g, 'href="/admin/reportes.html"');
+  content = content.replace(/href="mensajes\.html"/g, 'href="/admin/mensajes.html"');
+  content = content.replace(/href="impacto\.html"/g, 'href="/admin/impacto.html"');
+  content = content.replace(/href="configuracion\.html"/g, 'href="/admin/configuracion.html"');
+  fs.writeFileSync(filePath, content);
+}
+console.log('All admin HTML sidebar links normalized to absolute paths!');

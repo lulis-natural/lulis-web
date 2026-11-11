@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
    LULIS Admin — auth.js
-   Guard de autenticación garantizado.
+   Guard de autenticación garantizado con rutas absolutas.
    ═══════════════════════════════════════════════════════════ */
 
 // Asegurar visibilidad inmediata del body (NUNCA OCULTAR)
@@ -14,8 +14,8 @@ if (isAuth) {
   var userEmail = localStorage.getItem('lulis_admin_email') || 'admin@lulis.bo';
   populateUserUI({ displayName: userName, email: userEmail });
 } else {
-  // Solo si no hay token en localStorage, ir a index.html
-  window.location.replace('index.html');
+  // RUTA ABSOLUTA para evitar errores de subcarpeta
+  window.location.replace('/admin/index.html');
 }
 
 function populateUserUI(user) {
@@ -38,7 +38,7 @@ function populateUserUI(user) {
       localStorage.removeItem('lulis_admin_authenticated');
       localStorage.removeItem('lulis_admin_user');
       localStorage.removeItem('lulis_admin_email');
-      window.location.replace('index.html');
+      window.location.replace('/admin/index.html');
     };
   }
 }

@@ -3,12 +3,92 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/dashboard",
+      "destination": "/admin/dashboard.html"
+    },
+    {
+      "source": "/dashboard/",
+      "destination": "/admin/dashboard.html"
+    },
+    {
       "source": "/admin",
       "destination": "/admin/index.html"
     },
     {
       "source": "/admin/",
       "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/dashboard",
+      "destination": "/admin/dashboard.html"
+    },
+    {
+      "source": "/admin/dashboard/",
+      "destination": "/admin/dashboard.html"
+    },
+    {
+      "source": "/admin/productos",
+      "destination": "/admin/productos.html"
+    },
+    {
+      "source": "/admin/productos/",
+      "destination": "/admin/productos.html"
+    },
+    {
+      "source": "/admin/galeria",
+      "destination": "/admin/galeria.html"
+    },
+    {
+      "source": "/admin/galeria/",
+      "destination": "/admin/galeria.html"
+    },
+    {
+      "source": "/admin/direcciones",
+      "destination": "/admin/direcciones.html"
+    },
+    {
+      "source": "/admin/direcciones/",
+      "destination": "/admin/direcciones.html"
+    },
+    {
+      "source": "/admin/ventas",
+      "destination": "/admin/ventas.html"
+    },
+    {
+      "source": "/admin/ventas/",
+      "destination": "/admin/ventas.html"
+    },
+    {
+      "source": "/admin/reportes",
+      "destination": "/admin/reportes.html"
+    },
+    {
+      "source": "/admin/reportes/",
+      "destination": "/admin/reportes.html"
+    },
+    {
+      "source": "/admin/mensajes",
+      "destination": "/admin/mensajes.html"
+    },
+    {
+      "source": "/admin/mensajes/",
+      "destination": "/admin/mensajes.html"
+    },
+    {
+      "source": "/admin/impacto",
+      "destination": "/admin/impacto.html"
+    },
+    {
+      "source": "/admin/impacto/",
+      "destination": "/admin/impacto.html"
+    },
+    {
+      "source": "/admin/configuracion",
+      "destination": "/admin/configuracion.html"
+    },
+    {
+      "source": "/admin/configuracion/",
+      "destination": "/admin/configuracion.html"
     }
   ],
   "redirects": [

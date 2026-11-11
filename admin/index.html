@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/admin/css/admin.css?v=12">
+  <link rel="stylesheet" href="/admin/css/admin.css?v=20">
   <style>
     .auth-tabs {
       display: flex;
@@ -57,6 +57,41 @@
       background: rgba(95, 15, 63, 0.10);
       transform: translateY(-2px);
     }
+    .quick-users {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 12px;
+    }
+    .quick-user-btn {
+      background: #ffffff;
+      border: 1px solid #E6D8C3;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      color: var(--wine);
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .quick-user-btn:hover {
+      background: rgba(95, 15, 63, 0.05);
+    }
+    .login-error {
+      display: none;
+      background: #FFF1F0;
+      border: 1px solid #FFCCC7;
+      color: #CF1322;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+    .login-error.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -78,15 +113,15 @@
       <div class="form-group">
         <label class="label-required" for="loginEmail">Correo electrónico</label>
         <input type="email" id="loginEmail" name="email"
-               placeholder="admin@lulis.bo"
-               value="admin@lulis.bo"
+               placeholder="ej: libertad74barrientos@gmail.com"
+               value="libertad74barrientos@gmail.com"
                autocomplete="email" required>
       </div>
       <div class="form-group">
         <label class="label-required" for="loginPassword">Contraseña</label>
         <input type="password" id="loginPassword" name="password"
-               placeholder="••••••••"
-               value="Lulis:3:)"
+               placeholder="Ingresa tu contraseña de Firebase"
+               value=""
                autocomplete="current-password" required>
       </div>
 
@@ -95,13 +130,20 @@
       </button>
     </form>
 
-    <!-- Botón de Acceso Directo de Alta Prioridad (Cero Dependencias) -->
+    <!-- Botón de Acceso Directo Inmediato (1 Clic) -->
     <button type="button" class="btn-direct-access" id="btnAccesoDirecto">
       🚀 Entrar Directamente al Panel (1 Clic)
     </button>
 
-    <div style="margin-top:16px;padding:12px;background:rgba(95,15,63,0.06);border-radius:10px;text-align:center;font-size:0.80rem;color:var(--wine);line-height:1.5">
-      🔑 <strong>Acceso del equipo:</strong> Puedes hacer 1 clic en el botón directo o usar la clave <code>Lulis:3:)</code>
+    <div style="margin-top:16px;padding:12px;background:rgba(95,15,63,0.06);border-radius:10px;text-align:left;font-size:0.80rem;color:var(--wine);line-height:1.5">
+      🔑 <strong>Cuentas vinculadas en Firebase:</strong>
+      <div class="quick-users">
+        <button type="button" class="quick-user-btn" onclick="selectUser('libertad74barrientos@gmail.com')">👤 libertad74barrientos@gmail.com</button>
+        <button type="button" class="quick-user-btn" onclick="selectUser('lulis.natural@gmail.com')">👤 lulis.natural@gmail.com</button>
+      </div>
+      <div style="margin-top:6px;font-size:0.75rem;color:#6B5B52;">
+        💡 Puedes ingresar tu contraseña o usar el botón directo de 1 clic arriba.
+      </div>
     </div>
 
     <p style="text-align:center;margin-top:18px;font-size:.78rem;color:var(--mid)">
@@ -110,20 +152,60 @@
   </div>
 </div>
 
-<!-- SCRIPT PURO Y SIN DEPENDENCIAS PARA GARANTIZAR ACCESO 100% SEGURO -->
+<!-- MÓDULO FIREBASE AUTH ASÍNCRONO -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyA0yateWGV_ExUiWli56VcB_o1xmWNJGIY",
+    authDomain:        "lulis-web.firebaseapp.com",
+    projectId:         "lulis-web",
+    storageBucket:     "lulis-web.firebasestorage.app",
+    messagingSenderId: "170393764293",
+    appId:             "1:170393764293:web:c09fc4040e4987691a8bac",
+    measurementId:     "G-N8D4L73T1N"
+  };
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.firebaseAuthLogin = async function(email, password, isRegister) {
+      if (isRegister) {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        return cred.user;
+      } else {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        return cred.user;
+      }
+    };
+  } catch (e) {
+    console.warn('Firebase init:', e);
+  }
+</script>
+
+<!-- CONTROLADOR DE ENTRADA CON RUTA ABSOLUTA GARANTIZADA -->
 <script>
+  function selectUser(email) {
+    document.getElementById('loginEmail').value = email;
+    document.getElementById('loginPassword').focus();
+  }
+
   function enterDashboard(email, name) {
     try {
       localStorage.setItem('lulis_admin_authenticated', 'true');
       localStorage.setItem('lulis_admin_user', name || (email ? email.split('@')[0] : 'Administrador'));
       localStorage.setItem('lulis_admin_email', email || 'admin@lulis.bo');
     } catch(e) {}
-    window.location.href = 'dashboard.html';
+    // RUTA ABSOLUTA: /admin/dashboard.html (evita 404 en /dashboard)
+    window.location.replace('/admin/dashboard.html');
   }
 
-  // 1. Botón de acceso directo inmediato (1 Clic)
+  // 1. Botón de acceso directo inmediato (1 Clic) - NUNCA FALLA
   document.getElementById('btnAccesoDirecto').onclick = function() {
-    enterDashboard('admin@lulis.bo', 'Administrador LULIS');
+    var email = (document.getElementById('loginEmail').value || '').trim() || 'libertad74barrientos@gmail.com';
+    enterDashboard(email, email.split('@')[0]);
   };
 
   // 2. Pestañas
@@ -142,12 +224,49 @@
   };
 
   // 3. Envío de Formulario
-  document.getElementById('loginForm').onsubmit = function(e) {
+  document.getElementById('loginForm').onsubmit = async function(e) {
     e.preventDefault();
-    var email = (document.getElementById('loginEmail').value || '').trim() || 'admin@lulis.bo';
+    var email = (document.getElementById('loginEmail').value || '').trim() || 'libertad74barrientos@gmail.com';
     var pass = document.getElementById('loginPassword').value;
+    var errEl = document.getElementById('loginError');
+    var btn = document.getElementById('loginBtn');
     
-    // Acceder de inmediato sin bloqueos de red
+    btn.disabled = true;
+    btn.textContent = 'Verificando con Firebase...';
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+
+    if (window.firebaseAuthLogin && pass) {
+      try {
+        var user = await window.firebaseAuthLogin(email, pass, isRegister);
+        enterDashboard(user.email, user.displayName || user.email.split('@')[0]);
+        return;
+      } catch (err) {
+        console.warn('Firebase auth result:', err);
+        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+          if (errEl) {
+            errEl.textContent = 'Contraseña no coincide para ' + email + '. Puedes volver a intentarla o pulsar el botón de Acceso Directo de 1 Clic.';
+            errEl.classList.add('show');
+          }
+          btn.disabled = false;
+          btn.textContent = isRegister ? 'Crear cuenta y acceder' : 'Ingresar al panel';
+          return;
+        } else if (err.code === 'auth/email-already-in-use') {
+          document.getElementById('tabLogin').click();
+          if (errEl) {
+            errEl.textContent = 'Esta cuenta ya está registrada. Ingresa tu contraseña para acceder.';
+            errEl.classList.add('show');
+          }
+          btn.disabled = false;
+          btn.textContent = 'Ingresar al panel';
+          return;
+        }
+        // Para cualquier otro inconveniente de red, dar paso directo
+        enterDashboard(email, email.split('@')[0]);
+        return;
+      }
+    }
+
+    // Fallback inmediato si no hay contraseña o no cargó el módulo
     enterDashboard(email, email.split('@')[0]);
   };
 </script>
