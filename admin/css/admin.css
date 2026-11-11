@@ -947,3 +947,28 @@ textarea { min-height: 90px; resize: vertical; }
 @media (max-width: 768px) {
   .menu-toggle { display: inline-flex; }
 }
+
+/* Estilos robustos para el botn de guardar productos */
+#btnGuardar {
+  min-width: 175px !important;
+  min-height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+}
+#btnGuardar:disabled {
+  opacity: 0.8 !important;
+  cursor: wait !important;
+}
+#btnGuardarSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}

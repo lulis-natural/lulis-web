@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    LULIS Admin — productos.js (v10)
    CRUD completo de productos con Firestore + Storage + Semilla inicial.
    ═══════════════════════════════════════════════════════════ */
@@ -98,6 +98,7 @@ async function cargarFallbackLocal() {
 function guardarEnCacheLocal(list) {
   try {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(list));
+    localStorage.setItem('lulis_productos_cache_time_v2', Date.now().toString());
   } catch (_) {}
 }
 
@@ -285,17 +286,29 @@ async function guardarProducto() {
     // Subir imagen si seleccionó archivo
     if (selectedFile) {
       try {
-        const path = `productos/${Date.now()}_${selectedFile.name}`;
-        imagenUrl = await uploadFile(selectedFile, path, (pct) => {
-          $('progressFill').style.width = pct + '%';
-          $('progressText').textContent = pct + '%';
+        const cleanName = (selectedFile.name || 'foto.jpg').replace(/[^a-zA-Z0-9._-]/g, '');
+        const path = `productos/${Date.now()}_${cleanName}`;
+        
+        // Timeout de 2.5s para no bloquear si Firebase Storage no responde
+        const uploadTask = uploadFile(selectedFile, path, (pct) => {
+          if ($('progressFill')) $('progressFill').style.width = pct + '%';
+          if ($('progressText')) $('progressText').textContent = pct + '%';
         });
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Storage timeout (usando respaldo de imagen local)')), 2500)
+        );
+
+        imagenUrl = await Promise.race([uploadTask, timeoutPromise]);
       } catch (uploadErr) {
-        console.warn('Error subiendo imagen a Firebase Storage, usando DataURL/local:', uploadErr);
-        if ($('previewImg').src) {
+        console.warn('Firebase Storage no disponible o timeout. Usando imagen cargada en DataURL/Base64:', uploadErr);
+        if ($('previewImg') && $('previewImg').src && $('previewImg').src.startsWith('data:')) {
           imagenUrl = $('previewImg').src;
         }
       }
+    }
+
+    if (!imagenUrl && $('previewImg') && $('previewImg').src && !$('previewImg').src.includes('placeholder')) {
+      imagenUrl = $('previewImg').src;
     }
 
     if (!imagenUrl) {
@@ -306,6 +319,7 @@ async function guardarProducto() {
       nombre,
       variante:         $('pVariante').value.trim(),
       categoria,
+      categoriaLabel,
       precio:           $('pPrecio').value.trim() || '35 Bs.',
       size:             $('pSize').value.trim() || '50g',
       duracion:         $('pDuracion').value.trim() || '35–45 lavadas',
@@ -325,27 +339,39 @@ async function guardarProducto() {
 
     let savedToFirestore = false;
     try {
-      if (editingId) {
-        await updateDoc(doc(db, COL, editingId), data);
-      } else {
-        data.creadoEn = serverTimestamp ? serverTimestamp() : new Date().toISOString();
-        const docRef = await addDoc(collection(db, COL), data);
-        data.id = docRef.id;
-      }
+      const firestoreTask = (async () => {
+        if (editingId) {
+          await updateDoc(doc(db, COL, editingId), data);
+        } else {
+          data.creadoEn = serverTimestamp ? serverTimestamp() : new Date().toISOString();
+          const docRef = await addDoc(collection(db, COL), data);
+          data.id = docRef.id;
+        }
+      })();
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Firestore timeout')), 3000)
+      );
+
+      await Promise.race([firestoreTask, timeoutPromise]);
       savedToFirestore = true;
     } catch (dbErr) {
-      console.warn('Error guardando en Firestore (se guardará en cache local):', dbErr);
+      console.warn('Firestore no disponible o tardó demasiado (se guarda en cache local):', dbErr);
     }
 
-    // Actualizar también en el array local
+    // Actualizar siempre en el array local y sincronizar
     if (editingId) {
       const idx = allProductos.findIndex(x => x.id === editingId);
-      if (idx !== -1) allProductos[idx] = { ...allProductos[idx], ...data };
-      toast('Producto actualizado con éxito ✅', 'success');
+      if (idx !== -1) {
+        allProductos[idx] = { ...allProductos[idx], ...data, id: editingId };
+      } else {
+        allProductos.push({ ...data, id: editingId });
+      }
+      toast('¡Producto actualizado con éxito! ✅', 'success');
     } else {
       data.id = data.id || `local-${Date.now()}`;
       allProductos.push(data);
-      toast('Producto creado con éxito ✅', 'success');
+      toast('¡Producto creado con éxito! ✅', 'success');
     }
 
     guardarEnCacheLocal(allProductos);
@@ -359,7 +385,6 @@ async function guardarProducto() {
   }
 }
 
-/* ─── Eliminar ───────────────────────────────────────────── */
 window.confirmarBorrado = function(id, imgUrl) {
   deleteId     = id;
   deleteImgUrl = imgUrl;
@@ -492,9 +517,22 @@ function closeModal() {
 }
 
 function setBtnLoading(on) {
-  if ($('btnGuardar')) $('btnGuardar').disabled = on;
-  if ($('btnGuardarText')) $('btnGuardarText').style.display = on ? 'none' : 'block';
-  if ($('btnGuardarSpinner')) $('btnGuardarSpinner').style.display = on ? 'block' : 'none';
+  const btn = $('btnGuardar');
+  const txt = $('btnGuardarText');
+  const spin = $('btnGuardarSpinner');
+  if (btn) btn.disabled = on;
+  if (txt) {
+    if (on) {
+      txt.textContent = editingId ? 'Guardando cambios...' : 'Creando producto...';
+      txt.style.display = 'inline';
+    } else {
+      txt.textContent = editingId ? 'Actualizar producto' : 'Guardar producto';
+      txt.style.display = 'inline';
+    }
+  }
+  if (spin) {
+    spin.style.display = on ? 'inline-block' : 'none';
+  }
 }
 
 function slugify(str) {

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -312,10 +312,10 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" id="btnCancelar">Cancelar</button>
-      <button class="btn btn-primary" id="btnGuardar">
+      <button type="button" class="btn btn-outline" id="btnCancelar">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="btnGuardar" style="min-width: 175px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+        <span id="btnGuardarSpinner" style="display:none; width:15px; height:15px; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; flex-shrink:0;"></span>
         <span id="btnGuardarText">Guardar producto</span>
-        <span id="btnGuardarSpinner" style="display:none"><span class="spinner" style="width:16px;height:16px;border-width:2px;"></span></span>
       </button>
     </div>
   </div>
