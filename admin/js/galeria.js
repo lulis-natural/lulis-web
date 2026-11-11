@@ -48,6 +48,11 @@ function subscribeGaleria() {
     allItems = snap.docs
       .map(d => ({ id: d.id, ...d.data() }))
       .sort((a, b) => (a.orden || 99) - (b.orden || 99));
+    try {
+      localStorage.setItem('lulis_galeria_cache_v2', JSON.stringify(allItems));
+    } catch (e) {
+      console.warn('Cache local falló:', e);
+    }
     renderGrid();
     $('galeriaLoading').style.display = 'none';
   }, (err) => {

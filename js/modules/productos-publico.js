@@ -214,7 +214,7 @@
         newBlock.innerHTML = `
           <div class="category-block-header">
             <div class="category-block-header-left">
-              <span class="category-block-icon" aria-hidden="true">🌿</span>
+              
               <div>
                 <h3 class="category-block-title">${catTitle} Sólidos</h3>
                 <span class="category-block-sub">Nueva línea botánica consciente</span>
@@ -234,7 +234,7 @@
           btn.type = 'button';
           btn.className = 'filter-btn';
           btn.setAttribute('data-filter', cat);
-          btn.textContent = `🌱 ${catTitle} (${items.length})`;
+          btn.textContent = `${catTitle} (${items.length})`;
           filtersContainer.appendChild(btn);
           initFilters();
         }

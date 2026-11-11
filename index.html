@@ -930,15 +930,8 @@
     <div class="about-grid">
 
       <div class="about-visual reveal-left">
-        <div class="about-visual-placeholder-box">
-          <div class="about-visual-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
-          </div>
-          <h3 class="about-visual-title">Fotografía Oficial</h3>
-          <p class="about-visual-desc">Espacio reservado para la fotografía de nuestro equipo y taller artesanal LULIS.</p>
+        <div class="about-img-wrap" style="position:relative; width:100%; height:100%; min-height:380px; border-radius:24px; overflow:hidden; box-shadow:0 12px 36px rgba(0,0,0,0.12);">
+          <img src="Imagenes/nosotros/equipo-lulis.jpg" alt="Equipo fundador de LULIS Cosmética Consciente" style="width:100%; height:100%; object-fit:cover; display:block;">
         </div>
         <div class="about-badge" aria-label="Ubicación: La Paz, Bolivia">La Paz,<br>Bolivia</div>
       </div>
@@ -990,10 +983,10 @@
     <!-- Filtros de categoría para alternar bloques -->
     <div class="catalog-filters reveal" id="catalogFilters" role="tablist" aria-label="Filtrar por bloque de catálogo">
       <button type="button" class="filter-btn active" data-filter="all">Ver todo el catálogo</button>
-      <button type="button" class="filter-btn" data-filter="shampoo">🌿 Shampoos (3)</button>
-      <button type="button" class="filter-btn" data-filter="acondicionador">✨ Acondicionadores (2)</button>
-      <button type="button" class="filter-btn" data-filter="pack">🎁 Packs y Dúos (3)</button>
-      <button type="button" class="filter-btn" data-filter="manteca">🧈 Mantecas Corporales (Nuevo)</button>
+      <button type="button" class="filter-btn" data-filter="shampoo">Shampoos (3)</button>
+      <button type="button" class="filter-btn" data-filter="acondicionador">Acondicionadores (2)</button>
+      <button type="button" class="filter-btn" data-filter="pack">Packs y Dúos (3)</button>
+      <button type="button" class="filter-btn" data-filter="manteca">Mantecas Corporales (Nuevo)</button>
     </div>
 
     <!-- Contenedor ordenado en bloques con tarjetas estilo Natural Farma -->
@@ -1003,7 +996,7 @@
       <div class="category-block reveal" data-category="shampoo">
         <div class="category-block-header">
           <div class="category-block-header-left">
-            <span class="category-block-icon" aria-hidden="true">🌿</span>
+            
             <div>
               <h3 class="category-block-title">Shampoos Sólidos</h3>
               <span class="category-block-sub">35–45 lavadas · Cero plástico · 50g</span>
@@ -1118,7 +1111,7 @@
       <div class="category-block reveal delay-1" data-category="acondicionador">
         <div class="category-block-header">
           <div class="category-block-header-left">
-            <span class="category-block-icon" aria-hidden="true">✨</span>
+            
             <div>
               <h3 class="category-block-title">Acondicionadores Sólidos</h3>
               <span class="category-block-sub">50g · Desenredado botánico y nutrición profunda</span>
@@ -1200,7 +1193,7 @@
       <div class="category-block reveal delay-2" data-category="pack">
         <div class="category-block-header">
           <div class="category-block-header-left">
-            <span class="category-block-icon" aria-hidden="true">🎁</span>
+            
             <div>
               <h3 class="category-block-title">Packs & Dúos Ahorro</h3>
               <span class="category-block-sub">Dúos completos con caja de semillas plantables</span>
@@ -1315,7 +1308,7 @@
       <div class="category-block reveal delay-3" data-category="manteca">
         <div class="category-block-header">
           <div class="category-block-header-left">
-            <span class="category-block-icon" aria-hidden="true">🧈</span>
+            
             <div>
               <h3 class="category-block-title">Mantecas Corporales</h3>
               <span class="category-block-sub">Nutrición botánica intensiva para la piel</span>
@@ -1364,16 +1357,7 @@
   </div>
 </section>
 
-<!-- MODAL QUICK VIEW DE DETALLE DE PRODUCTO -->
 
-      </div>
-      <a href="#" id="modalProductWaBtn" class="btn-wa-modal" target="_blank" rel="noopener noreferrer">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        Pedir este producto por WhatsApp
-      </a>
-    </div>
-  </div>
-</div>
 
 
 <!-- ════════════════════════════════════════════════════════
@@ -1811,7 +1795,7 @@
         <article class="ubi-slide is-active" data-i="0">
           <div class="ubi-map">
             <iframe title="Ubicación de Salón María en Google Maps" loading="lazy"
-                    src="https://maps.google.com/maps?q=Calle+Posnansky,+Edificio+Parque+Miraflores+1608,+Miraflores,+La+Paz,+Bolivia&hl=es&z=16&output=embed"></iframe>
+                    src="https://maps.google.com/maps?q=-16.498225,-68.124645+(Sal%C3%B3n+Mar%C3%ADa)&hl=es&z=17&output=embed"></iframe>
           </div>
           <div class="ubi-info">
             <div class="ubi-head">
@@ -1827,7 +1811,7 @@
         <article class="ubi-slide" data-i="1">
           <div class="ubi-map">
             <iframe title="Ubicación de Cultoras en Google Maps" loading="lazy"
-                    src="https://maps.google.com/maps?q=Calle+Victor+Eduardo+2258,+Miraflores,+La+Paz,+Bolivia&hl=es&z=16&output=embed"></iframe>
+                    src="https://maps.google.com/maps?q=-16.506725,-68.121309+(Cultoras)&hl=es&z=17&output=embed"></iframe>
           </div>
           <div class="ubi-info">
             <div class="ubi-head">
@@ -1843,7 +1827,7 @@
         <article class="ubi-slide" data-i="2">
           <div class="ubi-map">
             <iframe title="Ubicación de Mundo Ecológico en Google Maps" loading="lazy"
-                    src="https://maps.google.com/maps?q=Av+del+policia+Ciudad+Satelite+La+Paz+Bolivia&hl=es&z=16&output=embed"></iframe>
+                    src="https://maps.google.com/maps?q=-16.527302,-68.148519+(Mundo+Ecol%C3%B3gico)&hl=es&z=17&output=embed"></iframe>
           </div>
           <div class="ubi-info">
             <div class="ubi-head">
