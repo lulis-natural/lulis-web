@@ -72,6 +72,14 @@
   gap: 16px;
   max-width: 960px;
   margin: 0 auto;
+  align-items: start;
+}
+.faq-answer ul {
+  padding: 0 24px 20px 40px;
+  font-size: 0.9rem;
+  color: var(--mid);
+  margin: 0;
+  line-height: 1.6;
 }
 .faq-item {
   background: #fff;

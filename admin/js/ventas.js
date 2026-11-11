@@ -256,7 +256,7 @@ function renderTable(ventas) {
     const badgeBg = isPagada ? '#D1FAE5' : (estado.toLowerCase().includes('canc') ? '#FEE2E2' : '#FEF3C7');
 
     return `
-    <div class="ventas-row" style="grid-template-columns: 120px 95px 1fr 1fr 100px 95px 95px 105px 85px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--beige)">
+    <div class="ventas-row">
       <div><strong style="color:var(--wine);font-size:0.82rem;font-family:monospace">${escapeHtml(vId)}</strong></div>
       <div style="font-size:0.85rem">${fmtDate(v.fecha)}</div>
       <div style="font-weight:600;font-size:0.88rem">${escapeHtml(v.cliente || 'Consumidor final')}</div>
@@ -287,20 +287,22 @@ function escapeHtml(str) {
 function openModalNew() {
   editingId = null;
   lineas = [];
-  $('modalTitle').textContent = 'Nueva venta';
-  $('ventaId').value = '';
-  $('vVentaId').value = generateVentaId();
-  $('vFecha').value = fmtDateInput(new Date());
-  $('vCliente').value = '';
-  $('vCanal').value = 'WhatsApp';
+  if ($('modalTitle')) $('modalTitle').textContent = 'Nueva venta';
+  if ($('ventaId')) $('ventaId').value = '';
+  if ($('vVentaId')) $('vVentaId').value = generateVentaId();
+  if ($('vFecha')) $('vFecha').value = fmtDateInput(new Date());
+  if ($('vCliente')) $('vCliente').value = '';
+  if ($('vCanal')) $('vCanal').value = 'WhatsApp';
   if ($('vMedioPago')) $('vMedioPago').value = 'QR';
-  $('vEstado').value = 'Pagada';
-  $('vDescuento').value = 0;
-  $('vNotas').value = '';
+  if ($('vEstado')) $('vEstado').value = 'Pagada';
+  if ($('vDescuento')) $('vDescuento').value = 0;
+  if ($('vNotas')) $('vNotas').value = '';
   renderLineas();
   updateTotalPreview();
-  $('modalOverlay').classList.add('open');
+  const modal = $('modalOverlay');
+  if (modal) modal.classList.add('open');
 }
+window.openModalNew = openModalNew;
 
 window.editarVenta = function(id) {
   const v = allVentas.find(x => x.id === id);

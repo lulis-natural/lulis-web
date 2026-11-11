@@ -14,36 +14,87 @@
   <!-- SheetJS (XLSX) para exportar/importar ventas -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>
-    /* Filtros */
-    .filters-bar {
+    /* Resumen arriba */
+    .resumen-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto;
+      grid-template-columns: repeat(4, 1fr);
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 900px) {
+      .resumen-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+    .resumen-card {
       background: #fff;
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 12px 16px;
       box-shadow: var(--shadow);
-      align-items: end;
     }
-    .filter-group label {
-      display: block;
+    .resumen-label {
       font-size: .72rem;
       text-transform: uppercase;
-      letter-spacing: .08em;
+      letter-spacing: .06em;
       color: var(--mid);
-      margin-bottom: 4px;
-      font-weight: 600;
+      font-weight: 700;
+    }
+    .resumen-value {
+      font-family: var(--ff-display);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-top: 2px;
+    }
+    .resumen-sub {
+      font-size: .75rem;
+      color: var(--mid);
+      margin-top: 2px;
+    }
+
+    /* Filtros compactos horizontales */
+    .filters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-end;
+      margin-bottom: 14px;
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .filter-group.fg-search {
+      flex: 1 1 200px;
+    }
+    .filter-group.fg-date {
+      width: 135px;
+      flex: 0 0 auto;
+    }
+    .filter-group.fg-select {
+      width: 135px;
+      flex: 0 0 auto;
+    }
+    .filter-group label {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--mid);
+      font-weight: 700;
     }
     .filter-group input, .filter-group select {
-      width: 100%;
-      padding: 8px 10px;
+      padding: 7px 10px;
       border: 1px solid var(--beige);
       border-radius: 8px;
-      font-size: .88rem;
+      font-size: .84rem;
       background: #fff;
       color: var(--dark);
       font-family: inherit;
+      height: 36px;
+      box-sizing: border-box;
     }
     .filter-group input:focus, .filter-group select:focus {
       outline: none;
@@ -51,101 +102,56 @@
       box-shadow: 0 0 0 3px rgba(95,15,63,.12);
     }
     .btn-clear-filters {
-      padding: 8px 16px;
+      padding: 0 16px;
       background: var(--light);
       color: var(--mid);
       border: 1px solid var(--beige);
       border-radius: 8px;
       cursor: pointer;
-      font-size: .84rem;
-      font-weight: 500;
+      font-size: .82rem;
+      font-weight: 600;
       height: 36px;
+      align-self: flex-end;
+      transition: all .15s;
     }
-    .btn-clear-filters:hover { background: var(--beige); }
+    .btn-clear-filters:hover {
+      background: var(--beige);
+      color: var(--wine);
+    }
 
-    /* Tabla ventas */
+    /* Tabla ventas con 9 columnas exactas */
+    .ventas-table {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
     .ventas-row {
       display: grid;
-      grid-template-columns: 100px 1fr 1fr 100px 110px 110px 90px;
-      gap: 12px;
+      grid-template-columns: 130px 95px 130px 1fr 100px 95px 95px 105px 80px;
+      gap: 10px;
       align-items: center;
-      padding: 14px 16px;
+      padding: 10px 14px;
       border-bottom: 1px solid var(--light);
-      font-size: .88rem;
+      font-size: .86rem;
+      min-width: 900px;
       transition: background .15s;
     }
-    .ventas-row:hover { background: var(--light); }
+    .ventas-row:hover { background: #FAF8F3; }
     .ventas-row:last-child { border-bottom: none; }
     .ventas-header {
       background: var(--light);
       font-weight: 700;
       font-size: .72rem;
       text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--mid);
-      padding: 12px 16px;
+      letter-spacing: .06em;
+      color: var(--wine);
+      padding: 10px 14px;
       border-radius: var(--radius) var(--radius) 0 0;
       border-bottom: 2px solid var(--beige);
     }
-    .ventas-table {
-      background: #fff;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    .canal-badge, .estado-badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: .72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-    .canal-whatsapp { background: #DCFCE7; color: #166534; }
-    .canal-instagram { background: #FCE7F3; color: #9D174D; }
-    .canal-tienda { background: #DBEAFE; color: #1E40AF; }
-    .canal-feria { background: #FEF3C7; color: #92400E; }
-    .canal-otro { background: #F3F4F6; color: #6B7280; }
-    .estado-entregado { background: #DCFCE7; color: #166534; }
-    .estado-confirmado { background: #DBEAFE; color: #1E40AF; }
-    .estado-pendiente { background: #FEF3C7; color: #92400E; }
-    .estado-cancelado { background: #FEE2E2; color: #991B1B; }
 
-    /* Resumen arriba */
-    .resumen-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .resumen-card {
-      background: #fff;
-      border-radius: var(--radius);
-      padding: 16px 20px;
-      box-shadow: var(--shadow);
-    }
-    .resumen-label {
-      font-size: .72rem;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--mid);
-      font-weight: 600;
-    }
-    .resumen-value {
-      font-family: var(--ff-display);
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--dark);
-      margin-top: 4px;
-    }
-    .resumen-sub {
-      font-size: .78rem;
-      color: var(--mid);
-      margin-top: 2px;
-    }
-
-    /* Modal líneas de venta */
+    /* Modal líneas */
     .lineas-editor {
       border: 1px solid var(--beige);
       border-radius: 10px;
@@ -158,36 +164,6 @@
       padding: 0;
       margin: 0 0 10px 0;
     }
-    .lineas-list li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      background: #fff;
-      border-radius: 8px;
-      margin-bottom: 6px;
-      font-size: .88rem;
-    }
-    .lineas-list .linea-nombre { flex: 1; font-weight: 500; }
-    .lineas-list .linea-precio { color: var(--mid); font-size: .82rem; }
-    .lineas-list .linea-qty {
-      width: 60px;
-      padding: 4px 8px;
-      border: 1px solid var(--beige);
-      border-radius: 6px;
-      text-align: center;
-      font-size: .88rem;
-    }
-    .lineas-list .linea-del {
-      background: transparent;
-      border: none;
-      color: #DC2626;
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
-    }
-    .lineas-list .linea-del:hover { background: #FEE2E2; }
-
     .add-linea-form {
       display: grid;
       grid-template-columns: 1fr 80px auto;
@@ -202,135 +178,63 @@
       background: #fff;
     }
 
-    /* Botón export */
+    /* Botón export/import */
     .btn-export {
       background: #10B981;
       color: #fff;
       border: none;
-      padding: 10px 20px;
+      padding: 9px 16px;
       border-radius: 8px;
       font-weight: 600;
-      font-size: .88rem;
+      font-size: .86rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
     .btn-export:hover { background: #059669; }
-
-    /* Botón importar */
     .btn-import {
       background: var(--purple);
       color: #fff;
       border: none;
-      padding: 10px 20px;
+      padding: 9px 16px;
       border-radius: 8px;
       font-weight: 600;
-      font-size: .88rem;
+      font-size: .86rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
     .btn-import:hover { background: #6B3B5C; }
-
-    /* Modal importar */
+    .btn-import-sm {
+      background: var(--light);
+      color: var(--mid);
+      border: 1px solid var(--beige);
+    }
     .import-area {
       border: 2px dashed var(--beige);
       border-radius: 10px;
       padding: 24px;
       text-align: center;
       background: var(--light);
-      transition: all 0.2s;
       cursor: pointer;
     }
-    .import-area:hover, .import-area.dragover {
-      border-color: var(--wine);
-      background: #FFF7F5;
-    }
-    .import-area .icon { color: var(--mid); margin-bottom: 8px; }
-    .import-area p { margin: 4px 0; color: var(--mid); }
+    .import-area:hover { border-color: var(--wine); background: #FFF7F5; }
     .import-area input[type=file] { display: none; }
-
-    .import-mode {
-      display: flex;
-      gap: 12px;
-      margin: 16px 0;
-    }
-    .import-mode label {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding: 12px 14px;
-      border: 1px solid var(--beige);
-      border-radius: 8px;
-      cursor: pointer;
-      background: #fff;
-      transition: all 0.15s;
-    }
-    .import-mode label.checked {
-      border-color: var(--wine);
-      background: #FFF7F5;
-      box-shadow: 0 0 0 2px rgba(95,15,63,0.10);
-    }
-    .import-mode input[type=radio] { margin-right: 4px; }
-    .import-mode strong { font-size: 0.92rem; }
-    .import-mode span { font-size: 0.78rem; color: var(--mid); }
-
+    .import-mode { display: flex; gap: 12px; margin: 16px 0; }
     .import-preview {
-      max-height: 280px;
-      overflow: auto;
+      max-height: 200px;
+      overflow-y: auto;
       border: 1px solid var(--beige);
       border-radius: 8px;
       margin-top: 12px;
       background: #fff;
     }
-    .import-preview table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.78rem;
-    }
-    .import-preview th, .import-preview td {
-      padding: 6px 10px;
-      border-bottom: 1px solid var(--light);
-      text-align: left;
-      white-space: nowrap;
-    }
-    .import-preview th {
-      background: var(--light);
-      position: sticky; top: 0;
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 0.7rem;
-      letter-spacing: 0.05em;
-    }
-    .import-preview tr.invalid { background: #FEE2E2; }
-    .import-preview tr.valid   { background: #F0FDF4; }
-    .import-errors {
-      background: #FEF2F2;
-      color: #991B1B;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 0.82rem;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 1024px) {
-      .ventas-row, .ventas-header {
-        grid-template-columns: 90px 1fr 1fr 100px 100px 80px;
-        font-size: .82rem;
-      }
-      .ventas-row > *:nth-child(5), .ventas-header > *:nth-child(5) { display: none; }
-    }
-    @media (max-width: 768px) {
-      .ventas-row, .ventas-header {
-        grid-template-columns: 1fr 1fr;
-      }
-      .ventas-row > *:nth-child(n+3):nth-child(-n+5),
-      .ventas-header > *:nth-child(n+3):nth-child(-n+5) { display: none; }
-    }
-  </style>
+    .import-preview table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .import-preview th, .import-preview td { padding: 6px 10px; border-bottom: 1px solid var(--light); }
+    .import-preview th { background: var(--light); position: sticky; top: 0; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; }
+</style>
 </head>
 <body>
 
@@ -402,7 +306,7 @@
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Exportar Excel
         </button>
-        <button class="btn btn-primary" id="btnNueva">
+        <button class="btn btn-primary" id="btnNueva" onclick="window.openModalNew && window.openModalNew()">
           <span style="font-size:18px;line-height:1;margin-right:4px">+</span> Nueva venta
         </button>
       </div>
@@ -434,37 +338,38 @@
 
     <!-- Filtros -->
     <div class="filters-bar">
-      <div class="filter-group">
-        <label>Buscar</label>
+      <div class="filter-group fg-search">
+        <label for="fBuscar">Buscar</label>
         <input type="text" id="fBuscar" placeholder="ID, cliente o producto...">
       </div>
-      <div class="filter-group">
-        <label>Desde</label>
+      <div class="filter-group fg-date">
+        <label for="fDesde">Desde</label>
         <input type="date" id="fDesde">
       </div>
-      <div class="filter-group">
-        <label>Hasta</label>
+      <div class="filter-group fg-date">
+        <label for="fHasta">Hasta</label>
         <input type="date" id="fHasta">
       </div>
-      <div class="filter-group">
-        <label>Canal</label>
+      <div class="filter-group fg-select">
+        <label for="fCanal">Canal</label>
         <select id="fCanal">
           <option value="">Todos</option>
-          <option value="whatsapp">WhatsApp</option>
-          <option value="instagram">Instagram</option>
-          <option value="tienda">Tienda</option>
-          <option value="feria">Feria</option>
-          <option value="otro">Otro</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Instagram">Instagram</option>
+          <option value="Tienda física">Tienda</option>
+          <option value="Ferias">Ferias</option>
+          <option value="Facebook">Facebook</option>
+          <option value="Otro">Otro</option>
         </select>
       </div>
-      <div class="filter-group">
-        <label>Estado</label>
+      <div class="filter-group fg-select">
+        <label for="fEstado">Estado</label>
         <select id="fEstado">
           <option value="">Todos</option>
-          <option value="entregado">Entregado</option>
-          <option value="confirmado">Confirmado</option>
-          <option value="pendiente">Pendiente</option>
-          <option value="cancelado">Cancelado</option>
+          <option value="Pagada">Pagada</option>
+          <option value="Entregada">Entregada</option>
+          <option value="Preparación">En preparación</option>
+          <option value="Cancelada">Cancelada</option>
         </select>
       </div>
       <button class="btn-clear-filters" id="btnLimpiarFiltros">Limpiar</button>
@@ -473,10 +378,12 @@
     <!-- Tabla de ventas -->
     <div class="ventas-table" id="ventasTable">
       <div class="ventas-row ventas-header">
+        <div>ID Venta</div>
         <div>Fecha</div>
         <div>Cliente</div>
         <div>Productos</div>
         <div>Canal</div>
+        <div>Medio Pago</div>
         <div>Estado</div>
         <div>Total</div>
         <div style="text-align:right">Acciones</div>
@@ -510,42 +417,60 @@
     <div class="modal-body">
       <form id="ventaForm">
         <input type="hidden" id="ventaId">
-        <input type="hidden" id="ventaLineas">
 
         <div class="form-row">
+          <div class="form-group">
+            <label for="vVentaId">ID de Venta (Autogenerado)</label>
+            <input type="text" id="vVentaId" readonly style="background:#FAF8F3;font-weight:700;color:var(--wine);font-family:monospace">
+          </div>
           <div class="form-group">
             <label class="label-required" for="vFecha">Fecha</label>
             <input type="date" id="vFecha" required>
           </div>
+        </div>
+
+        <div class="form-row">
           <div class="form-group">
-            <label for="vCanal">Canal</label>
+            <label for="vCanal">Canal de Venta</label>
             <select id="vCanal">
-              <option value="whatsapp">WhatsApp</option>
-              <option value="instagram">Instagram</option>
-              <option value="tienda">Tienda</option>
-              <option value="feria">Feria</option>
-              <option value="otro">Otro</option>
+              <option value="WhatsApp" selected>WhatsApp</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Tienda física">Tienda física</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Ferias">Ferias</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="vMedioPago">Medio de Pago</label>
+            <select id="vMedioPago">
+              <option value="QR" selected>QR</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Transferencia">Transferencia bancaria</option>
+              <option value="Tarjeta">Tarjeta de débito/crédito</option>
+              <option value="Otro">Otro</option>
             </select>
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
             <label for="vCliente">Cliente (opcional)</label>
             <input type="text" id="vCliente" placeholder="Consumidor final">
           </div>
           <div class="form-group">
-            <label for="vEstado">Estado</label>
+            <label for="vEstado">Estado de Operación</label>
             <select id="vEstado">
-              <option value="entregado">Entregado</option>
-              <option value="confirmado">Confirmado</option>
-              <option value="pendiente">Pendiente</option>
-              <option value="cancelado">Cancelado</option>
+              <option value="Pagada" selected>Pagada (Efectivamente cobrada)</option>
+              <option value="Entregada">Entregada</option>
+              <option value="Preparación">En preparación</option>
+              <option value="Cancelada">Cancelada</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="label-required">Productos</label>
+          <label class="label-required">Productos Vendidos</label>
           <div class="lineas-editor">
             <ul class="lineas-list" id="lineasList"></ul>
             <div class="add-linea-form">
@@ -560,18 +485,18 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="vDescuento">Descuento (Bs)</label>
+            <label for="vDescuento">Descuento Global (Bs)</label>
             <input type="number" id="vDescuento" min="0" step="0.5" value="0">
           </div>
           <div class="form-group">
-            <label>Total</label>
-            <div id="vTotalPreview" style="font-family:var(--ff-display);font-size:1.4rem;font-weight:800;color:var(--wine);padding:8px 0">Bs 0</div>
+            <label>Total de la Venta</label>
+            <div id="vTotalPreview" style="font-family:var(--ff-display);font-size:1.4rem;font-weight:800;color:var(--wine);padding:8px 0">Bs 0,00</div>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="vNotas">Notas</label>
-          <textarea id="vNotas" rows="2" placeholder="Observaciones…"></textarea>
+          <label for="vNotas">Observaciones / Notas adicionales</label>
+          <textarea id="vNotas" rows="2" placeholder="Detalles de entrega, comprobante, etc."></textarea>
         </div>
       </form>
     </div>

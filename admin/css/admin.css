@@ -972,3 +972,46 @@ textarea { min-height: 90px; resize: vertical; }
   display: inline-block;
   flex-shrink: 0;
 }
+
+
+/* ─── Filtros compactos horizontales globales ───────────── */
+.filters-bar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  align-items: flex-end !important;
+  margin-bottom: 14px !important;
+  background: #fff !important;
+  border-radius: var(--radius) !important;
+  padding: 12px 16px !important;
+  box-shadow: var(--shadow) !important;
+}
+.filter-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+.filter-group label {
+  font-size: .72rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: .06em !important;
+  color: var(--mid) !important;
+  font-weight: 700 !important;
+  margin-bottom: 2px !important;
+}
+.filter-group input, .filter-group select {
+  padding: 7px 10px !important;
+  border: 1px solid var(--beige) !important;
+  border-radius: 8px !important;
+  font-size: .84rem !important;
+  background: #fff !important;
+  color: var(--dark) !important;
+  font-family: inherit !important;
+  height: 36px !important;
+  box-sizing: border-box !important;
+}
+.filter-group input:focus, .filter-group select:focus {
+  outline: none !important;
+  border-color: var(--wine) !important;
+  box-shadow: 0 0 0 3px rgba(95,15,63,.12) !important;
+}
