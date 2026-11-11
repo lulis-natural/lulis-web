@@ -219,9 +219,9 @@ button, input, select, textarea {
 
 /* ─── Content area ───────────────────────────────────────── */
 .admin-content {
-  margin-left: var(--sidebar-w);
-  margin-top: var(--topbar-h);
-  padding: 28px;
+  margin-left: 0;
+  margin-top: 0;
+  padding: 18px 24px;
   min-height: calc(100vh - var(--topbar-h));
 }
 
@@ -249,7 +249,7 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
   gap: 12px;
 }
