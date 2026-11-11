@@ -198,8 +198,8 @@
       localStorage.setItem('lulis_admin_user', name || (email ? email.split('@')[0] : 'Administrador'));
       localStorage.setItem('lulis_admin_email', email || 'admin@lulis.bo');
     } catch(e) {}
-    // RUTA ABSOLUTA: /admin/dashboard.html (evita 404 en /dashboard)
-    window.location.replace('/admin/dashboard.html');
+    // RUTA LIMPIA ABSOLUTA: /admin/dashboard (evita 404 y 308)
+    window.location.replace('/admin/dashboard');
   }
 
   // 1. Botón de acceso directo inmediato (1 Clic) - NUNCA FALLA

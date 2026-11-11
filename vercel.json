@@ -93,6 +93,16 @@
   ],
   "redirects": [
     {
+      "source": "/dashboard",
+      "destination": "/admin/dashboard",
+      "permanent": false
+    },
+    {
+      "source": "/dashboard/",
+      "destination": "/admin/dashboard",
+      "permanent": false
+    },
+    {
       "source": "/index.html",
       "destination": "/",
       "permanent": true
